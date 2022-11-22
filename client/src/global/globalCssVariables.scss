@@ -1,0 +1,44 @@
+// BACKGROUND COLORS
+$primary-background-color: white;
+$secondary-background-color: rgb(241, 241, 241);
+$tertiary-background-color: rgb(228, 228, 228);
+$selected-color: #d7ecff;
+$error-color: #ff7f7f;
+$link-background: #d4edda;
+$link-dark: #165724;
+
+$hover-background-color: rgba(0, 0, 0, 0.3);
+$anchor-hover-background-color: rgb(230, 230, 230);
+
+$standard-border: solid 2px $secondary-background-color;
+$standard-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, $selected-color 0px 0px 0px 3px;
+
+$image-shadow: rgb(0 0 0 / 30%) 0px 2px 3px;
+$image-anchor: rgba(255, 192, 203, 0.479);
+$image-anchor-selected: rgba(192, 240, 255, 0.479);
+
+// TEXT COLORS
+$primary-text-color: black;
+
+// FONTS
+$header-font: 'Inter', sans-serif;
+// ALERT
+$alert-height: 30px;
+$alert-background-color: red;
+
+// SIZES
+$header-height: 50px;
+$node-manager-width: 30vw;
+$node-manager-max-height-in-modal: 360px;
+
+:export {
+  // BACKGROUND COLORS
+  PRIMARY_BACKGROUND_COLOR: $primary-background-color;
+  SECONDARY_BACKGROUND_COLOR: $secondary-background-color;
+
+  // TEXT COLORS
+  PRIMARY_TEXT_COLOR: $primary-text-color;
+
+  // FONTS
+  HEADER_FONT: $header-font;
+}

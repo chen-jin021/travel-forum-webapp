@@ -1,0 +1,40 @@
+@import '../../global/globalCssVariables';
+
+.menu-container {
+  width: 150px;
+  height: fit-content;
+  background-color: $secondary-background-color;
+  border-radius: 5px;
+  position: absolute;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  z-index: 5;
+
+  .contextMenuItem {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+
+    &:hover {
+      background-color: $selected-color;
+    }
+
+    .itemText {
+      display: flex;
+      flex-direction: row;
+      font-size: 0.7rem;
+      gap: 3px;
+      align-content: center;
+      align-items: center;
+    }
+
+    .itemShortcut {
+      font-size: 0.5rem;
+      color: darkgrey;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@import '../../../../global/globalCssVariables';
+
+.ProseMirror {
+  a {
+    color: blue !important;
+    text-decoration: underline !important;
+    cursor: pointer;
+  }
+
+  // TODO Make the editor and menu look nice!
+}
+
+li {
+  padding: 0 1rem;
+  list-style-position: inside;
+}

@@ -1,0 +1,22 @@
+@import '../../global/globalCssVariables';
+
+.loading {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  .loading-message {
+    background-color: $selected-color;
+    border-radius: 10px;
+    width: max-content;
+    padding: 15px 25px;
+    margin-top: 15px;
+    user-select: none;
+    text-align: center;
+  }
+}

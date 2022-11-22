@@ -1,0 +1,25 @@
+@import '../../../global/globalCssVariables';
+
+.linkMenu {
+  width: 100%;
+  padding-top: 20px;
+  height: 100%;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+
+  .imagePreviewContainer {
+    width: fit-content;
+    height: fit-content;
+  }
+
+  .imagePreview {
+    overflow: hidden;
+    img {
+      border-radius: 3px;
+      padding: 0;
+      height: 300px;
+      object-fit: cover;
+    }
+  }
+}

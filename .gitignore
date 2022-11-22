@@ -1,0 +1,6 @@
+﻿node_modules
+.DS_Store
+client/.firebase
+client/firebase-debug.log
+client/firebase.json
+client/.firebaserc

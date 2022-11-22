@@ -1,0 +1,14 @@
+@import '../../global/globalCssVariables';
+
+.editableText {
+  background-color: $secondary-background-color;
+  border-radius: 5px;
+  font-weight: 600;
+  width: 200px;
+  overflow: hidden;
+  padding: 0px 10px;
+}
+
+.displayText {
+  padding-left: 10px;
+}

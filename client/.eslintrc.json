@@ -1,0 +1,63 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": ["plugin:react/recommended", "google"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "react-hooks", "@typescript-eslint"],
+  "root": true,
+  "rules": {
+    "indent": ["off"],
+    "quotes": ["error", "single"],
+    "linebreak-style": "off",
+    "semi": ["error", "never"],
+    "object-curly-spacing": [
+      "error",
+      "always",
+      {
+        "arraysInObjects": true
+      }
+    ],
+    "max-len": [
+      "warn",
+      {
+        "code": 90
+      }
+    ],
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "require-jsdoc": [
+      2,
+      {
+        "require": {
+          "FunctionDeclaration": false,
+          "MethodDefinition": false,
+          "ClassDeclaration": false
+        }
+      }
+    ],
+    "no-unused-vars": "warn",
+    "react-hooks/exhaustive-deps": "off",
+    "comma-dangle": ["off"],
+    "valid-jsdoc": ["off"],
+    "no-tabs": [
+      "off",
+      {
+        "allowIndentationTabs": true
+      }
+    ],
+    "operator-linebreak": ["off"]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

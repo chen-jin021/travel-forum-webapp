@@ -1,0 +1,44 @@
+@import '../../global/globalCssVariables';
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+  height: 70%;
+  font-size: 15px;
+  user-select: none;
+  // Font options
+  font-family: $header-font;
+
+  // Color
+  padding: 3px 15px;
+  border-radius: 5px;
+  gap: 5px;
+  transition: 0.3s;
+  cursor: pointer;
+  margin: 0;
+  background-color: $secondary-background-color;
+
+  &:hover {
+    background-color: darken($secondary-background-color, 10);
+  }
+
+  &.whiteButton {
+    background-color: white;
+    &:hover {
+      background-color: darken(white, 3);
+    }
+  }
+
+  &.active {
+    background-color: $selected-color;
+    &:hover {
+      background-color: darken($selected-color, 20);
+    }
+  }
+
+  .icon {
+    font-size: 17px;
+  }
+}

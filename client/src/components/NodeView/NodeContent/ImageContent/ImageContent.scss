@@ -1,0 +1,72 @@
+@import '../../../../global/globalCssVariables';
+
+.imageWrapper {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .imageContainer {
+    overflow: visible;
+    position: relative;
+    height: 300px;
+    object-fit: cover;
+
+    .image {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+
+      .image-anchor {
+        border: 2px red solid;
+        position: absolute;
+        cursor: pointer;
+        z-index: 1;
+
+        &.selected {
+          z-index: 2;
+          border: 2px blue solid;
+          position: absolute;
+          // background-color: rgba(192, 240, 255, 0.5);
+          box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.3);
+          pointer-events: none;
+        }
+      }
+
+      .image-startAnchor {
+        background-color: rgba(212, 237, 218, 0.7);
+        position: absolute;
+        z-index: 1;
+      }
+
+      .selection {
+        position: absolute;
+        border: dotted black 3px;
+        z-index: 1;
+
+        .selection-close {
+          cursor: pointer;
+          position: absolute;
+          background-color: $secondary-background-color;
+          border-radius: 2px;
+          opacity: 0.8;
+          transition: 0.1s;
+          right: 0;
+
+          &:hover {
+            opacity: 1;
+            background-color: $tertiary-background-color;
+          }
+        }
+      }
+
+      img {
+        padding: 0;
+        height: 300px;
+        object-fit: cover;
+        object-position: 0 0;
+      }
+    }
+  }
+}

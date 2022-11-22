@@ -1,0 +1,50 @@
+@import '../../../global/globalCssVariables';
+
+$input-margin: 10px;
+
+.modal-treeView {
+  max-height: $node-manager-max-height-in-modal;
+  overflow: auto;
+}
+
+.modal-input {
+  margin-top: $input-margin;
+}
+
+.modal-section {
+  border-top: solid 1px $secondary-background-color;
+  margin-top: 15px;
+  padding-top: 10px;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.modal-title-tag {
+  margin-right: 5px;
+  background-color: $selected-color;
+  color: black;
+  padding: 3px 10px;
+  border-radius: 4px;
+  user-select: none;
+}
+
+.modal-error {
+  color: white;
+  font-size: 0.8rem;
+  background-color: $error-color;
+  padding: 5px 10px;
+  margin: 0px 20px;
+  position: absolute;
+  left: 0;
+  font-weight: 500;
+}
+
+.modal-footer-buttons {
+  display: flex;
+  flex-direction: row;
+  font-weight: 500;
+}

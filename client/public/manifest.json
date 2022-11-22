@@ -1,0 +1,9 @@
+{
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "icons": [],
+  "name": "Create React App Sample",
+  "short_name": "React App",
+  "start_url": ".",
+  "theme_color": "#000000"
+}

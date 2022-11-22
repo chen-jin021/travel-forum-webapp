@@ -1,0 +1,12 @@
+@import '../../global/globalCssVariables';
+
+.treeView-wrapper {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  overflow: hidden;
+  padding: 20px 0px 20px 0px;
+}

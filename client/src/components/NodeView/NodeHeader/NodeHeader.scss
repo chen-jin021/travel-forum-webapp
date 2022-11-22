@@ -1,0 +1,40 @@
+@import '../../../global/globalCssVariables';
+
+.nodeHeader {
+  display: flex;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: 500;
+  padding: 10px;
+  padding-left: 20px;
+  justify-content: left;
+  align-items: center;
+  border-bottom: $standard-border;
+  overflow: hidden;
+  width: 100%;
+  background-color: $primary-background-color;
+  z-index: 3;
+
+  .nodeHeader-title {
+    font-weight: 600;
+    min-width: fit-content;
+  }
+
+  .nodeHeader-buttonBar {
+    gap: 10px;
+    display: flex;
+    height: 50px;
+    width: fit-content;
+    position: relative;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 5px;
+
+    .select {
+      width: 80px;
+      margin-top: -10px;
+      cursor: pointer;
+    }
+  }
+}

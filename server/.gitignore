@@ -1,0 +1,17 @@
+# ignore all node_modules files
+node_modules/*
+coverage
+
+yarn-error.log
+
+# Mac files
+*.DS_Store
+
+# dotenv files
+.env
+
+# serverside test coverage files
+server/coverage/*
+
+# MongoMemorySaver (local database in memory): https://github.com/nodkz/mongodb-memory-server#available-options related env files
+globalConfig.json
