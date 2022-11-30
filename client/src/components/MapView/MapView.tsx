@@ -1,8 +1,12 @@
 import React from 'react'
 import { useRef } from 'react'
+import {useRecoilState} from 'recoil'
 import { Wrapper, Status } from '@googlemaps/react-wrapper'
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api'
 import { containerStyle, center, options } from './MapSettings'
+import {
+  mapState,
+} from '../../global/Atoms'
 export interface IMapViewProps {}
 
 /**
@@ -12,10 +16,7 @@ export interface IMapViewProps {}
  * @returns Button component
  */
 export const MapView = (props: IMapViewProps) => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google_map_script',
-    googleMapsApiKey: 'AIzaSyDpeuDVOz47pLtmP8zFr6KsDDU7jEAs1Uo',
-  })
+  const [map, setMap] = React.useState<google.maps.Map>()
 
   // save map as ref
   const mapRef = useRef<google.maps.Map | null>(null)
@@ -25,17 +26,14 @@ export const MapView = (props: IMapViewProps) => {
 
   const onLoad = (map:google.maps.Map) =>{
     mapRef.current = map
+    console.log(map)
+    setMap(map)
   }
 
   const onUnMount = () => {
     mapRef.current = null
   }
 
-  if(!isLoaded) return <div>Map Loading...</div>
-
-  const render = (status: Status) => {
-    return <h1>{status}</h1>
-  }
 
   return (
     <>

@@ -86,3 +86,8 @@ export const alertMessageState = atom<string>({
   key: 'alertMessageState',
   default: '',
 })
+
+export const mapState = atom<google.maps.Map | null | undefined>({
+  key: 'mapState',
+  default: null,
+})

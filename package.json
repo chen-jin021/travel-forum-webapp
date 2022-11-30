@@ -8,5 +8,8 @@
     "start": "echo \"Make sure you have CD'd into either the client or server folder\"",
     "test": "echo \"Make sure you have CD'd into either the client or server folder\"",
     "lint": "echo \"Make sure you have CD'd into either the client or server folder\""
+  },
+  "dependencies": {
+    "@googlemaps/react-wrapper": "^1.1.35"
   }
 }
