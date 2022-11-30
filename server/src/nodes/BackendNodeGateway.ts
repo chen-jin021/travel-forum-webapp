@@ -268,6 +268,14 @@ export class BackendNodeGateway {
     return successfulServiceResponse({})
   }
 
+  async searchTerm(term: string): Promise<IServiceResponse<INode[]>> {
+    const searchTermResp = await this.nodeCollectionConnection.searchByRelevance(term)
+    if (!searchTermResp.success) {
+      return failureServiceResponse(searchTermResp.message)
+    }
+    return searchTermResp
+  }
+
   async fetchNodesbyUserId(userId: string): Promise<IServiceResponse<INode[]>> {
     const fetchNodesResp = await this.nodeCollectionConnection.fetchNodesByUserId(userId)
     if (!fetchNodesResp.success) {
