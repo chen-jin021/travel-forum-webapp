@@ -9,8 +9,10 @@ import {
   ModalOverlay,
   Select,
   Textarea,
+  Portal,
 } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import { mapState } from '../../../global/Atoms'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   INode,
   NodeIdsToNodesMap,
@@ -20,35 +22,44 @@ import {
 } from '../../../types'
 import { Button } from '../../Button'
 import { TreeView } from '../../TreeView'
-import './CreateNodeModal.scss'
+import './CreateLocationModal.scss'
 import { createNodeFromModal, uploadImage } from './createNodeUtils'
-import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api'
-import { useSetRecoilState } from 'recoil'
+import {
+  GoogleMap,
+  Marker,
+  InfoWindow,
+  useJsApiLoader,
+  Autocomplete,
+} from '@react-google-maps/api'
+import { useSetRecoilState, useRecoilState } from 'recoil'
 import { selectedNodeState } from '../../../global/Atoms'
 
-export interface ICreateNodeModalProps {
+export interface ICreateLocationModalProps {
   isOpen: boolean
   nodeIdsToNodesMap: NodeIdsToNodesMap
   onClose: () => void
   onSubmit: () => unknown
   roots: RecursiveNodeTree[]
+  curMap: google.maps.Map
 }
 
 /**
  * Modal for adding a new node; lets the user choose a title, type,
  * and parent node
  */
-export const CreateNodeModal = (props: ICreateNodeModalProps) => {
+export const CreateLocationModal = (props: ICreateLocationModalProps) => {
   // deconstruct props variables
-  
-  const { isOpen, onClose, roots, nodeIdsToNodesMap, onSubmit } = props
+
+  const { isOpen, onClose, roots, nodeIdsToNodesMap, onSubmit, curMap } = props
   // state variables
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const [selectedParentNode, setSelectedParentNode] = useState<INode | null>(null)
   const [title, setTitle] = useState('')
+  const [location, setLocation] = useState('')
   const [content, setContent] = useState('')
   const [selectedType, setSelectedType] = useState<NodeType>('' as NodeType)
   const [error, setError] = useState<string>('')
+  const [map, setMap] = useRecoilState(mapState)
 
   // event handlers for the modal inputs and dropdown selects
   const handleSelectedTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -56,8 +67,8 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
     setContent('')
   }
 
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value)
+  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value)
   }
 
   const handleTextContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -68,27 +79,45 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
     setContent(event.target.value)
   }
 
-  useEffect(() => {}, [])
+  const retrieveGeocode = async (addr: string) => {
+    console.log(addr)
+    const coder = new google.maps.Geocoder()
+    const req: google.maps.GeocoderRequest = {
+      address: addr,
+    }
+    let result: google.maps.GeocoderResult[] = []
+    await coder.geocode(req, (res, status) => {
+      if (status === 'ZERO_RESULTS') {
+        setError('Please enter a valid location')
+        return
+      } else {
+        if (res) {
+          result = res
+        }
+      }
+    })
+    return result
+  }
 
   // called when the "Create" button is clicked
   const handleSubmit = async () => {
-    if (!nodeTypes.includes(selectedType)) {
-      setError('Error: No type selected')
+    const r = await retrieveGeocode(location)
+    /**If the location is not valid */
+    if (r.length === 0) {
       return
     }
-    if (title.length === 0) {
-      setError('Error: No title')
-      return
+    const target = r[0]
+    const attributes: = {
+      content:'',
+      title:''
+      
+
     }
-    const attributes = {
-      content,
-      nodeIdsToNodesMap,
-      parentNodeId: selectedParentNode ? selectedParentNode.nodeId : null,
-      title,
-      type: selectedType as NodeType,
-    }
-    const node = await createNodeFromModal(attributes)
-    node && setSelectedNode(node)
+    
+    const marker = new google.maps.Marker({
+      position: target.geometry.location,
+    })
+    marker.setMap(curMap)
     onSubmit()
     handleClose()
   }
@@ -124,69 +153,31 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
 
   const isImage: boolean = selectedType === 'image'
   const isText: boolean = selectedType === 'text'
+  const inputRef = useRef<HTMLInputElement>(null)
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create new node</ModalHeader>
+          <ModalHeader>Create a new location!</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input value={title} onChange={handleTitleChange} placeholder="Title..." />
-            <div className="modal-input">
-              <Select
-                value={selectedType}
-                onChange={handleSelectedTypeChange}
-                placeholder="Select a type"
-              >
-                {nodeTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            {selectedType && isText && (
-              <div className="modal-input">
-                <Textarea
-                  value={content}
-                  onChange={handleTextContentChange}
-                  placeholder={contentInputPlaceholder}
-                />
-              </div>
-            )}
-            {selectedType && isImage && (
-              <div className="modal-input">
-                <Input
-                  value={content}
-                  onChange={handleImageContentChange}
-                  placeholder={contentInputPlaceholder}
-                />
-              </div>
-            )}
-            {selectedType && isImage && (
-              <div className="modal-input">
-                <input
-                  type="file"
-                  onChange={handleImageUpload}
-                  placeholder={contentInputPlaceholder}
-                />
-              </div>
-            )}
-            <div className="modal-section">
-              <span className="modal-title">
-                <div className="modal-title-header">Choose a parent node (optional):</div>
-              </span>
-              <div className="modal-treeView">
-                <TreeView
-                  roots={roots}
-                  parentNode={selectedParentNode}
-                  setParentNode={setSelectedParentNode}
-                  changeUrlOnClick={false}
-                />
-              </div>
-            </div>
+            <Autocomplete
+              className="autocomplete"
+              onPlaceChanged={() => {
+                if (inputRef.current) {
+                  setLocation(inputRef.current.value)
+                }
+              }}
+            >
+              <Input
+                ref={inputRef}
+                value={location}
+                onChange={handleLocationChange}
+                placeholder="Search your location"
+              />
+            </Autocomplete>
           </ModalBody>
           <ModalFooter>
             {error.length > 0 && <div className="modal-error">{error}</div>}

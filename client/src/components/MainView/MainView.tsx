@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, Input } from '@chakra-ui/react'
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
@@ -14,24 +14,45 @@ import {
 import { useLocation } from 'react-router-dom'
 import { FrontendNodeGateway } from '../../nodes'
 import { INode, NodeIdsToNodesMap, RecursiveNodeTree } from '../../types'
+import {
+  GoogleMap,
+  Marker,
+  InfoWindow,
+  useJsApiLoader,
+  Autocomplete,
+} from '@react-google-maps/api'
 import { Alert } from '../Alert'
 import { ContextMenu } from '../ContextMenu/ContextMenu'
 import { Header } from '../Header'
 import { LoadingScreen } from '../LoadingScreen'
-import { CompleteLinkModal, CreateNodeModal, MoveNodeModal } from '../Modals'
+import {
+  CompleteLinkModal,
+  CreateNodeModal,
+  MoveNodeModal,
+  CreateLocationModal,
+} from '../Modals'
 import { NodeView } from '../NodeView'
 import { TreeView } from '../TreeView'
 import { MapView } from '../MapView'
 import './MainView.scss'
 import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from './mainViewUtils'
+import { FaSleigh } from 'react-icons/fa'
+import { containerStyle, center, options } from './MapSettings'
 
 export const MainView = React.memo(function MainView() {
+  const { isLoaded } = useJsApiLoader({
+    libraries: ['places'],
+    language: 'en',
+    googleMapsApiKey: 'AIzaSyDpeuDVOz47pLtmP8zFr6KsDDU7jEAs1Uo',
+  })
   // app states
   const [isAppLoaded, setIsAppLoaded] = useState(false)
   // modal states
   const [createNodeModalOpen, setCreateNodeModalOpen] = useState(false)
   const [completeLinkModalOpen, setCompleteLinkModalOpen] = useState(false)
   const [moveNodeModalOpen, setMoveNodeModalOpen] = useState(false)
+  const [createLocationModalOpen, setCreateLocationModalOpen] = useState(false)
+
   // node states
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const [rootNodes, setRootNodes] = useState<RecursiveNodeTree[]>([
@@ -46,6 +67,7 @@ export const MainView = React.memo(function MainView() {
   const setAlertIsOpen = useSetRecoilState(alertOpenState)
   const setAlertTitle = useSetRecoilState(alertTitleState)
   const setAlertMessage = useSetRecoilState(alertMessageState)
+  const [map, setMap] = useState<google.maps.Map>()
 
   /** update our frontend root nodes from the database */
   const loadRootsFromDB = useCallback(async () => {
@@ -55,6 +77,10 @@ export const MainView = React.memo(function MainView() {
       setIsAppLoaded(true)
     }
   }, [])
+
+  const onLoad = (map: google.maps.Map) => {
+    setMap(map)
+  }
 
   useEffect(() => {
     loadRootsFromDB()
@@ -142,6 +168,10 @@ export const MainView = React.memo(function MainView() {
     setSelectedNode(null)
   }, [])
 
+  const handleCreateLocationClick = useCallback(() => {
+    setCreateLocationModalOpen(true)
+  }, [])
+
   const getSelectedNodeChildren = useCallback(() => {
     if (!selectedNode) return undefined
     return selectedNode.filePath.children.map(
@@ -198,8 +228,16 @@ export const MainView = React.memo(function MainView() {
           <Alert></Alert>
           <Header
             onHomeClick={handleHomeClick}
-            onCreateNodeButtonClick={handleCreateNodeButtonClick}
+            onCreateNodeButtonClick={handleCreateLocationClick}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
+          />
+          <CreateLocationModal
+            isOpen={createLocationModalOpen}
+            onClose={() => setCreateLocationModalOpen(false)}
+            roots={rootNodes}
+            nodeIdsToNodesMap={nodeIdsToNodesMap}
+            onSubmit={loadRootsFromDB}
+            curMap={map as google.maps.Map}
           />
           <CreateNodeModal
             isOpen={createNodeModalOpen}
@@ -223,8 +261,18 @@ export const MainView = React.memo(function MainView() {
             />
           )}
           <div className="content">
-            <MapView></MapView>
-            <div className="treeView-container" ref={treeView} >
+            {isLoaded ? (
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                options={options as google.maps.MapOptions}
+                center={center}
+                zoom={12}
+                onLoad={onLoad}
+              />
+            ) : (
+              <div>Map Loading...</div>
+            )}
+            <div className="treeView-container" ref={treeView}>
               <TreeView
                 roots={rootNodes}
                 parentNode={selectedNode}
