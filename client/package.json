@@ -18,6 +18,8 @@
     "@chakra-ui/react": "^1.6.7",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@googlemaps/typescript-guards": "^2.0.3",
+    "@react-google-maps/api": "^2.17.0",
     "@testing-library/dom": "^7.21.4",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -34,6 +36,7 @@
     "@types/uniqid": "^5.3.1",
     "axios": "^0.21.1",
     "framer-motion": "^4",
+    "google-map-react": "^2.2.0",
     "history": "^5.0.1",
     "marked": "^3.0.8",
     "react": "^17.0.2",
@@ -75,5 +78,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2"
   }
 }

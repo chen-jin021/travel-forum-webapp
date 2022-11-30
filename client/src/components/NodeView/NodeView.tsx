@@ -185,7 +185,7 @@ export const NodeView = (props: INodeViewProps) => {
 
   return (
     <div className="node">
-      <div className="nodeView" style={{ width: nodeViewWidth }}>
+      <div className="nodeView">
         <NodeHeader
           onMoveButtonClick={onMoveButtonClick}
           onDeleteButtonClick={onDeleteButtonClick}
@@ -206,15 +206,11 @@ export const NodeView = (props: INodeViewProps) => {
           </div>
         </div>
       </div>
-      {hasAnchors && (
+      {/* {hasAnchors && (
         <div className="divider" ref={divider} onPointerDown={onPointerDown} />
-      )}
+      )} */}
       {hasAnchors && (
-        <div
-          className={'nodeProperties'}
-          ref={nodeProperties}
-          style={{ width: nodePropertiesWidth }}
-        >
+        <div className={'nodeProperties'} ref={nodeProperties}>
           <NodeLinkMenu nodeIdsToNodesMap={nodeIdsToNodesMap} />
         </div>
       )}

@@ -28,7 +28,8 @@ export const NodeContent = (props: INodeContentProps) => {
       return <ImageContent />
     case 'text':
       return <TextContent />
-      break
+    case 'map':
+      return <></>
     case 'folder':
       if (childNodes) {
         return (

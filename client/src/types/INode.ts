@@ -1,10 +1,10 @@
 import { INodePath, makeINodePath } from './INodePath'
 
 // nodeTypes returns a string array of the types available
-export const nodeTypes: string[] = ['text', 'image', 'folder']
+export const nodeTypes: string[] = ['text', 'image', 'folder', 'map']
 
 // Supported nodeTypes for file browser
-export type NodeType = 'text' | 'image' | 'folder' | 'pdf' | 'audio' | 'video'
+export type NodeType = 'text' | 'image' | 'folder' | 'pdf' | 'audio' | 'video' | 'map'
 
 // INode with node metadata
 export interface INode {

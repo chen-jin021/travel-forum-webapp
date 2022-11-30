@@ -9,6 +9,7 @@ import {
   alertOpenState,
   alertTitleState,
   alertMessageState,
+  currentNodeState,
 } from '../../global/Atoms'
 import { useLocation } from 'react-router-dom'
 import { FrontendNodeGateway } from '../../nodes'
@@ -20,6 +21,7 @@ import { LoadingScreen } from '../LoadingScreen'
 import { CompleteLinkModal, CreateNodeModal, MoveNodeModal } from '../Modals'
 import { NodeView } from '../NodeView'
 import { TreeView } from '../TreeView'
+import { MapView } from '../MapView'
 import './MainView.scss'
 import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from './mainViewUtils'
 
@@ -36,6 +38,7 @@ export const MainView = React.memo(function MainView() {
     new RecursiveNodeTree(emptyNode),
   ])
   const refresh = useRecoilValue(refreshState)
+  const currentNode = useRecoilValue(currentNodeState)
   // anchor states
   const setSelectedAnchors = useSetRecoilState(selectedAnchorsState)
   const setSelectedExtent = useSetRecoilState(selectedExtentState)
@@ -220,29 +223,31 @@ export const MainView = React.memo(function MainView() {
             />
           )}
           <div className="content">
-            <div className="treeView-container" ref={treeView} style={{ width: 350 }}>
+            <MapView></MapView>
+            <div className="treeView-container" ref={treeView} >
               <TreeView
                 roots={rootNodes}
                 parentNode={selectedNode}
                 setParentNode={setSelectedNode}
               />
             </div>
-            <div className="divider" onPointerDown={onPointerDown} />
-            <div className="node-wrapper">
-              <NodeView
-                childNodes={
-                  selectedNode
-                    ? getSelectedNodeChildren()
-                    : rootNodes.map((root) => root.node)
-                }
-                currentNode={selectedNode ? selectedNode : rootRecursiveNodeTree.node}
-                onDeleteButtonClick={handleDeleteNodeButtonClick}
-                onMoveButtonClick={handleMoveNodeButtonClick}
-                onCompleteLinkClick={handleCompleteLinkClick}
-                onCreateNodeButtonClick={handleCreateNodeButtonClick}
-                nodeIdsToNodesMap={nodeIdsToNodesMap}
-              />
-            </div>
+            {selectedNode && (
+              <div className="node-wrapper">
+                <NodeView
+                  childNodes={
+                    selectedNode
+                      ? getSelectedNodeChildren()
+                      : rootNodes.map((root) => root.node)
+                  }
+                  currentNode={selectedNode ? selectedNode : rootRecursiveNodeTree.node}
+                  onDeleteButtonClick={handleDeleteNodeButtonClick}
+                  onMoveButtonClick={handleMoveNodeButtonClick}
+                  onCompleteLinkClick={handleCompleteLinkClick}
+                  onCreateNodeButtonClick={handleCreateNodeButtonClick}
+                  nodeIdsToNodesMap={nodeIdsToNodesMap}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

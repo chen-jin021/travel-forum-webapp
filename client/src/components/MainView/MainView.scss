@@ -8,15 +8,15 @@
   .content {
     width: 100%;
     height: calc(100vh - 50px);
-    display: flex;
-    flex-direction: row;
     top: $header-height;
     position: absolute;
-    overflow-y: scroll;
 
     .treeView-container {
-      max-width: 480;
-      min-width: 100;
+      position: absolute;
+      top: 60px;
+      left: 5%;
+      width: 15vw;
+      height: 80%;
     }
 
     .divider {
@@ -31,8 +31,12 @@
     }
 
     .node-wrapper {
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      top: 60px;
+      left: 25%;
+      width: 70vw;
+      height: 80%;
+      border-radius: 3px;
     }
   }
 }
