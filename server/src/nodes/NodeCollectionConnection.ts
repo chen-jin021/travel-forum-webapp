@@ -193,6 +193,23 @@ export class NodeCollectionConnection {
     return successfulServiceResponse(roots)
   }
 
+  async fetchNodesByUserId(userId: string): Promise<IServiceResponse<INode[]>> {
+    const nodes: INode[] = []
+    await this.client
+      .db()
+      .collection(this.collectionName)
+      .find({
+        $or: [{ userReadIds: userId }, { userWriteIds: userId }, { ownerId: userId }],
+      })
+      .forEach(function(node) {
+        const validNode = isINode(node)
+        if (validNode) {
+          nodes.push(node)
+        }
+      })
+    return successfulServiceResponse(nodes)
+  }
+
   /**
    * Update the path of given node.
    *
@@ -212,5 +229,30 @@ export class NodeCollectionConnection {
       return successfulServiceResponse({})
     }
     return failureServiceResponse('Failed to update node ' + nodeId + ' filePath.path')
+  }
+
+  async searchByRelevance(term: string): Promise<IServiceResponse<INode[]>> {
+    await this.client
+      .db()
+      .collection(this.collectionName)
+      .createIndex({ title: 'text', content: 'text' })
+    const query = { $text: { $search: term } }
+    // sort returned documents by descending text relevance score
+    const sort = { score: { $meta: 'textScore' } }
+    // find documents based on our query, sort, and projection
+    // const cursor = collection.find(query).sort(sort).project(projection)
+    const nodes: INode[] = []
+    await this.client
+      .db()
+      .collection(this.collectionName)
+      .find(query)
+      .sort(sort)
+      .forEach(function(node) {
+        const validNode = isINode(node)
+        if (validNode) {
+          nodes.push(node)
+        }
+      })
+    return successfulServiceResponse(nodes)
   }
 }

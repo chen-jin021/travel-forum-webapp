@@ -2,10 +2,10 @@ import { isSameFilePath } from '.'
 import INodePath, { makeINodePath } from './INodePath'
 
 // nodeTypes returns a string array of the types available
-export const nodeTypes: string[] = ['text', 'image', 'folder']
+export const nodeTypes: string[] = ['text', 'image', 'folder', 'loc', 'video']
 
 // Supported nodeTypes for file browser
-export type NodeType = 'text' | 'image' | 'folder' | 'pdf' | 'audio' | 'video'
+export type NodeType = 'text' | 'image' | 'folder' | 'pdf' | 'audio' | 'video' | 'loc'
 
 // INode with node metadata
 export interface INode {
@@ -15,6 +15,14 @@ export interface INode {
   nodeId: string // unique randomly generated ID which contains the type as a prefix
   title: string // user create node title
   dateCreated?: Date // date that the node was created
+}
+
+export interface ILocNode extends INode {
+  userReadIds: string[]
+  userWriteIds: string[]
+  ownerId: string
+  lat: number
+  lng: number
 }
 
 /**
@@ -34,7 +42,7 @@ export interface IFolderNode extends INode {
   viewType: FolderContentType
 }
 
-export type NodeFields = keyof INode | keyof IFolderNode
+export type NodeFields = keyof INode | keyof IFolderNode | keyof ILocNode
 
 export const allNodeFields: string[] = [
   'nodeId',
@@ -43,6 +51,11 @@ export const allNodeFields: string[] = [
   'content',
   'filePath',
   'viewType',
+  'userWriteIds',
+  'userReadIds',
+  'ownerId',
+  'lat',
+  'lng',
 ]
 
 // Type declaration for map from nodeId --> INode
@@ -92,6 +105,32 @@ export function makeIFolderNode(
     title: title ?? 'node' + nodeId,
     type: type ?? 'text',
     viewType: viewType ?? 'grid',
+  }
+}
+export function makeILocNode(
+  nodeId: any,
+  path: any,
+  children?: any,
+  type?: any,
+  title?: any,
+  content?: any,
+  ownerId?: any,
+  userReadIds?: any,
+  userWriteIds?: any,
+  lat?: any,
+  lng?: any
+): ILocNode {
+  return {
+    content: content ?? 'content' + nodeId,
+    filePath: makeINodePath(path, children),
+    nodeId: nodeId,
+    title: title ?? 'node' + nodeId,
+    type: type ?? 'loc',
+    ownerId: ownerId ?? ' ',
+    userReadIds: userReadIds ?? ' ',
+    userWriteIds: userWriteIds ?? ' ',
+    lat: lat ?? 0,
+    lng: lng ?? 0,
   }
 }
 

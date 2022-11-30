@@ -29,6 +29,16 @@ export function isINodeProperty(object: any): boolean {
         return isINodePath((object as INodeProperty).value)
       case 'viewType':
         return typeof (object as INodeProperty).value === 'string'
+      case 'userWriteIds':
+        return typeof (object as INodeProperty).value === 'object'
+      case 'userReadIds':
+        return typeof (object as INodeProperty).value === 'object'
+      case 'ownerId':
+        return typeof (object as INodeProperty).value === 'string'
+      case 'lat':
+        return typeof (object as INodeProperty).value === 'number'
+      case 'lng':
+        return typeof (object as INodeProperty).value === 'number'
       default:
         return true
     }

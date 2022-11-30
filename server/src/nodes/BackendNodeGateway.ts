@@ -268,6 +268,14 @@ export class BackendNodeGateway {
     return successfulServiceResponse({})
   }
 
+  async fetchNodesbyUserId(userId: string): Promise<IServiceResponse<INode[]>> {
+    const fetchNodesResp = await this.nodeCollectionConnection.fetchNodesByUserId(userId)
+    if (!fetchNodesResp.success) {
+      return failureServiceResponse(fetchNodesResp.message)
+    }
+    return fetchNodesResp
+  }
+
   /**
    * Method to update the node with the given nodeId.
    * @param nodeId the nodeId of the node

@@ -158,6 +158,24 @@ export class NodeRouter {
     })
 
     /**
+     * Search Node
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+
+    NodeExpressRouter.post('/search', async (req: Request, res: Response) => {
+      try {
+        const term = req.body.data
+        const response: IServiceResponse<INode[]> =
+          await this.BackendNodeGateway.searchTerm(term)
+        res.status(200).send(response)
+      } catch (e) {
+        res.status(500).send(e.message)
+      }
+    })
+
+    /**
      * Request to retrieve all nodes that does not have parent
      *
      * @param req request object coming from client
