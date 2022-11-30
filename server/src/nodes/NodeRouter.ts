@@ -2,6 +2,7 @@ import express, { Request, Response, Router } from 'express'
 import { MongoClient } from 'mongodb'
 import {
   INode,
+  ILocNode,
   INodeProperty,
   RecursiveNodeTree,
   IServiceResponse,
@@ -59,6 +60,24 @@ export class NodeRouter {
         const nodeId = req.params.nodeId
         const response: IServiceResponse<INode> =
           await this.BackendNodeGateway.getNodeById(nodeId)
+        res.status(200).send(response)
+      } catch (e) {
+        res.status(500).send(e.message)
+      }
+    })
+
+    /**
+     * Request to retrieve node by lat lng
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+    NodeExpressRouter.post('/findNodeByLatLng', async (req: Request, res: Response) => {
+      try {
+        const lat = Number(req.body.lat)
+        const lng = Number(req.body.lng)
+        const response: IServiceResponse<ILocNode> =
+          await this.BackendNodeGateway.getNodeByLatLng(lat, lng)
         res.status(200).send(response)
       } catch (e) {
         res.status(500).send(e.message)

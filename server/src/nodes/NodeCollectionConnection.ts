@@ -1,5 +1,6 @@
 import {
   INode,
+  ILocNode,
   isINode,
   IServiceResponse,
   failureServiceResponse,
@@ -108,6 +109,25 @@ export class NodeCollectionConnection {
         foundNodes.push(doc)
       })
     return successfulServiceResponse(foundNodes)
+  }
+  /**
+   * Find Node by Lat and Lng
+   *
+   * @param {number} lat
+   * @param {number} lng
+   * @return successfulServiceResponse<ILocNode> on success
+   *         failureServiceResponse on failure
+   */
+  async findNodeByLatlng(lat: number, lng: number): Promise<IServiceResponse<ILocNode>> {
+    const findResponse = await this.client
+      .db()
+      .collection(this.collectionName)
+      .findOne({ lat: lat, lng: lng })
+    if (findResponse == null) {
+      return failureServiceResponse('Failed to find loc node with this lat and lng.')
+    } else {
+      return successfulServiceResponse(findResponse)
+    }
   }
 
   /**

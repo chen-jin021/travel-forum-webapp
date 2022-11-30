@@ -5,6 +5,7 @@ import {
   IServiceResponse,
   successfulServiceResponse,
   INode,
+  ILocNode,
   makeINodePath,
   INodeProperty,
   makeINodeProperty,
@@ -87,6 +88,17 @@ export class BackendNodeGateway {
    */
   async getNodeById(nodeId: string): Promise<IServiceResponse<INode>> {
     return this.nodeCollectionConnection.findNodeById(nodeId)
+  }
+
+  /**
+   * Method to retrieve node with a given nodeId.
+   *
+   * @param lat - The lat prop of the loc node
+   * @param lng - The lng prop of the loc node
+   * @returns IServiceResponse<INode>
+   */
+  async getNodeByLatLng(lat: number, lng: number): Promise<IServiceResponse<ILocNode>> {
+    return this.nodeCollectionConnection.findNodeByLatlng(lat, lng)
   }
 
   /**
