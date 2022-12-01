@@ -130,6 +130,30 @@ export class NodeCollectionConnection {
     }
   }
 
+  /*
+   * Get all loc nodes
+   * @return successfulServiceResponse<ILocNode[]> on success
+   *         failureServiceResponse on failure
+   */
+  async fetchAllLocNodes(): Promise<IServiceResponse<INode[]>> {
+    const locNodes: INode[] = []
+    const findResponse = await this.client
+      .db()
+      .collection(this.collectionName)
+      .findMany({ type: 'loc' })
+      .forEach(function(node) {
+        const validNode = isINode(node)
+        if (validNode) {
+          locNodes.push(node)
+        }
+      })
+    if (findResponse == null) {
+      return failureServiceResponse('Failed to fetch all loc nodes.')
+    } else {
+      return successfulServiceResponse(locNodes)
+    }
+  }
+
   /**
    * Updates node when given a nodeId and a set of properties to update.
    *

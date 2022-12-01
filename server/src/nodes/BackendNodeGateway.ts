@@ -295,6 +295,13 @@ export class BackendNodeGateway {
     }
     return fetchNodesResp
   }
+  async fetchLocNodes(): Promise<IServiceResponse<INode[]>> {
+    const fetchNodesResp = await this.nodeCollectionConnection.fetchAllLocNodes()
+    if (!fetchNodesResp.success) {
+      return failureServiceResponse(fetchNodesResp.message)
+    }
+    return fetchNodesResp
+  }
 
   /**
    * Method to update the node with the given nodeId.

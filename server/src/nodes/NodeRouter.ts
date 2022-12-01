@@ -85,6 +85,22 @@ export class NodeRouter {
     })
 
     /**
+     * Request to retrieve all loc nodes
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+    NodeExpressRouter.post('/getAllLocNodes', async (req: Request, res: Response) => {
+      try {
+        const response: IServiceResponse<INode[]> =
+          await this.BackendNodeGateway.fetchLocNodes()
+        res.status(200).send(response)
+      } catch (e) {
+        res.status(500).send(e.message)
+      }
+    })
+
+    /**
      * Request to retrieve nodes by nodeIds
      *
      * @param req request object coming from client
