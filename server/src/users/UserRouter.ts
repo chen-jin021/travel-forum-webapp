@@ -5,7 +5,7 @@ import { BackendUserGateway } from './BackenduserGateway'
 const bodyJsonParser = require('body-parser').json()
 
 // eslint-disable-next-line new-cap
-export const userExpressRouter = express.Router()
+export const UserExpressRouter = express.Router()
 
 /**
  * userRouter uses userExpressRouter (an express router) to define responses
@@ -16,7 +16,7 @@ export const userExpressRouter = express.Router()
  * to trigger the appropriate response. See server/src/app.ts to see how
  * we set up userRouter - you don't need to know the details of this just yet.
  */
-export class userRouter {
+export class UserRouter {
   BackendUserGateway: BackendUserGateway
 
   constructor(mongoClient: MongoClient) {
@@ -28,9 +28,10 @@ export class userRouter {
      * @param req request object coming from client
      * @param res response object to send to client
      */
-    userExpressRouter.post('/create', async (req: Request, res: Response) => {
+    UserExpressRouter.post('/create', async (req: Request, res: Response) => {
       try {
         const user = req.body.user
+        console.log(user)
         if (!isIUser(user)) {
           res.status(400).send('not IUser!')
         } else {
@@ -48,7 +49,7 @@ export class userRouter {
      * @param req request object coming from client
      * @param res response object to send to client
      */
-    userExpressRouter.get('/get/:userId', async (req: Request, res: Response) => {
+    UserExpressRouter.get('/get/:userId', async (req: Request, res: Response) => {
       try {
         const userId = req.params.userId
         const response: IServiceResponse<IUser> =
@@ -58,5 +59,11 @@ export class userRouter {
         res.status(500).send(e.message)
       }
     })
+  }
+  /**
+   * @returns NodeRouter class
+   */
+   getExpressRouter = (): Router => {
+    return UserExpressRouter
   }
 }

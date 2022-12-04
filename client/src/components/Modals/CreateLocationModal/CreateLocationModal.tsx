@@ -18,6 +18,7 @@ import {
   NodeIdsToNodesMap,
   NodeType,
   nodeTypes,
+  makeINodePath,
   RecursiveNodeTree,
 } from '../../../types'
 import { Button } from '../../Button'
@@ -32,7 +33,9 @@ import {
   Autocomplete,
 } from '@react-google-maps/api'
 import { useSetRecoilState, useRecoilState } from 'recoil'
-import { selectedNodeState } from '../../../global/Atoms'
+import { selectedNodeState, refreshState } from '../../../global/Atoms'
+import { FrontendNodeGateway } from '../../../nodes'
+import { generateObjectId } from '../../../global'
 
 export interface ICreateLocationModalProps {
   isOpen: boolean
@@ -60,6 +63,7 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
   const [selectedType, setSelectedType] = useState<NodeType>('' as NodeType)
   const [error, setError] = useState<string>('')
   const [map, setMap] = useRecoilState(mapState)
+  const [refresh, setRefresh] = useRecoilState(refreshState)
 
   // event handlers for the modal inputs and dropdown selects
   const handleSelectedTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -77,6 +81,10 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
 
   const handleImageContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContent(event.target.value)
+  }
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value)
   }
 
   const retrieveGeocode = async (addr: string) => {
@@ -102,24 +110,46 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
   // called when the "Create" button is clicked
   const handleSubmit = async () => {
     const r = await retrieveGeocode(location)
-    /**If the location is not valid */
+    /** If the location is not valid */
     if (r.length === 0) {
       return
     }
     const target = r[0]
-    const attributes: = {
-      content:'',
-      title:''
-      
-
+    const RespGetNodeByLatLing = await FrontendNodeGateway.findNodeByLatLng(
+      target.geometry.location.lat(),
+      target.geometry.location.lng()
+    )
+    if (RespGetNodeByLatLing.success && RespGetNodeByLatLing.payload) {
+      setError('This Location is already in your collection!')
+      return
     }
-    
+    const nodeId: string = generateObjectId('loc')
+    console.log(RespGetNodeByLatLing)
+    const newNode = {
+      nodeId: nodeId,
+      type: 'loc' as NodeType,
+      title: title,
+      content: location,
+      filePath: makeINodePath([nodeId]),
+      dateCreated: new Date(),
+      userReadIds: [],
+      userWriteIds: [],
+      ownerId: 'liuchenxin',
+      lat: target.geometry.location.lat(),
+      lng: target.geometry.location.lng(),
+    }
+    const nodeResponse = await FrontendNodeGateway.createNode(newNode)
+    if (!nodeResponse.success) {
+      setError('Sorry! Unable to access backend.')
+      return
+    }
     const marker = new google.maps.Marker({
       position: target.geometry.location,
     })
     marker.setMap(curMap)
     onSubmit()
     handleClose()
+    setRefresh(!refresh)
   }
 
   /** Reset all our state variables and close the modal */
@@ -163,6 +193,9 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
           <ModalHeader>Create a new location!</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            <div style={{marginBottom:'20px'}}>
+            <Input value={title} onChange={handleTitleChange} placeholder="Title..." />
+            </div>
             <Autocomplete
               className="autocomplete"
               onPlaceChanged={() => {

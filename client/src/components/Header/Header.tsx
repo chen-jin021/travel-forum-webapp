@@ -6,21 +6,30 @@ import * as ai from 'react-icons/ai'
 import { NodeIdsToNodesMap } from '../../types'
 import { Link } from 'react-router-dom'
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { isLinkingState, startAnchorState, selectedExtentState } from '../../global/Atoms'
+import {
+  isLinkingState,
+  startAnchorState,
+  selectedExtentState,
+  selectedNodeState,
+  panoramaState
+} from '../../global/Atoms'
 import './Header.scss'
 
 interface IHeaderProps {
   nodeIdsToNodesMap: NodeIdsToNodesMap
   onCreateNodeButtonClick: () => void
   onHomeClick: () => void
+  onPanoramaClick: () => void 
 }
 
 export const Header = (props: IHeaderProps) => {
-  const { onCreateNodeButtonClick, onHomeClick, nodeIdsToNodesMap } = props
+  const { onCreateNodeButtonClick, onHomeClick, nodeIdsToNodesMap, onPanoramaClick } = props
   const customButtonStyle = { height: 30, marginLeft: 10, width: 30 }
   const [isLinking, setIsLinking] = useRecoilState(isLinkingState)
   const [startAnchor, setStartAnchor] = useRecoilState(startAnchorState)
   const setSelectedExtent = useSetRecoilState(selectedExtentState)
+  const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
+  const [panorama, setPanorama] = useRecoilState(panoramaState)
 
   const handleCancelLink = () => {
     setStartAnchor(null)
@@ -31,12 +40,12 @@ export const Header = (props: IHeaderProps) => {
   return (
     <div className={isLinking ? 'header-linking' : 'header'}>
       <div className="left-bar">
-        <Link to={'/'}>
+        <Link to={'/main'}>
           <div className="name" onClick={onHomeClick}>
             My<b>Hypermedia</b>
           </div>
         </Link>
-        <Link to={'/'}>
+        <Link to={'/main'}>
           <Button
             isWhite={isLinking}
             style={customButtonStyle}
@@ -44,6 +53,12 @@ export const Header = (props: IHeaderProps) => {
             onClick={onHomeClick}
           />
         </Link>
+        <Button
+          isWhite={isLinking}
+          style={customButtonStyle}
+          icon={panorama? <ai.AiOutlineEye />:<ai.AiOutlineEyeInvisible/>}
+          onClick={onPanoramaClick}
+        />
         <Button
           isWhite={isLinking}
           style={customButtonStyle}

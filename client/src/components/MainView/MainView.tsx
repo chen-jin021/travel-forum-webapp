@@ -10,10 +10,11 @@ import {
   alertTitleState,
   alertMessageState,
   currentNodeState,
+  panoramaState
 } from '../../global/Atoms'
 import { useLocation } from 'react-router-dom'
 import { FrontendNodeGateway } from '../../nodes'
-import { INode, NodeIdsToNodesMap, RecursiveNodeTree } from '../../types'
+import { ILocNode, INode, NodeIdsToNodesMap, RecursiveNodeTree } from '../../types'
 import {
   GoogleMap,
   Marker,
@@ -38,6 +39,8 @@ import './MainView.scss'
 import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from './mainViewUtils'
 import { FaSleigh } from 'react-icons/fa'
 import { containerStyle, center, options } from './MapSettings'
+import { useHistory } from 'react-router-dom'
+import { rootCertificates } from 'tls'
 
 export const MainView = React.memo(function MainView() {
   const { isLoaded } = useJsApiLoader({
@@ -55,6 +58,7 @@ export const MainView = React.memo(function MainView() {
 
   // node states
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
+  const [panorama, setPanorama] = useRecoilState(panoramaState)
   const [rootNodes, setRootNodes] = useState<RecursiveNodeTree[]>([
     new RecursiveNodeTree(emptyNode),
   ])
@@ -68,18 +72,96 @@ export const MainView = React.memo(function MainView() {
   const setAlertTitle = useSetRecoilState(alertTitleState)
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [map, setMap] = useState<google.maps.Map>()
+  const history = useHistory()
 
   /** update our frontend root nodes from the database */
   const loadRootsFromDB = useCallback(async () => {
-    const rootsFromDB = await FrontendNodeGateway.getRoots()
+    const rootsFromDB = await FrontendNodeGateway.getLocation()
     if (rootsFromDB.success) {
       rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
       setIsAppLoaded(true)
+      if (map && rootsFromDB.payload) {
+        updateAllMarkers(rootsFromDB.payload)
+      }
     }
-  }, [])
+    const locationsFromDB = await FrontendNodeGateway.getLocation()
+  }, [refresh])
+
+  const updateAllMarkers = (rootNodes: RecursiveNodeTree[]) => {
+    const markers: google.maps.Marker[] = rootNodes.map((tree) => {
+      console.log(tree.node)
+      const node = tree.node as ILocNode
+      return new google.maps.Marker({
+        map: map,
+        position: { lat: node.lat, lng: node.lng },
+      })
+    })
+    const bounds = new google.maps.LatLngBounds()
+    for (let i = 0; i < markers.length; i++) {
+      const pos = markers[i].getPosition()
+      if (pos) {
+        bounds.extend(pos)
+      }
+      if (map) {
+        setInfoWindow(markers[i], i, map, rootNodes)
+      }
+    }
+    if (map) {
+      map.setCenter(bounds.getCenter())
+    }
+    if (map) {
+      map.fitBounds(bounds)
+    }
+  }
 
   const onLoad = (map: google.maps.Map) => {
     setMap(map)
+    const markers: google.maps.Marker[] = rootNodes.map((tree) => {
+      const node = tree.node as ILocNode
+      return new google.maps.Marker({
+        map: map,
+        position: { lat: node.lat, lng: node.lng },
+      })
+    })
+    const bounds = new google.maps.LatLngBounds()
+    for (let i = 0; i < markers.length; i++) {
+      const pos = markers[i].getPosition()
+      if (pos) {
+        bounds.extend(pos)
+      }
+      setInfoWindow(markers[i], i, map, rootNodes)
+    }
+    map.setCenter(bounds.getCenter())
+    map.fitBounds(bounds)
+  }
+
+  const setInfoWindow = (
+    marker: google.maps.Marker,
+    no: number,
+    map: google.maps.Map,
+    rootNodes: RecursiveNodeTree[]
+  ) => {
+    const content =
+      '<div id="content">' +
+      '<div id="siteNotice">' +
+      '</div>' +
+      `<h1 id="firstHeading" class="firstHeading">${rootNodes[no].node.title}</h1>` +
+      `<div id="bodyContent">${rootNodes[no].node.content}</div>` +
+      '</div>'
+    const infoWindow = new google.maps.InfoWindow({
+      content: content,
+      ariaLabel: rootNodes[no].node.title,
+    })
+    marker.addListener('click', () => {
+      map.setCenter(marker.getPosition() as google.maps.LatLng)
+      infoWindow.open({
+        anchor: marker,
+        map,
+      })
+    })
+    marker.addListener('rightclick', () => {
+      history.push(`/main/${rootNodes[no].node.nodeId}/`)
+    })
   }
 
   useEffect(() => {
@@ -172,6 +254,10 @@ export const MainView = React.memo(function MainView() {
     setCreateLocationModalOpen(true)
   }, [])
 
+  const handlePanoramaClick = useCallback(() => {
+    setPanorama(!panorama)
+  }, [panorama])
+
   const getSelectedNodeChildren = useCallback(() => {
     if (!selectedNode) return undefined
     return selectedNode.filePath.children.map(
@@ -230,6 +316,7 @@ export const MainView = React.memo(function MainView() {
             onHomeClick={handleHomeClick}
             onCreateNodeButtonClick={handleCreateLocationClick}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
+            onPanoramaClick={handlePanoramaClick}
           />
           <CreateLocationModal
             isOpen={createLocationModalOpen}
@@ -265,21 +352,21 @@ export const MainView = React.memo(function MainView() {
               <GoogleMap
                 mapContainerStyle={containerStyle}
                 options={options as google.maps.MapOptions}
-                center={center}
-                zoom={12}
                 onLoad={onLoad}
               />
             ) : (
               <div>Map Loading...</div>
             )}
-            <div className="treeView-container" ref={treeView}>
-              <TreeView
-                roots={rootNodes}
-                parentNode={selectedNode}
-                setParentNode={setSelectedNode}
-              />
-            </div>
-            {selectedNode && (
+            {!panorama && (
+              <div className="treeView-container" ref={treeView}>
+                <TreeView
+                  roots={rootNodes}
+                  parentNode={selectedNode}
+                  setParentNode={setSelectedNode}
+                />
+              </div>
+            )}
+            {selectedNode && !panorama && (
               <div className="node-wrapper">
                 <NodeView
                   childNodes={

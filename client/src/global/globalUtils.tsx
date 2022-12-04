@@ -7,6 +7,7 @@ import {
   RiFilePdfLine,
   RiQuestionLine,
 } from 'react-icons/ri'
+import { GrLocation } from 'react-icons/gr'
 import uniqid from 'uniqid'
 import { NodeType } from '../types'
 import { INodePath } from '../types'
@@ -23,6 +24,8 @@ export const nodeTypeIcon = (type: NodeType): JSX.Element => {
       return <RiImageLine />
     case 'pdf':
       return <RiFilePdfLine />
+    case 'loc':
+      return <GrLocation />
     default:
       return <RiQuestionLine />
   }

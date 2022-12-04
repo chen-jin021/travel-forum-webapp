@@ -140,18 +140,14 @@ export class NodeCollectionConnection {
     const findResponse = await this.client
       .db()
       .collection(this.collectionName)
-      .findMany({ type: 'loc' })
+      .find({ type: 'loc' })
       .forEach(function(node) {
         const validNode = isINode(node)
         if (validNode) {
           locNodes.push(node)
         }
       })
-    if (findResponse == null) {
-      return failureServiceResponse('Failed to fetch all loc nodes.')
-    } else {
-      return successfulServiceResponse(locNodes)
-    }
+    return successfulServiceResponse(locNodes)
   }
 
   /**

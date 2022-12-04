@@ -81,14 +81,14 @@ export const ImageContent = () => {
         const links = await fetchLinks(anchor.anchorId)
         if (links.length > 0) {
           if (links[0].anchor1Id !== anchor.anchorId) {
-            history.push(`/${links[0].anchor1NodeId}/`)
+            history.push(`/main/${links[0].anchor1NodeId}/`)
             const anchor1 = await FrontendAnchorGateway.getAnchor(links[0].anchor1Id)
             if (anchor1.success && anchor1.payload) {
               setSelectedAnchors([anchor1.payload])
               setSelectedExtent(anchor1.payload.extent)
             }
           } else if (links[0].anchor2Id !== anchor.anchorId) {
-            history.push(`/${links[0].anchor2NodeId}/`)
+            history.push(`/main/${links[0].anchor2NodeId}/`)
             const anchor2 = await FrontendAnchorGateway.getAnchor(links[0].anchor2Id)
             if (anchor2.success && anchor2.payload) {
               setSelectedAnchors([anchor2.payload])

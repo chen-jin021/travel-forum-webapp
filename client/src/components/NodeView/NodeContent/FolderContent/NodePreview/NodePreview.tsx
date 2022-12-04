@@ -17,7 +17,7 @@ export const NodePreview = (props: INodePreviewProps) => {
   const { type, title, content } = node
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   return (
-    <Link to={`/${pathToString(node.filePath)}`}>
+    <Link to={`/main/${pathToString(node.filePath)}`}>
       <div
         className={'grid-nodePreview'}
         onClick={() => {

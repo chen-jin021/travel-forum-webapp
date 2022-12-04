@@ -25,7 +25,7 @@ export const NodeBreadcrumb = ({ path, nodeIdsToNodesMap }: INodeBreadcrumbProps
   return (
     <div className="node-breadcrumb">
       {parentNodes.map((node: INode) => (
-        <Link to={`/${pathToString(node.filePath)}`} key={node.nodeId}>
+        <Link to={`/main/${pathToString(node.filePath)}`} key={node.nodeId}>
           <div className="breadcrumb-item-wrapper">
             <div className={'breadcrumb-item'} onClick={() => setSelectedNode(node)}>
               {node.title}

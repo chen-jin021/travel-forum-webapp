@@ -30,7 +30,7 @@ export const TreeViewItem = ({
   if (childNodes.length) {
     childrenItems = childNodes.map((child: RecursiveNodeTree) => {
       return changeUrlOnClick ? (
-        <Link to={`/main/${pathToString(child.node.filePath)}`} key={child.node.nodeId}>
+        <Link to={`/${pathToString(child.node.filePath)}`} key={child.node.nodeId}>
           <TreeViewItem
             node={child.node}
             parentNode={parentNode}
@@ -95,7 +95,7 @@ export const TreeViewItem = ({
   return (
     <div className="treeView-item">
       {changeUrlOnClick ? (
-        <Link to={`/main/${pathToString(node.filePath)}`}>
+        <Link to={`/${pathToString(node.filePath)}`}>
           <TreeViewChild />
         </Link>
       ) : (

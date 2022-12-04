@@ -14,7 +14,7 @@ export const ListViewItem = (props: IListViewProps) => {
   const { node } = props
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   return (
-    <Link to={`/${pathToString(node.filePath)}`}>
+    <Link to={`/main/${pathToString(node.filePath)}`}>
       <div
         className="listViewItem"
         onClick={() => {

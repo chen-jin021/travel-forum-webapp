@@ -91,3 +91,9 @@ export const mapState = atom<google.maps.Map | null | undefined>({
   key: 'mapState',
   default: null,
 })
+
+// whether the app is in panorama mode
+export const panoramaState = atom<boolean>({
+  key: 'panoramaState ',
+  default: false,
+})

@@ -36,6 +36,23 @@ export const FrontendNodeGateway = {
       return failureServiceResponse('[createNode] Unable to access backend')
     }
   },
+  /** This method is to fetch node by lat and lng  */
+  findNodeByLatLng: async (
+    lat: number,
+    lng: number
+  ): Promise<IServiceResponse<INode>> => {
+    try {
+      return await post<IServiceResponse<INode>>(
+        baseEndpoint + servicePath + 'findNodeByLatLng',
+        {
+          lat: lat,
+          lng: lng,
+        }
+      )
+    } catch (exception) {
+      return failureServiceResponse('[createNode] Unable to access backend')
+    }
+  },
 
   /**
    * This is method is that is called whenever a node is deleted
@@ -155,6 +172,16 @@ export const FrontendNodeGateway = {
       })
     } catch (exception) {
       return failureServiceResponse('[updateNode] Unable to access backend')
+    }
+  },
+
+  getLocation: async (): Promise<IServiceResponse<RecursiveNodeTree[]>> => {
+    try {
+      return await get<IServiceResponse<RecursiveNodeTree[]>>(
+        baseEndpoint + servicePath + 'getAllLocNodes'
+      )
+    } catch (exception) {
+      return failureServiceResponse('[getLocation] Unable to access backend')
     }
   },
 }

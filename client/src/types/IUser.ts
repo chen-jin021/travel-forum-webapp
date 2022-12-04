@@ -6,22 +6,17 @@ export interface IUser {
   userId: string
   mail: string
   userName: string
-  encodedPW: string
   avatar: string // avatar address
 }
 
 export type UserType = 'user'
 
-
 export function isIUser(object: any): object is IUser {
-  const propsDefined: boolean =
-    typeof (object as IUser).userId !== 'undefined' 
+  const propsDefined: boolean = typeof (object as IUser).userId !== 'undefined'
   if (!propsDefined) {
     return false
   }
-  return (
-    typeof (object as IUser).userId === 'string' 
-  )
+  return typeof (object as IUser).userId === 'string'
 }
 
 export function makeIUser(

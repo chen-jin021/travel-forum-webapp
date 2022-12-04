@@ -106,7 +106,7 @@ export const LinkItem = (props: ILinkItemProps) => {
       setRefresh,
       refresh,
     })
-    history.push(`/${nodeId}`)
+    history.push(`/main/${nodeId}`)
     setSelectedAnchors(anchors)
   }
 

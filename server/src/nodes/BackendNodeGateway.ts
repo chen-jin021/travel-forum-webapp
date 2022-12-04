@@ -295,12 +295,17 @@ export class BackendNodeGateway {
     }
     return fetchNodesResp
   }
-  async fetchLocNodes(): Promise<IServiceResponse<INode[]>> {
+  async fetchLocNodes(): Promise<IServiceResponse<RecursiveNodeTree[]>> {
     const fetchNodesResp = await this.nodeCollectionConnection.fetchAllLocNodes()
-    if (!fetchNodesResp.success) {
+    if (!fetchNodesResp.success || !fetchNodesResp.payload) {
       return failureServiceResponse(fetchNodesResp.message)
     }
-    return fetchNodesResp
+    const nodeQueue = fetchNodesResp.payload
+    const rootsToReturn: RecursiveNodeTree[] = []
+    for (const root of nodeQueue) {
+      rootsToReturn.push(await this.buildSubtreeHelper(new RecursiveNodeTree(root)))
+    }
+    return successfulServiceResponse(rootsToReturn)
   }
 
   /**
