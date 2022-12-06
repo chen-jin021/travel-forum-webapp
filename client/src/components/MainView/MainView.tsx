@@ -10,8 +10,9 @@ import {
   alertTitleState,
   alertMessageState,
   currentNodeState,
-  panoramaState
+  panoramaState,
 } from '../../global/Atoms'
+import { useAuth } from '../../contexts/AuthContext'
 import { useLocation } from 'react-router-dom'
 import { FrontendNodeGateway } from '../../nodes'
 import { ILocNode, INode, NodeIdsToNodesMap, RecursiveNodeTree } from '../../types'
@@ -38,7 +39,7 @@ import { MapView } from '../MapView'
 import './MainView.scss'
 import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from './mainViewUtils'
 import { FaSleigh } from 'react-icons/fa'
-import { containerStyle, center, options } from './MapSettings'
+import { containerStyle, center, options, zoom } from './MapSettings'
 import { useHistory } from 'react-router-dom'
 import { rootCertificates } from 'tls'
 
@@ -73,23 +74,34 @@ export const MainView = React.memo(function MainView() {
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [map, setMap] = useState<google.maps.Map>()
   const history = useHistory()
+  const { user } = useAuth()
+
+  
 
   /** update our frontend root nodes from the database */
-  const loadRootsFromDB = useCallback(async () => {
-    const rootsFromDB = await FrontendNodeGateway.getLocation()
-    if (rootsFromDB.success) {
-      rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
-      setIsAppLoaded(true)
-      if (map && rootsFromDB.payload) {
-        updateAllMarkers(rootsFromDB.payload)
+  const loadRootsFromDB = useCallback(
+    async (userId: string) => {
+      const rootsFromDB = await FrontendNodeGateway.fetchNodeByUserId(userId)
+      if (rootsFromDB.success) {
+        rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
+        setIsAppLoaded(true)
+        if (map && rootsFromDB.payload) {
+          updateAllMarkers(rootsFromDB.payload)
+        }
       }
-    }
-    const locationsFromDB = await FrontendNodeGateway.getLocation()
-  }, [refresh])
+    },
+    [refresh, user]
+  )
 
   const updateAllMarkers = (rootNodes: RecursiveNodeTree[]) => {
+    if (rootNodes.length === 0) {
+      if (map) {
+        map.setCenter(center)
+        map.setZoom(zoom)
+      }
+      return
+    }
     const markers: google.maps.Marker[] = rootNodes.map((tree) => {
-      console.log(tree.node)
       const node = tree.node as ILocNode
       return new google.maps.Marker({
         map: map,
@@ -116,6 +128,12 @@ export const MainView = React.memo(function MainView() {
 
   const onLoad = (map: google.maps.Map) => {
     setMap(map)
+    /** if there are no marks, don't need to set marks */
+    if (rootNodes.length === 0) {
+      map.setCenter(center)
+      map.setZoom(zoom)
+      return
+    }
     const markers: google.maps.Marker[] = rootNodes.map((tree) => {
       const node = tree.node as ILocNode
       return new google.maps.Marker({
@@ -160,12 +178,16 @@ export const MainView = React.memo(function MainView() {
       })
     })
     marker.addListener('rightclick', () => {
-      history.push(`/main/${rootNodes[no].node.nodeId}/`)
+      ;`/main/${rootNodes[no].node.nodeId}/`
     })
   }
 
   useEffect(() => {
-    loadRootsFromDB()
+    if (!user) {
+      setRootNodes([])
+      return
+    }
+    loadRootsFromDB(user.uid)
   }, [loadRootsFromDB, refresh])
 
   const rootRecursiveNodeTree: RecursiveNodeTree = useMemo(
@@ -232,7 +254,9 @@ export const MainView = React.memo(function MainView() {
           }
         }
         setSelectedNode(null)
-        loadRootsFromDB()
+        if (user) {
+          loadRootsFromDB(user.uid)
+        }
       }
     },
     [loadRootsFromDB]
@@ -323,7 +347,11 @@ export const MainView = React.memo(function MainView() {
             onClose={() => setCreateLocationModalOpen(false)}
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
-            onSubmit={loadRootsFromDB}
+            onSubmit={() => {
+              if (user) {
+                loadRootsFromDB(user.uid)
+              }
+            }}
             curMap={map as google.maps.Map}
           />
           <CreateNodeModal
@@ -331,7 +359,7 @@ export const MainView = React.memo(function MainView() {
             onClose={() => setCreateNodeModalOpen(false)}
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
-            onSubmit={loadRootsFromDB}
+            onSubmit={() => {}}
           />
           <CompleteLinkModal
             isOpen={completeLinkModalOpen}
@@ -342,7 +370,7 @@ export const MainView = React.memo(function MainView() {
             <MoveNodeModal
               isOpen={moveNodeModalOpen}
               onClose={() => setMoveNodeModalOpen(false)}
-              onSubmit={loadRootsFromDB}
+              onSubmit={() => {}}
               node={selectedNode}
               roots={rootNodes}
             />
@@ -353,6 +381,8 @@ export const MainView = React.memo(function MainView() {
                 mapContainerStyle={containerStyle}
                 options={options as google.maps.MapOptions}
                 onLoad={onLoad}
+                center={center}
+                zoom={11}
               />
             ) : (
               <div>Map Loading...</div>

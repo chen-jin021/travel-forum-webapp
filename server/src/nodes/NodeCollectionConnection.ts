@@ -118,11 +118,15 @@ export class NodeCollectionConnection {
    * @return successfulServiceResponse<ILocNode> on success
    *         failureServiceResponse on failure
    */
-  async findNodeByLatlng(lat: number, lng: number): Promise<IServiceResponse<ILocNode>> {
+  async findNodeByLatlngAndId(
+    lat: number,
+    lng: number,
+    userId: string
+  ): Promise<IServiceResponse<ILocNode>> {
     const findResponse = await this.client
       .db()
       .collection(this.collectionName)
-      .findOne({ lat: lat, lng: lng })
+      .findOne({ lat: lat, lng: lng, userId: userId })
     if (findResponse == null) {
       return failureServiceResponse('Failed to find loc node with this lat and lng.')
     } else {

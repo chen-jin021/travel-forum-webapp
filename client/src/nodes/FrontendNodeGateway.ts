@@ -37,9 +37,10 @@ export const FrontendNodeGateway = {
     }
   },
   /** This method is to fetch node by lat and lng  */
-  findNodeByLatLng: async (
+  findNodeByLatLngAndId: async (
     lat: number,
-    lng: number
+    lng: number,
+    userId: string
   ): Promise<IServiceResponse<INode>> => {
     try {
       return await post<IServiceResponse<INode>>(
@@ -47,6 +48,7 @@ export const FrontendNodeGateway = {
         {
           lat: lat,
           lng: lng,
+          userId: userId
         }
       )
     } catch (exception) {
@@ -182,6 +184,21 @@ export const FrontendNodeGateway = {
       )
     } catch (exception) {
       return failureServiceResponse('[getLocation] Unable to access backend')
+    }
+  },
+
+  fetchNodeByUserId: async (
+    userId: string
+  ): Promise<IServiceResponse<RecursiveNodeTree[]>> => {
+    try {
+      return await post<IServiceResponse<RecursiveNodeTree[]>>(
+        baseEndpoint + servicePath + 'fetchNodesByUserId',
+        {
+          userId: userId,
+        }
+      )
+    } catch (exception) {
+      return failureServiceResponse('[fetchNodeByUserId] Unable to access backend')
     }
   },
 }

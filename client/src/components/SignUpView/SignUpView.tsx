@@ -46,7 +46,6 @@ export const SignUpView = React.memo(() => {
           'https://www.google.com/imgres?imgurl=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F104827%2Fcat-pet-animal-domestic-104827.jpeg',
         userName: 'Fantasy citizen',
       }
-      console.log(user)
       const createResp = await FrontendUserGateway.createUser(user)
       if (!createResp.success) {
         setError(createResp.message)

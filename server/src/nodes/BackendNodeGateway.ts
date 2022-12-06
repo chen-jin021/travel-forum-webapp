@@ -97,8 +97,8 @@ export class BackendNodeGateway {
    * @param lng - The lng prop of the loc node
    * @returns IServiceResponse<INode>
    */
-  async getNodeByLatLng(lat: number, lng: number): Promise<IServiceResponse<ILocNode>> {
-    return this.nodeCollectionConnection.findNodeByLatlng(lat, lng)
+  async getNodeByLatLngAndId(lat: number, lng: number, userId:string): Promise<IServiceResponse<ILocNode>> {
+    return this.nodeCollectionConnection.findNodeByLatlngAndId(lat, lng, userId)
   }
 
   /**
@@ -366,6 +366,24 @@ export class BackendNodeGateway {
       return failureServiceResponse(findRootsResp.message)
     }
     const nodeQueue: INode[] = findRootsResp.payload
+    const rootsToReturn: RecursiveNodeTree[] = []
+    for (const root of nodeQueue) {
+      rootsToReturn.push(await this.buildSubtreeHelper(new RecursiveNodeTree(root)))
+    }
+    return successfulServiceResponse(rootsToReturn)
+  }
+
+  /**
+   * Method to get all the owned/readable/writable nodes from DB
+   */
+  async fetchNodesByUserId(
+    userId: string
+  ): Promise<IServiceResponse<RecursiveNodeTree[]>> {
+    const rootsResp = await this.nodeCollectionConnection.fetchNodesByUserId(userId)
+    if (!rootsResp.success) {
+      return failureServiceResponse(rootsResp.message)
+    }
+    const nodeQueue: INode[] = rootsResp.payload
     const rootsToReturn: RecursiveNodeTree[] = []
     for (const root of nodeQueue) {
       rootsToReturn.push(await this.buildSubtreeHelper(new RecursiveNodeTree(root)))

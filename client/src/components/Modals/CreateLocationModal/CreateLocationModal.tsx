@@ -36,6 +36,7 @@ import { useSetRecoilState, useRecoilState } from 'recoil'
 import { selectedNodeState, refreshState } from '../../../global/Atoms'
 import { FrontendNodeGateway } from '../../../nodes'
 import { generateObjectId } from '../../../global'
+import { useAuth } from '../../../contexts/AuthContext'
 
 export interface ICreateLocationModalProps {
   isOpen: boolean
@@ -65,6 +66,7 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
   const [map, setMap] = useRecoilState(mapState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
 
+  const { user } = useAuth()
   // event handlers for the modal inputs and dropdown selects
   const handleSelectedTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedType(event.target.value.toLowerCase() as NodeType)
@@ -88,7 +90,6 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
   }
 
   const retrieveGeocode = async (addr: string) => {
-    console.log(addr)
     const coder = new google.maps.Geocoder()
     const req: google.maps.GeocoderRequest = {
       address: addr,
@@ -109,21 +110,35 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
 
   // called when the "Create" button is clicked
   const handleSubmit = async () => {
+    if (!title) {
+      setError('Please set a location!')
+      return
+    }
+    if (!location) {
+      setError('Please set a location!')
+      return
+    }
+    if (!user) {
+      setError('You haven\'t logged in yet...')
+      return
+    }
     const r = await retrieveGeocode(location)
     /** If the location is not valid */
     if (r.length === 0) {
       return
     }
     const target = r[0]
-    const RespGetNodeByLatLing = await FrontendNodeGateway.findNodeByLatLng(
+    const RespGetNodeByLatLing = await FrontendNodeGateway.findNodeByLatLngAndId(
       target.geometry.location.lat(),
-      target.geometry.location.lng()
+      target.geometry.location.lng(),
+      user.uid
     )
     if (RespGetNodeByLatLing.success && RespGetNodeByLatLing.payload) {
       setError('This Location is already in your collection!')
       return
     }
     const nodeId: string = generateObjectId('loc')
+
     console.log(RespGetNodeByLatLing)
     const newNode = {
       nodeId: nodeId,
@@ -134,7 +149,7 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
       dateCreated: new Date(),
       userReadIds: [],
       userWriteIds: [],
-      ownerId: 'liuchenxin',
+      ownerId: user.uid,
       lat: target.geometry.location.lat(),
       lng: target.geometry.location.lng(),
     }
@@ -193,8 +208,8 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
           <ModalHeader>Create a new location!</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <div style={{marginBottom:'20px'}}>
-            <Input value={title} onChange={handleTitleChange} placeholder="Title..." />
+            <div style={{ marginBottom: '20px' }}>
+              <Input value={title} onChange={handleTitleChange} placeholder="Title..." />
             </div>
             <Autocomplete
               className="autocomplete"

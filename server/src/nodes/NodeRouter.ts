@@ -1,4 +1,4 @@
-import express, { Request, Response, Router } from 'express'
+import express, { Request, response, Response, Router } from 'express'
 import { MongoClient } from 'mongodb'
 import {
   INode,
@@ -72,12 +72,13 @@ export class NodeRouter {
      * @param req request object coming from client
      * @param res response object to send to client
      */
-    NodeExpressRouter.post('/findNodeByLatLng', async (req: Request, res: Response) => {
+    NodeExpressRouter.post('/findNodeByLatLngAndId', async (req: Request, res: Response) => {
       try {
         const lat = Number(req.body.lat)
         const lng = Number(req.body.lng)
+        const userId = req.body.userId
         const response: IServiceResponse<ILocNode> =
-          await this.BackendNodeGateway.getNodeByLatLng(lat, lng)
+          await this.BackendNodeGateway.getNodeByLatLngAndId(lat, lng, userId)
         res.status(200).send(response)
       } catch (e) {
         res.status(500).send(e.message)
@@ -95,6 +96,23 @@ export class NodeRouter {
         const response: IServiceResponse<RecursiveNodeTree[]> =
           await this.BackendNodeGateway.fetchLocNodes()
         res.status(200).send(response)
+      } catch (e) {
+        res.status(500).send(e.message)
+      }
+    })
+
+    /**
+     * Requeset to fetch all nodes by userId
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+    NodeExpressRouter.post('/fetchNodesByUserId', async (req: Request, res: Response) => {
+      try {
+        const userId = req.body.userId
+        const resp: IServiceResponse<RecursiveNodeTree[]> =
+          await this.BackendNodeGateway.fetchNodesByUserId(userId)
+        res.status(200).send(resp)
       } catch (e) {
         res.status(500).send(e.message)
       }
