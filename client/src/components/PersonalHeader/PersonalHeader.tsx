@@ -13,17 +13,14 @@ import {
   selectedNodeState,
   panoramaState,
 } from '../../global/Atoms'
-import './Header.scss'
-
+import { inherits } from 'util'
 
 interface IPesonalHeaderProps {
   onHomeClick: () => void
 }
 
-
-
 export const PersonalHeader = (props: IPesonalHeaderProps) => {
-  const {onHomeClick} = props
+  const { onHomeClick } = props
   return (
     <div className="header">
       <div className="left-bar">
