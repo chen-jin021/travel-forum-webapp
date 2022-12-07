@@ -12,16 +12,15 @@ export interface IUser {
 
 export type UserType = 'user'
 
+export type userFields = keyof IUser
+export const allUserFields: string[] = ['userId', 'mail', 'userName', 'avatar']
 
 export function isIUser(object: any): object is IUser {
-  const propsDefined: boolean =
-    typeof (object as IUser).userId !== 'undefined' 
+  const propsDefined: boolean = typeof (object as IUser).userId !== 'undefined'
   if (!propsDefined) {
     return false
   }
-  return (
-    typeof (object as IUser).userId === 'string' 
-  )
+  return typeof (object as IUser).userId === 'string'
 }
 
 export function makeIUser(

@@ -1,6 +1,7 @@
 import { UserCollectionConnection } from './UserCollectionConnection'
 import { IUser, IServiceResponse, failureServiceResponse, isIUser } from '../types'
 import { MongoClient } from 'mongodb'
+import { isIUserProperty, IUserProperty } from '../types/IUserProperty'
 
 export class BackendUserGateway {
   userCollectionConnection: UserCollectionConnection
@@ -50,5 +51,35 @@ export class BackendUserGateway {
    */
   async deleteAll(): Promise<IServiceResponse<{}>> {
     return await this.userCollectionConnection.clearUserCollection()
+  }
+
+  /**
+   * Method to update the user with the given userId.
+   * @param userId the userId of the user
+   * @param toUpdate an array of IUserProperty
+   *
+   * @returns IServiceResponse<IUser>
+   */
+  async updateUser(
+    userId: string,
+    toUpdate: IUserProperty[]
+  ): Promise<IServiceResponse<IUser>> {
+    const properties: any = {}
+    for (let i = 0; i < toUpdate.length; i++) {
+      if (!isIUserProperty(toUpdate[i])) {
+        return failureServiceResponse('toUpdate parameters invalid')
+      }
+      const fieldName = toUpdate[i].fieldName
+      const value = toUpdate[i].value
+      properties[fieldName] = value
+    }
+    const userResponse = await this.userCollectionConnection.updateUser(
+      userId,
+      properties
+    )
+    if (!userResponse.success) {
+      return failureServiceResponse('This user does not exist in the database!')
+    }
+    return userResponse
   }
 }

@@ -1,6 +1,6 @@
 import express, { Request, Response, Router } from 'express'
 import { MongoClient } from 'mongodb'
-import { IUser, IServiceResponse, isIUser } from '../types' // IUserproperty
+import { IUser, IServiceResponse, isIUser, IUserProperty } from '../types'
 import { BackendUserGateway } from './BackenduserGateway'
 const bodyJsonParser = require('body-parser').json()
 
@@ -49,9 +49,9 @@ export class UserRouter {
      * @param req request object coming from client
      * @param res response object to send to client
      */
-    UserExpressRouter.get('/get/:userId', async (req: Request, res: Response) => {
+    UserExpressRouter.post('/getUserByUserId', async (req: Request, res: Response) => {
       try {
-        const userId = req.params.userId
+        const userId = req.body.userId
         const response: IServiceResponse<IUser> =
           await this.BackendUserGateway.getUserById(userId)
         res.status(200).send(response)
@@ -59,6 +59,27 @@ export class UserRouter {
         res.status(500).send(e.message)
       }
     })
+
+        /**
+     * Request to update the user with the given userId
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+         UserExpressRouter.put(
+          '/:userId',
+          bodyJsonParser,
+          async (req: Request, res: Response) => {
+            try {
+              const userId = req.params.userId
+              const toUpdate: IUserProperty[] = req.body.data
+              const response = await this.BackendUserGateway.updateUser(userId, toUpdate)
+              res.status(200).send(response)
+            } catch (e) {
+              res.status(500).send(e.message)
+            }
+          }
+        )
   }
   /**
    * @returns NodeRouter class

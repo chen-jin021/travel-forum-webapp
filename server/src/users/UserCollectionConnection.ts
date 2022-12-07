@@ -80,4 +80,33 @@ export class UserCollectionConnection {
     }
     return failureServiceResponse('Failed to clear user collection.')
   }
+
+  /**
+   * Updates user when given a userId and a set of properties to update.
+   *
+   * @param {string} userId
+   * @param {Object} properties to update in MongoDB
+   * @return successfulServiceResponse<Iuser> on success
+   *         failureServiceResponse on failure
+   */
+  async updateUser(
+    userId: string,
+    updatedProperties: Object
+  ): Promise<IServiceResponse<IUser>> {
+    const updateResponse = await this.client
+      .db()
+      .collection(this.collectionName)
+      .findOneAndUpdate(
+        { userId: userId },
+        { $set: updatedProperties },
+        { returnDocument: 'after' }
+      )
+    if (updateResponse.ok && updateResponse.lastErrorObject.n) {
+      return successfulServiceResponse(updateResponse.value)
+    }
+    return failureServiceResponse(
+      'Failed to update user, lastErrorObject: ' +
+        updateResponse.lastErrorObject.toString()
+    )
+  }
 }
