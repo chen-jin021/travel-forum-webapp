@@ -93,7 +93,7 @@ export class invitationRouter {
         try {
           const userId = req.body.userId
           const response: IServiceResponse<IInvitation[]> =
-            await this.BackendInvitationGateway.fetchRcvInvitesByUserId(userId)
+            await this.BackendInvitationGateway.fetchRcvedInvitesByUserId(userId)
           res.status(200).send(response)
         } catch (e) {
           res.status(500).send(e.message)

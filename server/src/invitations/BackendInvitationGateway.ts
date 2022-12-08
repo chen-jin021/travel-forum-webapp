@@ -107,11 +107,11 @@ export class BackendInvitationGateway {
    * @param userId the userId of the user
    */
 
-  async fetchRcvInvitesByUserId(
+  async fetchRcvedInvitesByUserId(
     userId: string
   ): Promise<IServiceResponse<IInvitation[]>> {
     const fetchinvitationsResp =
-      await this.invitationCollectionConnection.fetchSentInvitesByUserId(userId)
+      await this.invitationCollectionConnection.fetchRcvedInvitesByUserId(userId)
     if (!fetchinvitationsResp.success) {
       return failureServiceResponse(fetchinvitationsResp.message)
     }
