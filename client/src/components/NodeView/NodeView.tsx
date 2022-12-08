@@ -34,6 +34,8 @@ export interface INodeViewProps {
   onDeleteButtonClick: (node: INode) => void
   // handler for opening move node modal
   onMoveButtonClick: (node: INode) => void
+  // handler for collaboration
+  onCollaborationButtonClick: () => void
   // children used when rendering folder node
   childNodes?: INode[]
 }
@@ -47,6 +49,7 @@ export const NodeView = (props: INodeViewProps) => {
     onCreateNodeButtonClick,
     onDeleteButtonClick,
     onMoveButtonClick,
+    onCollaborationButtonClick,
     childNodes,
   } = props
   const setIsLinking = useSetRecoilState(isLinkingState)
@@ -191,6 +194,7 @@ export const NodeView = (props: INodeViewProps) => {
           onDeleteButtonClick={onDeleteButtonClick}
           onHandleStartLinkClick={handleStartLinkClick}
           onHandleCompleteLinkClick={handleCompleteLinkClick}
+          onCollaborationButtonClick={onCollaborationButtonClick}
         />
         <div className="nodeView-scrollable">
           {hasBreadcrumb && (

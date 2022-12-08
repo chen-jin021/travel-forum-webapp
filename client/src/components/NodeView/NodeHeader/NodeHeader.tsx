@@ -26,6 +26,7 @@ interface INodeHeaderProps {
   onHandleStartLinkClick: () => void
   onDeleteButtonClick: (node: INode) => void
   onMoveButtonClick: (node: INode) => void
+  onCollaborationButtonClick: () => void
 }
 
 export const NodeHeader = (props: INodeHeaderProps) => {
@@ -34,6 +35,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
     onMoveButtonClick,
     onHandleStartLinkClick,
     onHandleCompleteLinkClick,
+    onCollaborationButtonClick,
   } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
@@ -122,7 +124,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
             <Button
               icon={<AiOutlineUsergroupAdd />}
               text="Collaboration"
-              onClick={onHandleStartLinkClick}
+              onClick={onCollaborationButtonClick}
             />
 
             {isLinking && (
