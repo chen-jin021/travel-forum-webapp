@@ -60,31 +60,31 @@ export class UserRouter {
       }
     })
 
-        /**
+    /**
      * Request to update the user with the given userId
      *
      * @param req request object coming from client
      * @param res response object to send to client
      */
-         UserExpressRouter.put(
-          '/:userId',
-          bodyJsonParser,
-          async (req: Request, res: Response) => {
-            try {
-              const userId = req.params.userId
-              const toUpdate: IUserProperty[] = req.body.data
-              const response = await this.BackendUserGateway.updateUser(userId, toUpdate)
-              res.status(200).send(response)
-            } catch (e) {
-              res.status(500).send(e.message)
-            }
-          }
-        )
+    UserExpressRouter.put(
+      '/:userId',
+      bodyJsonParser,
+      async (req: Request, res: Response) => {
+        try {
+          const userId = req.params.userId
+          const toUpdate: IUserProperty[] = req.body.data
+          const response = await this.BackendUserGateway.updateUser(userId, toUpdate)
+          res.status(200).send(response)
+        } catch (e) {
+          res.status(500).send(e.message)
+        }
+      }
+    )
   }
   /**
    * @returns NodeRouter class
    */
-   getExpressRouter = (): Router => {
+  getExpressRouter = (): Router => {
     return UserExpressRouter
   }
 }

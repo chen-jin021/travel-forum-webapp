@@ -9,6 +9,8 @@ import {
   NodeIdsToNodesMap,
   NodeType,
 } from '../../../types'
+import { storage } from '../../../firebase'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 
 export async function http<T>(request: AxiosRequestConfig): Promise<T> {
   const response: AxiosResponse<T> = await axios(request)
@@ -116,6 +118,16 @@ export async function createNodeFromModal({
     console.error('Error: ' + nodeResponse.message)
     return null
   }
+}
+
+// upload img to google cloud storage and return URL
+export const upload = async (file: any): Promise<string> => {
+  if (!file) return 'empty file!'
+  console.log(file)
+  const storageRef = ref(storage, `/files/${file.name}`)
+  const uploadTask = await uploadBytesResumable(storageRef, file)
+  const url: string = await getDownloadURL(uploadTask.ref)
+  return url
 }
 
 export const uploadImage = async (file: any): Promise<string> => {

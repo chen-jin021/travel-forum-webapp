@@ -6,21 +6,27 @@ interface IEditableTextProps {
   editing: boolean
   onEdit: (newText: string) => void
   setEditing: (editing: boolean) => void
+  isPersonal: boolean
 }
 
 export const EditableText = (props: IEditableTextProps) => {
-  const { editing, text, onEdit, setEditing } = props
+  const { editing, text, onEdit, setEditing, isPersonal } = props
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onEdit(event.target.value)
   }
 
+  const handleOnBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditing(false)
+    onEdit(event.target.value)
+  }
+
   return editing ? (
     <input
-      className="editableText"
+      className={isPersonal ? 'personal-editableText' : 'editableText'}
       autoFocus
-      onChange={handleOnChange}
-      onBlur={() => setEditing(false)}
+      onChange={()=>{}}
+      onBlur={handleOnBlur}
       defaultValue={text}
     ></input>
   ) : (

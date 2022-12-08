@@ -19,6 +19,8 @@ export function isIUser(object: any): object is IUser {
   return typeof (object as IUser).userId === 'string'
 }
 
+export type UserFields = keyof IUser
+
 export function makeIUser(
   userId: string,
   mail: string,

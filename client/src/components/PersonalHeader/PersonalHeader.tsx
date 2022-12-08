@@ -14,7 +14,7 @@ import {
   panoramaState,
 } from '../../global/Atoms'
 import { inherits } from 'util'
-
+import { Image, Box } from '@chakra-ui/react'
 interface IPesonalHeaderProps {
   onHomeClick: () => void
 }

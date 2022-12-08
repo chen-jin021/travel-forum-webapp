@@ -9,7 +9,7 @@ import {
   RecursiveNodeTree,
 } from '../types'
 import { endpoint, get, post, put, remove } from '../global'
-
+import { IUserProperty } from '../types/IUserProperty'
 
 /** In development mode (locally) the server is at localhost:5000*/
 const baseEndpoint = endpoint
@@ -27,13 +27,39 @@ const servicePath = 'user/'
  * helper methods to make requests to the server.
  */
 export const FrontendUserGateway = {
-  createUser: async (user:IUser): Promise<IServiceResponse<IUser>> => {
+  createUser: async (user: IUser): Promise<IServiceResponse<IUser>> => {
     try {
       return await post<IServiceResponse<IUser>>(baseEndpoint + servicePath + 'create', {
         user: user,
       })
     } catch (exception) {
       return failureServiceResponse('[createUser] Unable to access backend')
+    }
+  },
+
+  getUser: async (uId: string): Promise<IServiceResponse<IUser>> => {
+    try {
+      return await post<IServiceResponse<IUser>>(
+        baseEndpoint + servicePath + 'getUserByUserId',
+        {
+          userId: uId,
+        }
+      )
+    } catch (exception) {
+      return failureServiceResponse('[getUser] Unable to access backend')
+    }
+  },
+
+  updateUser: async (
+    userId: string,
+    properties: IUserProperty[]
+  ): Promise<IServiceResponse<IUser>> => {
+    try {
+      return await put<IServiceResponse<IUser>>(baseEndpoint + servicePath + userId, {
+        data: properties,
+      })
+    } catch (exception) {
+      return failureServiceResponse('[updateUser] Unable to access backend')
     }
   },
 }
