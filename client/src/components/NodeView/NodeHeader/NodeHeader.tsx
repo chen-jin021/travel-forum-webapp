@@ -2,6 +2,7 @@ import { Select } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import * as bi from 'react-icons/bi'
 import * as ri from 'react-icons/ri'
+import { AiOutlineUsergroupAdd } from 'react-icons/ai'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
   alertMessageState,
@@ -102,6 +103,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
           editing={editingTitle}
           setEditing={setEditingTitle}
           onEdit={handleUpdateTitle}
+          isPersonal={false}
         />
       </div>
       <div className="nodeHeader-buttonBar">
@@ -113,15 +115,16 @@ export const NodeHeader = (props: INodeHeaderProps) => {
               onClick={() => onDeleteButtonClick(currentNode)}
             />
             <Button
-              icon={<ri.RiDragDropLine />}
-              text="Move"
-              onClick={() => onMoveButtonClick(currentNode)}
-            />
-            <Button
               icon={<ri.RiExternalLinkLine />}
               text="Start Link"
               onClick={onHandleStartLinkClick}
             />
+            <Button
+              icon={<AiOutlineUsergroupAdd />}
+              text="Collaboration"
+              onClick={onHandleStartLinkClick}
+            />
+
             {isLinking && (
               <Button
                 text="Complete Link"

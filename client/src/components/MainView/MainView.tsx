@@ -15,7 +15,8 @@ import {
 import { useAuth } from '../../contexts/AuthContext'
 import { useLocation } from 'react-router-dom'
 import { FrontendNodeGateway } from '../../nodes'
-import { ILocNode, INode, NodeIdsToNodesMap, RecursiveNodeTree } from '../../types'
+import { FrontendUserGateway } from '../../users'
+import { ILocNode, INode, NodeIdsToNodesMap, RecursiveNodeTree, IUser } from '../../types'
 import {
   GoogleMap,
   Marker,
@@ -75,8 +76,7 @@ export const MainView = React.memo(function MainView() {
   const [map, setMap] = useState<google.maps.Map>()
   const history = useHistory()
   const { user } = useAuth()
-
-  
+  const [avatar, setAvatar] = useState('')
 
   /** update our frontend root nodes from the database */
   const loadRootsFromDB = useCallback(
@@ -92,6 +92,21 @@ export const MainView = React.memo(function MainView() {
     },
     [refresh, user]
   )
+
+  const getUserFromDB = async (uId: string) => {
+    const userResp = await FrontendUserGateway.getUser(uId)
+    if (!userResp.success || !userResp.payload) {
+      return
+    }
+    const user: IUser = userResp.payload
+    setAvatar(user.avatar)
+  }
+
+  useEffect(() => {
+    if (user) {
+      getUserFromDB(user.uid)
+    }
+  }, [refresh])
 
   const updateAllMarkers = (rootNodes: RecursiveNodeTree[]) => {
     if (rootNodes.length === 0) {
@@ -341,6 +356,7 @@ export const MainView = React.memo(function MainView() {
             onCreateNodeButtonClick={handleCreateLocationClick}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
             onPanoramaClick={handlePanoramaClick}
+            avatarUrl={avatar}
           />
           <CreateLocationModal
             isOpen={createLocationModalOpen}

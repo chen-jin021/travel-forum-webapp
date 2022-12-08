@@ -26,9 +26,15 @@ export const PersonalHeader = (props: IPesonalHeaderProps) => {
       <div className="left-bar">
         <Link to={'/main'}>
           <div className="name" onClick={onHomeClick}>
-            <b>Fantasy City</b>
+            <Image
+              height={'30px'}
+              src="https://firebasestorage.googleapis.com/v0/b/hypertextfinalproj.appspot.com/o/utils%2Ffantasy-cty-header-logo.png?alt=media&token=8a421ffe-90ac-4473-83c9-f3623147c697"
+            />
           </div>
         </Link>
+        <div>
+          <b>|</b> {'  '} <span style={{ fontStyle: 'italic' }}>About me</span>
+        </div>
       </div>
       <div className="right-bar">
         <div>{/* the right bar */}</div>
