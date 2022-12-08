@@ -17,8 +17,10 @@ import {
   RadioGroup,
   HStack,
   Radio,
+  Button,
 } from '@chakra-ui/react'
 import { mapState } from '../../../global/Atoms'
+import { Form } from 'react-bootstrap'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   INode,
@@ -28,7 +30,7 @@ import {
   makeINodePath,
   RecursiveNodeTree,
 } from '../../../types'
-import { Button } from '../../Button'
+// import { Button } from '../../Button'
 import { TreeView } from '../../TreeView'
 import {
   GoogleMap,
@@ -78,6 +80,23 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
     setError('')
   }
 
+  const handleSubmit = () => {
+    if (!user) {
+      setError('You have not logged yet!')
+      return
+    }
+    const reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/
+    if (!reg.test(mail)) {
+      setError('Please enter a valid email')
+      return
+    }
+    
+  }
+
+  const handleMailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMail(event.target.value)
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <div className="modal-font">
@@ -85,27 +104,31 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
         <ModalContent>
           <ModalHeader>Send an invitation!</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel htmlFor="email">Your Friends's email</FormLabel>
-              <Input id="email" type="email" />
-              <FormLabel style={{ marginTop: '20px' }} as="legend">
-                Permission
-              </FormLabel>
-              <RadioGroup value={permission} onChange={setPermission}>
-                <HStack spacing="24px">
-                  <Radio value={'read'}>Read Only</Radio>
-                  <Radio value={'write'}>Read & Write</Radio>
-                </HStack>
-              </RadioGroup>
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            {error.length > 0 && <div className="modal-error">{error}</div>}
-            <div className="modal-footer-buttons">
-              <Button text="Create" />
-            </div>
-          </ModalFooter>
+          <Form onSubmit={handleSubmit}>
+            <ModalBody>
+              <FormControl isRequired>
+                <FormLabel htmlFor="email">Your Friends's email</FormLabel>
+                <Input id="email" type="email" value={mail} onChange={handleMailChange} />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel style={{ marginTop: '20px' }} as="legend">
+                  Permission
+                </FormLabel>
+                <RadioGroup value={permission} onChange={setPermission}>
+                  <HStack spacing="24px">
+                    <Radio value={'read'}>Read Only</Radio>
+                    <Radio value={'write'}>Read & Write</Radio>
+                  </HStack>
+                </RadioGroup>
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              {error.length > 0 && <div className="modal-error">{error}</div>}
+              <div className="modal-footer-buttons">
+                <Button onClick={handleSubmit}> Send invitation</Button>
+              </div>
+            </ModalFooter>
+          </Form>
         </ModalContent>
       </div>
     </Modal>
