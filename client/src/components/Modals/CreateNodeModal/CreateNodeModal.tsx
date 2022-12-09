@@ -112,6 +112,7 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
     const link = files && files[0] && (await uploadImage(files[0]))
     link && setContent(link)
   }
+
   // content prompts for the different node types
   let contentInputPlaceholder: string
   switch (selectedType) {
