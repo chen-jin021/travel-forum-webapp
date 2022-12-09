@@ -84,6 +84,7 @@ export const MainView = React.memo(function MainView() {
   const loadRootsFromDB = useCallback(
     async (userId: string) => {
       const rootsFromDB = await FrontendNodeGateway.fetchNodeByUserId(userId)
+      console.log(rootsFromDB)
       if (rootsFromDB.success) {
         rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
         setIsAppLoaded(true)
