@@ -60,6 +60,25 @@ export class UserRouter {
       }
     })
 
+     /**
+     * Request to retrieve user by email
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+      UserExpressRouter.post('/getUserByMail', async (req: Request, res: Response) => {
+        try {
+          const mail = req.body.mail
+          const response: IServiceResponse<IUser> =
+            await this.BackendUserGateway.getUserByMail(mail)
+          res.status(200).send(response)
+        } catch (e) {
+          res.status(500).send(e.message)
+        }
+      })
+
+    
+
     /**
      * Request to update the user with the given userId
      *

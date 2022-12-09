@@ -45,6 +45,16 @@ export class BackendUserGateway {
   }
 
   /**
+   * Method to retrieve user with a given mail.
+   *
+   * @param mail - The mail of the user to be retrieved.
+   * @returns IServiceResponse<IUser>
+   */
+   async getUserByMail(mail: string): Promise<IServiceResponse<IUser>> {
+    return this.userCollectionConnection.findUserByMail(mail)
+  }
+
+  /**
    * Method to delete all user nodes in the database.
    *
    * @returns IServiceResponse<{}>

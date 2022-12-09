@@ -7,6 +7,8 @@ import {
   isInvitation,
 } from '../types'
 import { InvitationCollectionConnection } from './InvitationCollectionConnection'
+import { UserCollectionConnection } from '../users'
+import { NodeCollectionConnection } from '../nodes'
 
 /**
  * BackendinvitationGateway handles requests from invitationRouter, and calls on methods
@@ -22,11 +24,21 @@ import { InvitationCollectionConnection } from './InvitationCollectionConnection
  */
 export class BackendInvitationGateway {
   invitationCollectionConnection: InvitationCollectionConnection
+  userCollectionConnection:  UserCollectionConnection
+  nodeCollectionConnection: NodeCollectionConnection
 
   constructor(mongoClient: MongoClient, collectionName?: string) {
     this.invitationCollectionConnection = new InvitationCollectionConnection(
       mongoClient,
       collectionName ?? 'invitations'
+    )
+    this.userCollectionConnection = new UserCollectionConnection(
+      mongoClient,
+      collectionName ?? 'users'
+    )
+    this.nodeCollectionConnection = new NodeCollectionConnection(
+      mongoClient,
+      collectionName ?? 'nodes'
     )
   }
 
@@ -117,4 +129,5 @@ export class BackendInvitationGateway {
     }
     return fetchinvitationsResp
   }
+
 }

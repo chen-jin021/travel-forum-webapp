@@ -7,6 +7,7 @@ import { MongoClient } from 'mongodb'
 import { AnchorRouter } from './anchors'
 import { LinkRouter } from './links'
 import { UserRouter } from './users'
+import { invitationRouter } from './invitations'
 
 dotenv.config()
 const PORT = process.env.PORT
@@ -40,6 +41,9 @@ app.use('/link', myLinkRouter.getExpressRouter())
 // user router
 const myUserRouter = new UserRouter(mongoClient)
 app.use('/user', myUserRouter.getExpressRouter())
+// ivt router
+const myIvtRouter = new invitationRouter(mongoClient)
+app.use('/ivt', myIvtRouter.getExpressRouter())
 
 app.get('*', (req: Request, res: Response) => {
   res.send('MyHypermedia Backend Service')

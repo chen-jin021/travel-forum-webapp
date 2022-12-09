@@ -39,11 +39,15 @@ import {
   useJsApiLoader,
   Autocomplete,
 } from '@react-google-maps/api'
+import { useRecoilValue } from 'recoil'
 import { useSetRecoilState, useRecoilState } from 'recoil'
-import { selectedNodeState, refreshState } from '../../../global/Atoms'
+import { selectedNodeState, refreshState, currentNodeState } from '../../../global/Atoms'
 import { FrontendNodeGateway } from '../../../nodes'
 import { generateObjectId } from '../../../global'
 import { useAuth } from '../../../contexts/AuthContext'
+import { IInvitation } from '../../../types/IInvitation'
+import { FrontendUserGateway } from '../../../users'
+import { FrontendInvitationGateway } from '../../../invitations'
 
 export interface ICreateInvitationModalProps {
   isOpen: boolean
@@ -71,6 +75,7 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
   const [refresh, setRefresh] = useRecoilState(refreshState)
   const [mail, setMail] = useState('')
   const [permission, setPermission] = useState('read')
+  const currentNode = useRecoilValue(currentNodeState)
 
   const { user } = useAuth()
 
@@ -80,7 +85,8 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
     setError('')
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setError('')
     if (!user) {
       setError('You have not logged yet!')
       return
@@ -90,7 +96,37 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
       setError('Please enter a valid email')
       return
     }
-    
+    if (user.email === mail) {
+      setError('You can not invite yourself to collaborate!')
+      return
+    }
+    const selfResp = await FrontendUserGateway.getUser(user.uid)
+    if (!selfResp.success || !selfResp.payload) {
+      setError(selfResp.message)
+      return
+    }
+    const selfUser = selfResp.payload
+    const userResp = await FrontendUserGateway.getUserByMail(mail)
+    if (!userResp.success || !userResp.payload) {
+      setError(userResp.message)
+      return
+    }
+    const rcverUser = userResp.payload
+    const ivtOBj: IInvitation = {
+      inviteId: generateObjectId('ivt'),
+      rcverId: rcverUser.userId,
+      rcverMail: rcverUser.mail,
+      rcverName: rcverUser.userName,
+      rcverUrl: rcverUser.avatar,
+      senderId: selfUser.userId,
+      senderMail: selfUser.mail,
+      senderName: selfUser.userName,
+      senderUrl: selfUser.avatar,
+      createdDate: new Date(),
+      type: permission,
+      nodeId: currentNode.nodeId,
+    }
+    const ivtResp = await FrontendInvitationGateway.createIvt(ivtOBj)
   }
 
   const handleMailChange = (event: React.ChangeEvent<HTMLInputElement>) => {

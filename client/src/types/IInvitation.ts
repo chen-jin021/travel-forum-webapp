@@ -1,5 +1,3 @@
-import { send } from 'process'
-
 /*
  * User's invitation
  * id, Sender's Id, receiver's id, createdDate, type(read/ write), nodeId
@@ -7,12 +5,12 @@ import { send } from 'process'
 export interface IInvitation {
   inviteId: string
   rcverId: string
-  rcverName: string
   rcverMail: string
+  rcverName: string
   rcverUrl: string
   senderId: string
-  senderName: string
   senderMail: string
+  senderName: string
   senderUrl: string
   createdDate: Date
   type: string

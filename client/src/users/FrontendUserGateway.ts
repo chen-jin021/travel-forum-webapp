@@ -50,6 +50,19 @@ export const FrontendUserGateway = {
     }
   },
 
+  getUserByMail: async (mail: string): Promise<IServiceResponse<IUser>> => {
+    try {
+      return await post<IServiceResponse<IUser>>(
+        baseEndpoint + servicePath + 'getUserByMail',
+        {
+          mail: mail,
+        }
+      )
+    } catch (exception) {
+      return failureServiceResponse('[getUserByMail] Unable to access backend')
+    }
+  },
+
   updateUser: async (
     userId: string,
     properties: IUserProperty[]

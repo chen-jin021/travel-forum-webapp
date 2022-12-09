@@ -9,6 +9,9 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
+  Button,
+  IconButton,
+  Icon,
 } from '@chakra-ui/react'
 import { useRecoilState } from 'recoil'
 import { Container, Alert } from 'react-bootstrap'
@@ -17,11 +20,13 @@ import { useAuth } from '../../contexts/AuthContext'
 import { FrontendUserGateway } from '../../users'
 import { IUser } from '../../types'
 import { MdMail } from 'react-icons/md'
+import * as ai from 'react-icons/ai'
 import './PersonalInfo.scss'
 import { Link } from 'react-router-dom'
 import { EditableText } from '../EditableText'
 import { IUserProperty, makeIUserProperty } from '../../types/IUserProperty'
 import { upload } from './PersonalInfoUtils'
+import { SendingInvitationModal } from '../Modals'
 
 export const PersonalInfo = React.memo(() => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
@@ -32,6 +37,7 @@ export const PersonalInfo = React.memo(() => {
   const [error, setError] = useState('')
   const [refresh, setRefresh] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [sendingIvtOpen, setSendingIvtOpen] = useState(false)
 
   const { user } = useAuth()
 
@@ -97,12 +103,25 @@ export const PersonalInfo = React.memo(() => {
     setRefresh(!refresh)
   }
 
+  const handleSendIvtClose = () => {
+    setSendingIvtOpen(false)
+  }
+
+  if (!user) {
+    return
+  }
+
   return (
     <>
       <ChakraProvider>
         <div className="main-container">
           <PersonalHeader onHomeClick={handleHomeClick}></PersonalHeader>
           <div className="content">
+            <SendingInvitationModal
+              isOpen={sendingIvtOpen}
+              onClose={handleSendIvtClose}
+              uid={user?.uid}
+            ></SendingInvitationModal>
             <Container
               className="d-flex align-items-center justify-content-center "
               style={{ maxHeight: '90vh', maxWidth: '100vw' }}
@@ -140,6 +159,28 @@ export const PersonalInfo = React.memo(() => {
                     <MdMail style={{ display: 'inline' }} />
                     {'  '}
                     <div style={{ display: 'inline' }}>{mail}</div>{' '}
+                  </div>
+                  <div style={{ marginTop: '20px' }}>
+                    <Button
+                      style={{ width: '240px' }}
+                      leftIcon={<Icon as={ai.AiOutlineArrowUp} />}
+                      colorScheme={'teal'}
+                      onClick={(e) => {
+                        setSendingIvtOpen(true)
+                      }}
+                    >
+                      Invitations to others
+                    </Button>
+                  </div>
+                  <div style={{ marginTop: '20px' }}>
+                    <Button
+                      style={{ width: '240px' }}
+                      leftIcon={<Icon as={ai.AiOutlineArrowDown} />}
+                      aria-label="Your Invitation"
+                      colorScheme={'blue'}
+                    >
+                      Invitations to me
+                    </Button>
                   </div>
                 </div>
               </div>

@@ -68,6 +68,25 @@ export class UserCollectionConnection {
   }
 
   /**
+   * Find user by Email
+   *
+   * @param {string} mail
+   * @return successfulServiceResponse<IUser> on success
+   *         failureServiceResponse on failure
+   */
+  async findUserByMail(mail: string): Promise<IServiceResponse<IUser>> {
+    const findResponse = await this.client
+      .db()
+      .collection(this.collectionName)
+      .findOne({ mail: mail })
+    if (findResponse == null) {
+      return failureServiceResponse('Failed to find a user with this email.')
+    } else {
+      return successfulServiceResponse(findResponse)
+    }
+  }
+
+  /**
    * Clears the entire user collection in the database.
    *
    * @return successfulServiceResponse on success
