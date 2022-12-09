@@ -5,10 +5,15 @@ import {
   successfulServiceResponse,
   IInvitation,
   isInvitation,
+  ILocNode,
+  INode,
+  INodeProperty,
+  makeINodeProperty,
 } from '../types'
 import { InvitationCollectionConnection } from './InvitationCollectionConnection'
 import { UserCollectionConnection } from '../users'
 import { NodeCollectionConnection } from '../nodes'
+import { readlink } from 'fs'
 
 /**
  * BackendinvitationGateway handles requests from invitationRouter, and calls on methods
@@ -24,7 +29,7 @@ import { NodeCollectionConnection } from '../nodes'
  */
 export class BackendInvitationGateway {
   invitationCollectionConnection: InvitationCollectionConnection
-  userCollectionConnection:  UserCollectionConnection
+  userCollectionConnection: UserCollectionConnection
   nodeCollectionConnection: NodeCollectionConnection
 
   constructor(mongoClient: MongoClient, collectionName?: string) {
@@ -130,4 +135,55 @@ export class BackendInvitationGateway {
     return fetchinvitationsResp
   }
 
+  /**
+   * Method to accept the invitation by the inviteId.
+   *
+   * @param inviteId the inviteId of the invitation
+   */
+
+  async acceptInvitationById(inviteId: string): Promise<IServiceResponse<{}>> {
+    // 1. get Invitation by inviteId
+    const getInvitationsResp =
+      await this.invitationCollectionConnection.findInvitationById(inviteId)
+    if (!getInvitationsResp.success) {
+      return failureServiceResponse(getInvitationsResp.message)
+    }
+
+    // 2. delete the Invitation from database
+    const declineInvitationResp = await this.decline(inviteId)
+    if (!declineInvitationResp.success) {
+      return failureServiceResponse(declineInvitationResp.message)
+    }
+
+    // 3. get the node by nodeId in invitation
+    const nodeId = getInvitationsResp.payload.nodeId
+    const getNodeResp: IServiceResponse<INode> =
+      await this.nodeCollectionConnection.findNodeById(nodeId)
+    if (!declineInvitationResp.success) {
+      return failureServiceResponse(getNodeResp.message)
+    }
+    const node = getNodeResp.payload
+    const locNode = node as ILocNode
+
+    // 4. get the Invitation type (write/ read) and receiver's userId from the invitation
+    const inviteType = getInvitationsResp.payload.type
+    const rcverId = getInvitationsResp.payload.rcverId
+
+    // 5. construct the new property, push the receiver's userId into the list
+    let property: INodeProperty
+    if (inviteType == 'read') {
+      const readList = locNode.userReadIds
+      readList.push(rcverId)
+      property = makeINodeProperty('userReadIds', readList)
+    } else if (inviteType == 'write') {
+      const writeList = locNode.userWriteIds
+      writeList.push(rcverId)
+      property = makeINodeProperty('userWriteIds', writeList)
+    }
+
+    // 6. update Node with corresponding nodeId and the constructed property
+    const updateNodeResp: IServiceResponse<{}> =
+      await this.nodeCollectionConnection.updateNode(nodeId, property)
+    return updateNodeResp
+  }
 }

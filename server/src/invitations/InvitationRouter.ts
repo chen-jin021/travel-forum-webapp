@@ -116,6 +116,28 @@ export class invitationRouter {
         res.status(500).send(e.message)
       }
     })
+
+    /**
+     * Request to accept the invitation with the given invitationId
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+    invitationExpressRouter.put(
+      '/:inviteId',
+      bodyJsonParser,
+      async (req: Request, res: Response) => {
+        try {
+          const inviteId = req.params.inviteId
+          const response = await this.BackendInvitationGateway.acceptInvitationById(
+            inviteId
+          )
+          res.status(200).send(response)
+        } catch (e) {
+          res.status(500).send(e.message)
+        }
+      }
+    )
   }
 
   /**
