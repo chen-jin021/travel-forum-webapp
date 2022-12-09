@@ -381,7 +381,9 @@ export const MainView = React.memo(function MainView() {
             onClose={() => setCreateNodeModalOpen(false)}
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
-            onSubmit={() => {}}
+            onSubmit={() => {
+              if (user) loadRootsFromDB(user?.uid)
+            }}
           />
           <CompleteLinkModal
             isOpen={completeLinkModalOpen}
@@ -438,7 +440,7 @@ export const MainView = React.memo(function MainView() {
                   onMoveButtonClick={handleMoveNodeButtonClick}
                   onCompleteLinkClick={handleCompleteLinkClick}
                   onCreateNodeButtonClick={handleCreateNodeButtonClick}
-                  onCollaborationButtonClick = {handleCollaborationClick}
+                  onCollaborationButtonClick={handleCollaborationClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
                 />
               </div>

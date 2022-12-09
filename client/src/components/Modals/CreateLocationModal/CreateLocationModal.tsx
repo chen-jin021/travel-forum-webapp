@@ -119,7 +119,7 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
       return
     }
     if (!user) {
-      setError('You haven\'t logged in yet...')
+      setError("You haven't logged in yet...")
       return
     }
     const r = await retrieveGeocode(location)
