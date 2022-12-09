@@ -51,6 +51,7 @@ import { FrontendInvitationGateway } from '../../../invitations'
 import './SendingInvitationModal.scss'
 import { InvitationItem } from './InvitationItem'
 import { IServiceResponse } from '../../../types'
+import { DEFAULT_BREAKPOINTS } from 'react-bootstrap/esm/ThemeProvider'
 
 export interface ISendingInvitationModalProps {
   isOpen: boolean
@@ -75,11 +76,11 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
   const [selectedType, setSelectedType] = useState<NodeType>('' as NodeType)
   const [error, setError] = useState<string>('')
   const [map, setMap] = useRecoilState(mapState)
-  const [refresh, setRefresh] = useRecoilState(refreshState)
   const [mail, setMail] = useState('')
   const [permission, setPermission] = useState('read')
   const currentNode = useRecoilValue(currentNodeState)
   const [ivts, setIvts] = useState<IInvitation[]>([])
+  const [refresh, setRefresh] = useState(false)
 
   const { user } = useAuth()
 
@@ -89,12 +90,31 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
     setError('')
   }
 
+  const handleDelete = async (ivtId: string) => {
+    const delResp = await FrontendInvitationGateway.declineIvt(ivtId)
+    if (!delResp.success || !delResp.payload) {
+      setError(delResp.message)
+      return
+    }
+    setRefresh(!refresh)
+  }
+
+  const handleAccept = async (ivtId: string) => {
+    const acceptResp = await FrontendInvitationGateway.acceptIvt(ivtId)
+    if (!acceptResp.success || !acceptResp.payload) {
+      setError(acceptResp.message)
+      return
+    }
+    console.log(acceptResp)
+    setRefresh(!refresh)
+  }
+
   const getIvts = async (uid: string) => {
     let IvtResp: IServiceResponse<IInvitation[]>
     if (!from) {
       IvtResp = await FrontendInvitationGateway.getSentIvt(uid)
     } else {
-      IvtResp = await FrontendInvitationGateway.getSentIvt(uid)
+      IvtResp = await FrontendInvitationGateway.getRcvIvt(uid)
     }
     if (!IvtResp.success || !IvtResp.payload) {
       setError(IvtResp.message)
@@ -107,7 +127,7 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
     if (isOpen) {
       getIvts(uid)
     }
-  }, [isOpen])
+  }, [isOpen, refresh])
 
   return (
     <Modal size={'3xl'} isOpen={isOpen} onClose={handleClose}>
@@ -121,7 +141,15 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
           <ModalBody>
             <div className="list-wrapper">
               {ivts.map((ivt: IInvitation) => {
-                return <InvitationItem ivt={ivt} key={ivt.inviteId} from = {from}></InvitationItem>
+                return (
+                  <InvitationItem
+                    ivt={ivt}
+                    key={ivt.inviteId}
+                    from={from}
+                    handleDelete={handleDelete}
+                    handleAccept={handleAccept}
+                  ></InvitationItem>
+                )
               })}
             </div>
             <div></div>

@@ -14,10 +14,12 @@ import { send } from 'process'
 export interface IInvitaionItemProps {
   ivt: IInvitation
   from: boolean
+  handleDelete: (ivtId: string) => void
+  handleAccept: (ivtId: string) => void
 }
 
 export const InvitationItem = (props: IInvitaionItemProps) => {
-  const { ivt, from } = props
+  const { ivt, from, handleDelete, handleAccept } = props
   const [sender, setSender] = useState<IUser>()
   const [rcver, setRcver] = useState<IUser>()
   const [node, setNode] = useState<INode>()
@@ -44,8 +46,6 @@ export const InvitationItem = (props: IInvitaionItemProps) => {
     load()
   }, [])
 
-  const handleDelete = async () => {}
-
   if (from) {
     return (
       <div className="ivt-item" key={ivt.inviteId}>
@@ -66,7 +66,9 @@ export const InvitationItem = (props: IInvitaionItemProps) => {
           <Button
             leftIcon={<Icon as={AiOutlineUndo} />}
             colorScheme="teal"
-            onClick={handleDelete}
+            onClick={(e) => {
+              handleAccept(ivt.inviteId)
+            }}
           >
             Accept
           </Button>
@@ -74,7 +76,9 @@ export const InvitationItem = (props: IInvitaionItemProps) => {
             style={{ marginLeft: '10px' }}
             leftIcon={<Icon as={AiOutlineUndo} />}
             colorScheme="red"
-            onClick={handleDelete}
+            onClick={(e) => {
+              handleDelete(ivt.inviteId)
+            }}
           >
             Decline
           </Button>
@@ -104,7 +108,9 @@ export const InvitationItem = (props: IInvitaionItemProps) => {
           <Button
             leftIcon={<Icon as={AiOutlineUndo} />}
             colorScheme="red"
-            onClick={handleDelete}
+            onClick={(e) => {
+              handleDelete(ivt.inviteId)
+            }}
           >
             recall
           </Button>

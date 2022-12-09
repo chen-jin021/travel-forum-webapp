@@ -127,6 +127,10 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
       nodeId: currentNode.nodeId,
     }
     const ivtResp = await FrontendInvitationGateway.createIvt(ivtOBj)
+    if (!ivtResp.success || !ivtResp.payload) {
+      setError(ivtResp.message)
+      return
+    }
   }
 
   const handleMailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +138,7 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose}>
+    <Modal size={'2xl'} isOpen={isOpen} onClose={handleClose}>
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>

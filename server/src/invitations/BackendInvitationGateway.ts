@@ -58,6 +58,7 @@ export class BackendInvitationGateway {
     if (!isValidInvitation) {
       return failureServiceResponse('Not a valid invitation.')
     }
+
     // check whether already in database
     const invitationResponse =
       await this.invitationCollectionConnection.findInvitationById(invitation.inviteId)
@@ -67,6 +68,17 @@ export class BackendInvitationGateway {
       )
     }
 
+    // check whether already has the same invitation
+    const inviteWithPropRsp =
+      await this.invitationCollectionConnection.findInvitationByProps(
+        invitation.nodeId,
+        invitation.senderId,
+        invitation.rcverId
+      )
+
+    if (inviteWithPropRsp.success) {
+      return failureServiceResponse('You have sent one invitation on this location!')
+    }
     // if everything checks out, insert invitation
     const insertinvitationResp =
       await this.invitationCollectionConnection.insertInvitation(invitation)

@@ -28,7 +28,7 @@ import { IUserProperty, makeIUserProperty } from '../../types/IUserProperty'
 import { upload } from './PersonalInfoUtils'
 import { SendingInvitationModal } from '../Modals'
 
-export const PersonalInfo = () => {
+export const PersonalInfo = React.memo(() => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const [nickName, setNickName] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
@@ -114,96 +114,96 @@ export const PersonalInfo = () => {
   }
 
   if (!user) {
-    return
-  }
+    return <></>
+  } else {
+    return (
+      <>
+        <ChakraProvider>
+          <div className="main-container">
+            <PersonalHeader onHomeClick={handleHomeClick}></PersonalHeader>
+            <div className="content">
+              <SendingInvitationModal
+                isOpen={sendingIvtOpen}
+                onClose={handleSendIvtClose}
+                uid={user?.uid}
+                from={false}
+              ></SendingInvitationModal>
+              <SendingInvitationModal
+                isOpen={myIvtOpen}
+                onClose={handleMyIvtClose}
+                uid={user?.uid}
+                from={true}
+              ></SendingInvitationModal>
+              <Container
+                className="d-flex align-items-center justify-content-center "
+                style={{ maxHeight: '90vh', maxWidth: '100vw' }}
+              >
+                <div style={{ maxWidth: '600px' }}>
+                  <div className="text-center avatar-wrapper">
+                    <div style={{ width: '400px' }}>
+                      {error && <Alert variant="danger">{error}</Alert>}
+                    </div>
+                    <input
+                      ref={inputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleImageUpload}
+                      type="file"
+                    ></input>
+                    <div onDoubleClick={handleDblAvatar}>
+                      <Avatar size="2xl" name={nickName} src={avatarUrl} />
+                    </div>
 
-  return (
-    <>
-      <ChakraProvider>
-        <div className="main-container">
-          <PersonalHeader onHomeClick={handleHomeClick}></PersonalHeader>
-          <div className="content">
-            <SendingInvitationModal
-              isOpen={sendingIvtOpen}
-              onClose={handleSendIvtClose}
-              uid={user?.uid}
-              from={false}
-            ></SendingInvitationModal>
-            <SendingInvitationModal
-              isOpen={myIvtOpen}
-              onClose={handleMyIvtClose}
-              uid={user?.uid}
-              from={true}
-            ></SendingInvitationModal>
-            <Container
-              className="d-flex align-items-center justify-content-center "
-              style={{ maxHeight: '90vh', maxWidth: '100vw' }}
-            >
-              <div style={{ maxWidth: '600px' }}>
-                <div className="text-center avatar-wrapper">
-                  <div style={{ width: '400px' }}>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                  </div>
-                  <input
-                    ref={inputRef}
-                    style={{ display: 'none' }}
-                    onChange={handleImageUpload}
-                    type="file"
-                  ></input>
-                  <div onDoubleClick={handleDblAvatar}>
-                    <Avatar size="2xl" name={nickName} src={avatarUrl} />
-                  </div>
-
-                  <div
-                    className="nick-name"
-                    onDoubleClick={(e) => {
-                      setEditing(true)
-                    }}
-                  >
-                    <EditableText
-                      isPersonal={true}
-                      text={nickName}
-                      editing={editing}
-                      setEditing={setEditing}
-                      onEdit={handleUpdateName}
-                    />
-                  </div>
-                  <div className="mail">
-                    <MdMail style={{ display: 'inline' }} />
-                    {'  '}
-                    <div style={{ display: 'inline' }}>{mail}</div>{' '}
-                  </div>
-                  <div style={{ marginTop: '20px' }}>
-                    <Button
-                      style={{ width: '240px' }}
-                      leftIcon={<Icon as={ai.AiOutlineArrowUp} />}
-                      colorScheme={'teal'}
-                      onClick={(e) => {
-                        setSendingIvtOpen(true)
+                    <div
+                      className="nick-name"
+                      onDoubleClick={(e) => {
+                        setEditing(true)
                       }}
                     >
-                      Invitations to others
-                    </Button>
-                  </div>
-                  <div style={{ marginTop: '20px' }}>
-                    <Button
-                      style={{ width: '240px' }}
-                      leftIcon={<Icon as={ai.AiOutlineArrowDown} />}
-                      aria-label="Your Invitation"
-                      colorScheme={'blue'}
-                      onClick={(e) => {
-                        setMyIvtOpen(true)
-                      }}
-                    >
-                      Invitations to me
-                    </Button>
+                      <EditableText
+                        isPersonal={true}
+                        text={nickName}
+                        editing={editing}
+                        setEditing={setEditing}
+                        onEdit={handleUpdateName}
+                      />
+                    </div>
+                    <div className="mail">
+                      <MdMail style={{ display: 'inline' }} />
+                      {'  '}
+                      <div style={{ display: 'inline' }}>{mail}</div>{' '}
+                    </div>
+                    <div style={{ marginTop: '20px' }}>
+                      <Button
+                        style={{ width: '240px' }}
+                        leftIcon={<Icon as={ai.AiOutlineArrowUp} />}
+                        colorScheme={'teal'}
+                        onClick={(e) => {
+                          setSendingIvtOpen(true)
+                        }}
+                      >
+                        Invitations to others
+                      </Button>
+                    </div>
+                    <div style={{ marginTop: '20px' }}>
+                      <Button
+                        style={{ width: '240px' }}
+                        leftIcon={<Icon as={ai.AiOutlineArrowDown} />}
+                        aria-label="Your Invitation"
+                        colorScheme={'blue'}
+                        onClick={(e) => {
+                          setMyIvtOpen(true)
+                        }}
+                      >
+                        Invitations to me
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Container>
+              </Container>
+            </div>
           </div>
-        </div>
-      </ChakraProvider>
-    </>
-  )
-}
+        </ChakraProvider>
+      </>
+    )
+  }
+})
