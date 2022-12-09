@@ -27,6 +27,9 @@
 .emphasis {
   font-style: italic;
   font-weight: bold;
+  max-width: 100px;
+  overflow-x: hidden;
+  display: inline;
 }
 
 .right-bar {
@@ -34,4 +37,5 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  overflow-x: hidden;
 }

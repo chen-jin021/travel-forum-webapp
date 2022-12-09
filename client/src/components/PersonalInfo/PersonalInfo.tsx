@@ -38,6 +38,8 @@ export const PersonalInfo = () => {
   const [refresh, setRefresh] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [sendingIvtOpen, setSendingIvtOpen] = useState(false)
+  const [myIvtOpen, setMyIvtOpen] = useState(false)
+  const [from, setFrom] = useState(false)
 
   const { user } = useAuth()
 
@@ -107,6 +109,10 @@ export const PersonalInfo = () => {
     setSendingIvtOpen(false)
   }
 
+  const handleMyIvtClose = () => {
+    setMyIvtOpen(false)
+  }
+
   if (!user) {
     return
   }
@@ -121,6 +127,13 @@ export const PersonalInfo = () => {
               isOpen={sendingIvtOpen}
               onClose={handleSendIvtClose}
               uid={user?.uid}
+              from={false}
+            ></SendingInvitationModal>
+            <SendingInvitationModal
+              isOpen={myIvtOpen}
+              onClose={handleMyIvtClose}
+              uid={user?.uid}
+              from={true}
             ></SendingInvitationModal>
             <Container
               className="d-flex align-items-center justify-content-center "
@@ -178,6 +191,9 @@ export const PersonalInfo = () => {
                       leftIcon={<Icon as={ai.AiOutlineArrowDown} />}
                       aria-label="Your Invitation"
                       colorScheme={'blue'}
+                      onClick={(e) => {
+                        setMyIvtOpen(true)
+                      }}
                     >
                       Invitations to me
                     </Button>

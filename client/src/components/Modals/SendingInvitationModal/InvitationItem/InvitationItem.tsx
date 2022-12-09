@@ -9,13 +9,15 @@ import { MdPending } from 'react-icons/md'
 import { Button, Icon } from '@chakra-ui/react'
 import { AiOutlineUndo } from 'react-icons/ai'
 import './InvitationItem.scss'
+import { send } from 'process'
 
 export interface IInvitaionItemProps {
   ivt: IInvitation
+  from: boolean
 }
 
 export const InvitationItem = (props: IInvitaionItemProps) => {
-  const { ivt } = props
+  const { ivt, from } = props
   const [sender, setSender] = useState<IUser>()
   const [rcver, setRcver] = useState<IUser>()
   const [node, setNode] = useState<INode>()
@@ -42,36 +44,72 @@ export const InvitationItem = (props: IInvitaionItemProps) => {
     load()
   }, [])
 
-  const handleDelete = async () => {
-    
-  }
+  const handleDelete = async () => {}
 
-  return (
-    <div className="ivt-item" key={ivt.inviteId}>
-      <div className="left-bar">
-        <div>
-          <MdPending style={{ display: 'inline' }} /> You invited{' '}
+  if (from) {
+    return (
+      <div className="ivt-item" key={ivt.inviteId}>
+        <div className="left-bar">
+          <Avatar
+            style={{ marginLeft: '10px', marginRight: '10px' }}
+            size={'sm'}
+            src={sender?.avatar}
+          ></Avatar>
+          <div className="ivt-text">
+            <div className="emphasis">{sender?.userName}</div>
+            &nbsp; {' wants you to '}
+            {ivt.type} <span className="emphasis">{node?.title}</span>
+          </div>
+          <div></div>
         </div>
-        <Avatar
-          style={{ marginLeft: '10px', marginRight: '10px' }}
-          size={'sm'}
-          src={sender?.avatar}
-        ></Avatar>
-        <div className="ivt-text">
-          <span className="emphasis">{sender?.userName}</span>
-          &nbsp; {'  to collaborate on'} <span className="emphasis">{node?.title}</span>
+        <div className="right-bar">
+          <Button
+            leftIcon={<Icon as={AiOutlineUndo} />}
+            colorScheme="teal"
+            onClick={handleDelete}
+          >
+            Accept
+          </Button>
+          <Button
+            style={{ marginLeft: '10px' }}
+            leftIcon={<Icon as={AiOutlineUndo} />}
+            colorScheme="red"
+            onClick={handleDelete}
+          >
+            Decline
+          </Button>
         </div>
-        <div></div>
       </div>
-      <div className="right-bar">
-        <Button
-          leftIcon={<Icon as={AiOutlineUndo} />}
-          colorScheme="red"
-          onClick={handleDelete}
-        >
-          recall
-        </Button>
+    )
+  } else {
+    return (
+      <div className="ivt-item" key={ivt.inviteId}>
+        <div className="left-bar">
+          <div>
+            <MdPending style={{ display: 'inline' }} /> You invited{' '}
+          </div>
+          <Avatar
+            style={{ marginLeft: '10px', marginRight: '10px' }}
+            size={'sm'}
+            src={rcver?.avatar}
+          ></Avatar>
+          <div className="ivt-text">
+            <div className="emphasis">{rcver?.userName}</div>
+            &nbsp; {'  to '}
+            {ivt.type} <span className="emphasis">{node?.title}</span>
+          </div>
+          <div></div>
+        </div>
+        <div className="right-bar">
+          <Button
+            leftIcon={<Icon as={AiOutlineUndo} />}
+            colorScheme="red"
+            onClick={handleDelete}
+          >
+            recall
+          </Button>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }

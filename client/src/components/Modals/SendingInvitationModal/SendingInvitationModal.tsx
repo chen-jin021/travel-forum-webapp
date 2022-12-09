@@ -50,11 +50,13 @@ import { FrontendUserGateway } from '../../../users'
 import { FrontendInvitationGateway } from '../../../invitations'
 import './SendingInvitationModal.scss'
 import { InvitationItem } from './InvitationItem'
+import { IServiceResponse } from '../../../types'
 
 export interface ISendingInvitationModalProps {
   isOpen: boolean
   onClose: () => void
   uid: string
+  from: boolean
 }
 
 /**
@@ -64,7 +66,7 @@ export interface ISendingInvitationModalProps {
 export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
   // deconstruct props variables
 
-  const { isOpen, onClose, uid } = props
+  const { isOpen, onClose, uid, from } = props
   // state variables
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const [selectedParentNode, setSelectedParentNode] = useState<INode | null>(null)
@@ -88,7 +90,12 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
   }
 
   const getIvts = async (uid: string) => {
-    const IvtResp = await FrontendInvitationGateway.getSentIvt(uid)
+    let IvtResp: IServiceResponse<IInvitation[]>
+    if (!from) {
+      IvtResp = await FrontendInvitationGateway.getSentIvt(uid)
+    } else {
+      IvtResp = await FrontendInvitationGateway.getSentIvt(uid)
+    }
     if (!IvtResp.success || !IvtResp.payload) {
       setError(IvtResp.message)
       return
@@ -103,16 +110,18 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
   }, [isOpen])
 
   return (
-    <Modal size={'2xl'} isOpen={isOpen} onClose={handleClose}>
+    <Modal size={'3xl'} isOpen={isOpen} onClose={handleClose}>
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Sent Invitations</ModalHeader>
+          <ModalHeader>
+            {from ? 'Invitation I recieved' : 'Invitation I sent'}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="list-wrapper">
               {ivts.map((ivt: IInvitation) => {
-                return <InvitationItem ivt={ivt} key={ivt.inviteId}></InvitationItem>
+                return <InvitationItem ivt={ivt} key={ivt.inviteId} from = {from}></InvitationItem>
               })}
             </div>
             <div></div>
