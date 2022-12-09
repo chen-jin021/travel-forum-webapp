@@ -1,6 +1,7 @@
 import { Select } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import * as bi from 'react-icons/bi'
+import * as ai from 'react-icons/ai'
 import * as ri from 'react-icons/ri'
 import { AiOutlineUsergroupAdd } from 'react-icons/ai'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
@@ -26,6 +27,7 @@ interface INodeHeaderProps {
   onHandleStartLinkClick: () => void
   onDeleteButtonClick: (node: INode) => void
   onMoveButtonClick: (node: INode) => void
+  onCreateNodeButtonClick: () => void
   onCollaborationButtonClick: () => void
 }
 
@@ -36,6 +38,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
     onHandleStartLinkClick,
     onHandleCompleteLinkClick,
     onCollaborationButtonClick,
+    onCreateNodeButtonClick,
   } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
@@ -112,28 +115,36 @@ export const NodeHeader = (props: INodeHeaderProps) => {
         {notRoot && (
           <>
             <Button
+              isWhite={isLinking}
+              text="Create"
+              icon={<ai.AiOutlinePlus />}
+              onClick={onCreateNodeButtonClick}
+            />
+            <Button
               icon={<ri.RiDeleteBin6Line />}
               text="Delete"
               onClick={() => onDeleteButtonClick(currentNode)}
             />
-            <Button
+            {/* <Button
               icon={<ri.RiExternalLinkLine />}
               text="Start Link"
               onClick={onHandleStartLinkClick}
-            />
+            /> */}
+
             <Button
               icon={<AiOutlineUsergroupAdd />}
               text="Collaboration"
               onClick={onCollaborationButtonClick}
             />
 
-            {isLinking && (
+            {/* {isLinking && (
               <Button
                 text="Complete Link"
                 icon={<bi.BiLinkAlt />}
                 onClick={onHandleCompleteLinkClick}
               />
-            )}
+            )} */}
+
             {folder && (
               <div className="select">
                 <Select

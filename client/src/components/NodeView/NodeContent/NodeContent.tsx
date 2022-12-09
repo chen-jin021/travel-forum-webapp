@@ -23,6 +23,7 @@ export interface INodeContentProps {
 export const NodeContent = (props: INodeContentProps) => {
   const { onCreateNodeButtonClick, childNodes } = props
   const currentNode = useRecoilValue(currentNodeState)
+
   switch (currentNode.type) {
     case 'image':
       return <ImageContent />
@@ -40,6 +41,15 @@ export const NodeContent = (props: INodeContentProps) => {
           />
         )
       }
+    case 'loc': {
+      return (
+        <FolderContent
+          node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
+          onCreateNodeButtonClick={onCreateNodeButtonClick}
+          childNodes={childNodes as any}
+        />
+      )
+    }
   }
   return null
 }

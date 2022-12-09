@@ -30,6 +30,7 @@ export interface ILocNode extends INode {
   ownerId: string
   lat: number
   lng: number
+  viewType: FolderContentType // so that users could view hierachy in folders
 }
 
 /**

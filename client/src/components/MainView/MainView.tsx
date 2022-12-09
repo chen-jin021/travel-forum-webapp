@@ -382,7 +382,9 @@ export const MainView = React.memo(function MainView() {
             onClose={() => setCreateNodeModalOpen(false)}
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
-            onSubmit={() => {}}
+            onSubmit={() => {
+              if (user) loadRootsFromDB(user?.uid)
+            }}
           />
           <CompleteLinkModal
             isOpen={completeLinkModalOpen}
