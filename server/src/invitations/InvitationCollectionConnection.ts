@@ -91,6 +91,33 @@ export class InvitationCollectionConnection {
     }
   }
 
+  /**
+   * Finds the invitation by 3 properties(nodeId, senderId and rcverId)
+   *
+   * @param {string} nodeId
+   * @param {string} senderId
+   * @param {string} rcverId
+   * @return successfulServiceResponse<Iinvitation> on success
+   *         failureServiceResponse on failure
+   */
+  async findInvitationByProps(
+    nodeId: string,
+    senderId: string,
+    rcverId: string
+  ): Promise<IServiceResponse<IInvitation>> {
+    const findResponse = await this.client
+      .db()
+      .collection(this.collectionName)
+      .findOne({ nodeId: nodeId, senderId: senderId, rcverId: rcverId })
+    if (findResponse == null) {
+      return failureServiceResponse(
+        'Failed to find invitation with the given three properties.'
+      )
+    } else {
+      return successfulServiceResponse(findResponse)
+    }
+  }
+
   /*
    * Get the list of all invitations sent by the user with given userId
    * @return successfulServiceResponse<IInvitation[]> on success
