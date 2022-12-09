@@ -28,7 +28,7 @@ import { IUserProperty, makeIUserProperty } from '../../types/IUserProperty'
 import { upload } from './PersonalInfoUtils'
 import { SendingInvitationModal } from '../Modals'
 
-export const PersonalInfo = React.memo(() => {
+export const PersonalInfo = () => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const [nickName, setNickName] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
@@ -190,4 +190,4 @@ export const PersonalInfo = React.memo(() => {
       </ChakraProvider>
     </>
   )
-})
+}
