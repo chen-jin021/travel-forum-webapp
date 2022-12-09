@@ -22,11 +22,12 @@ import { IUser } from '../../types'
 import { MdMail } from 'react-icons/md'
 import * as ai from 'react-icons/ai'
 import './PersonalInfo.scss'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { EditableText } from '../EditableText'
 import { IUserProperty, makeIUserProperty } from '../../types/IUserProperty'
 import { upload } from './PersonalInfoUtils'
 import { SendingInvitationModal } from '../Modals'
+import { async } from '@firebase/util'
 
 export const PersonalInfo = React.memo(() => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
@@ -40,8 +41,9 @@ export const PersonalInfo = React.memo(() => {
   const [sendingIvtOpen, setSendingIvtOpen] = useState(false)
   const [myIvtOpen, setMyIvtOpen] = useState(false)
   const [from, setFrom] = useState(false)
+  const history = useHistory()
 
-  const { user } = useAuth()
+  const { user, logOut } = useAuth()
 
   const getUserFromDB = async (uId: string) => {
     const userResp = await FrontendUserGateway.getUser(uId)
@@ -113,6 +115,21 @@ export const PersonalInfo = React.memo(() => {
     setMyIvtOpen(false)
   }
 
+  const handleLogOut = async () => {
+    try {
+      await logOut()
+    } catch (e) {
+      let message
+      if (e instanceof Error) {
+        message = e.message
+        history.push('/')
+      } else {
+        message = String(e)
+      }
+      setError(message)
+    }
+  }
+
   if (!user) {
     return <></>
   } else {
@@ -181,20 +198,30 @@ export const PersonalInfo = React.memo(() => {
                           setSendingIvtOpen(true)
                         }}
                       >
-                        Invitations to others
+                        Invitations I sent
                       </Button>
                     </div>
                     <div style={{ marginTop: '20px' }}>
                       <Button
                         style={{ width: '240px' }}
                         leftIcon={<Icon as={ai.AiOutlineArrowDown} />}
-                        aria-label="Your Invitation"
                         colorScheme={'blue'}
                         onClick={(e) => {
                           setMyIvtOpen(true)
                         }}
                       >
-                        Invitations to me
+                        Invitations I recieved
+                      </Button>
+                    </div>
+                    <div style={{ marginTop: '40px' }}>
+                      <Button
+                        style={{ width: '240px' }}
+                        colorScheme={'red'}
+                        onClick={(e) => {
+                          handleLogOut()
+                        }}
+                      >
+                        Log Out
                       </Button>
                     </div>
                   </div>

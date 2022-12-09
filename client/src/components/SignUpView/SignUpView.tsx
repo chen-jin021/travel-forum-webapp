@@ -19,6 +19,7 @@ export const SignUpView = React.memo(() => {
   const passwordConfirmRef = useRef<HTMLInputElement>(null)
 
   const { signUp, user } = useAuth()
+  const history = useHistory()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -49,7 +50,9 @@ export const SignUpView = React.memo(() => {
       const createResp = await FrontendUserGateway.createUser(user)
       if (!createResp.success) {
         setError(createResp.message)
+        return
       }
+      history.push('/main')
     } catch (e) {
       let message
       if (e instanceof Error) {
@@ -59,7 +62,6 @@ export const SignUpView = React.memo(() => {
       }
       setError(message)
     }
-
     setLoading(false)
   }
 
@@ -145,7 +147,7 @@ export const SignUpView = React.memo(() => {
             </Card.Body>
           </Card>
           <div className="w-100 text-center mt-2">
-            Already have an account ? <Link to={'/login'}>Log In !</Link>
+            Already have an account ? <Link to={'/'}>Log In !</Link>
           </div>
         </div>
       </Container>
