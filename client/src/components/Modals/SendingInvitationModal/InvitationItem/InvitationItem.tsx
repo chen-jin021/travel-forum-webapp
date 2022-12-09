@@ -15,10 +15,11 @@ export interface IInvitaionItemProps {
   ivt: IInvitation
   from: boolean
   handleDelete: (ivtId: string) => void
+  handleAccept: (ivtId: string) => void
 }
 
 export const InvitationItem = (props: IInvitaionItemProps) => {
-  const { ivt, from, handleDelete } = props
+  const { ivt, from, handleDelete, handleAccept } = props
   const [sender, setSender] = useState<IUser>()
   const [rcver, setRcver] = useState<IUser>()
   const [node, setNode] = useState<INode>()
@@ -62,13 +63,22 @@ export const InvitationItem = (props: IInvitaionItemProps) => {
           <div></div>
         </div>
         <div className="right-bar">
-          <Button leftIcon={<Icon as={AiOutlineUndo} />} colorScheme="teal">
+          <Button
+            leftIcon={<Icon as={AiOutlineUndo} />}
+            colorScheme="teal"
+            onClick={(e) => {
+              handleAccept(ivt.inviteId)
+            }}
+          >
             Accept
           </Button>
           <Button
             style={{ marginLeft: '10px' }}
             leftIcon={<Icon as={AiOutlineUndo} />}
             colorScheme="red"
+            onClick={(e) => {
+              handleDelete(ivt.inviteId)
+            }}
           >
             Decline
           </Button>

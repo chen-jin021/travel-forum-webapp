@@ -51,6 +51,7 @@ import { FrontendInvitationGateway } from '../../../invitations'
 import './SendingInvitationModal.scss'
 import { InvitationItem } from './InvitationItem'
 import { IServiceResponse } from '../../../types'
+import { DEFAULT_BREAKPOINTS } from 'react-bootstrap/esm/ThemeProvider'
 
 export interface ISendingInvitationModalProps {
   isOpen: boolean
@@ -98,6 +99,17 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
     setRefresh(!refresh)
   }
 
+  const handleAccept = async (ivtId: string) => {
+    console.log(1)
+    const acceptResp = await FrontendInvitationGateway.acceptIvt(ivtId)
+    if (!acceptResp.success || !acceptResp.payload) {
+      setError(acceptResp.message)
+      return
+    }
+    console.log(acceptResp)
+    setRefresh(!refresh)
+  }
+
   const getIvts = async (uid: string) => {
     let IvtResp: IServiceResponse<IInvitation[]>
     if (!from) {
@@ -136,6 +148,7 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
                     key={ivt.inviteId}
                     from={from}
                     handleDelete={handleDelete}
+                    handleAccept={handleAccept}
                   ></InvitationItem>
                 )
               })}
