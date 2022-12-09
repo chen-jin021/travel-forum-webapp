@@ -14,6 +14,7 @@ export const EditableText = (props: IEditableTextProps) => {
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onEdit(event.target.value)
+    console.log(event.target.value)
   }
 
   const handleOnBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +26,9 @@ export const EditableText = (props: IEditableTextProps) => {
     <input
       className={isPersonal ? 'personal-editableText' : 'editableText'}
       autoFocus
-      onChange={()=>{}}
+      onChange={() => {
+        handleOnChange
+      }}
       onBlur={handleOnBlur}
       defaultValue={text}
     ></input>

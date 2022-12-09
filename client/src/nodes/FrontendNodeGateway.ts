@@ -48,7 +48,7 @@ export const FrontendNodeGateway = {
         {
           lat: lat,
           lng: lng,
-          userId: userId
+          userId: userId,
         }
       )
     } catch (exception) {

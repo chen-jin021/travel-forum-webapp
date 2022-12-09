@@ -21,6 +21,7 @@ import { Button } from '../../Button'
 import { ContextMenuItems } from '../../ContextMenu'
 import { EditableText } from '../../EditableText'
 import './NodeHeader.scss'
+import { signOut } from 'firebase/auth'
 
 interface INodeHeaderProps {
   onHandleCompleteLinkClick: () => void
@@ -74,12 +75,42 @@ export const NodeHeader = (props: INodeHeaderProps) => {
 
   /* Method to update the node title */
   const handleUpdateTitle = async (title: string) => {
-    // TODO: Task 8
+    // TODO: Task 8 - node title
+    setTitle(title)
+    const newTitle = makeINodeProperty('title', title)
+    const updateTitleResp = await FrontendNodeGateway.updateNode(currentNode.nodeId, [
+      newTitle,
+    ])
+    console.log('The new title is: ' + title)
+    if (!updateTitleResp.success) {
+      setAlertIsOpen(true)
+      setAlertTitle('Title not updated')
+      setAlertMessage(updateTitleResp.message)
+    }
+    console.log(updateTitleResp)
+    setRefresh(!refresh)
+    setRefreshLinkList(!refreshLinkList)
   }
 
   /* Method called on title right click */
   const handleTitleRightClick = () => {
     // TODO: Task 9 - context menu
+    ContextMenuItems.splice(0, ContextMenuItems.length)
+
+    const menuItem: JSX.Element = (
+      <div
+        key={'titleRename'}
+        className="contextMenuItem"
+        onClick={(e) => {
+          ContextMenuItems.splice(0, ContextMenuItems.length)
+          setEditingTitle(true)
+        }}
+      >
+        <div className="itemTitle">Rename</div>
+        <div className="itemShortcut">ctrl + shift + R</div>
+      </div>
+    )
+    ContextMenuItems.push(menuItem)
   }
 
   /* useEffect which updates the title and editing state when the node is changed */
@@ -91,18 +122,66 @@ export const NodeHeader = (props: INodeHeaderProps) => {
   /* Node key handlers*/
   const nodeKeyHandlers = (e: KeyboardEvent) => {
     // TODO: Task 9 - keyboard shortcuts
+    // determine user's
+    // eslint-disable-next-line
+    let os: string = ''
+    // eslint-disable-next-line
+    if (navigator.userAgent.indexOf('Win') != -1) os = 'win'
+    // eslint-disable-next-line
+    if (navigator.userAgent.indexOf('Mac') != -1) os = 'mac'
+    // eslint-disable-next-line
+    if (navigator.userAgent.indexOf('X11') != -1) os = 'x11'
+    // eslint-disable-next-line
+    if (navigator.userAgent.indexOf('Linux') != -1) os = 'linux'
+
+    // key handlers with no modifiers
+    switch (e.key) {
+      case 'Enter':
+        if (editingTitle == true) {
+          e.preventDefault()
+          setEditingTitle(false)
+        }
+        break
+      case 'Escape':
+        if (editingTitle == true) {
+          e.preventDefault()
+          setEditingTitle(false)
+        }
+        break
+    }
+
+    // ctrl + shift key events
+    if (e.shiftKey && e.ctrlKey) {
+      switch (e.key) {
+        case 'R':
+          // prevent the default behavior - refresh the page
+          e.preventDefault()
+          setEditingTitle(true)
+          break
+      }
+    }
   }
 
   // Trigger on node load or when editingTitle changes
   useEffect(() => {
     // TODO: Task 9 - keyboard shortcuts
+    // make sure this component is always looking for keydown event
+    document.addEventListener('keydown', nodeKeyHandlers)
+    // prevent the default system behaviors
   }, [editingTitle])
 
   const folder: boolean = currentNode.type === 'folder'
   const notRoot: boolean = currentNode.nodeId !== 'root'
   return (
     <div className="nodeHeader">
-      <div className="nodeHeader-title">
+      <div
+        className="nodeHeader-title"
+        onDoubleClick={(e) => setEditingTitle(true)}
+        onContextMenu={handleTitleRightClick}
+        onBlur={() => {
+          handleUpdateTitle(title)
+        }}
+      >
         <EditableText
           text={title}
           editing={editingTitle}

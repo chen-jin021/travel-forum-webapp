@@ -6,11 +6,37 @@
     text-decoration: underline !important;
     cursor: pointer;
   }
-
-  // TODO Make the editor and menu look nice!
 }
 
 li {
   padding: 0 1rem;
   list-style-position: inside;
+}
+
+// styling our text buttons
+.textEditorButton {
+  font-size: inherit;
+  font-family: inherit;
+  color: #000;
+  margin: 0.2rem;
+  border: 1px solid black;
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  background: white;
+  accent-color: black;
+  margin-bottom: 20px;
+}
+
+.active-textEditorButton {
+  background: black;
+  color: #fff;
+}
+
+.highlight {
+  background-color: rgba(250, 245, 148, var(--tw-bg-opacity));
+}
+
+.editor {
+  padding: 10px;
+  margin: 10px;
 }
