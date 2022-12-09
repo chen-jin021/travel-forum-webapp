@@ -1,7 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FrontendAnchorGateway } from '../../anchors'
 import { generateObjectId } from '../../global'
-import { IAnchor, INode, isSameExtent, NodeIdsToNodesMap } from '../../types'
+import {
+  IAnchor,
+  INode,
+  isSameExtent,
+  NodeIdsToNodesMap,
+  RecursiveNodeTree,
+} from '../../types'
 import { NodeBreadcrumb } from './NodeBreadcrumb'
 import { NodeContent } from './NodeContent'
 import { NodeHeader } from './NodeHeader'
@@ -21,6 +27,14 @@ import {
   refreshLinkListState,
 } from '../../global/Atoms'
 import './NodeView.scss'
+import { CreateNodeModal } from '../Modals'
+import {
+  createNodeIdsToNodesMap,
+  emptyNode,
+  makeRootWrapper,
+} from '../MainView/mainViewUtils'
+import { FrontendNodeGateway } from '../../nodes'
+import { Button } from '@chakra-ui/react'
 
 export interface INodeViewProps {
   currentNode: INode
@@ -59,11 +73,17 @@ export const NodeView = (props: INodeViewProps) => {
   const selectedExtent = useRecoilValue(selectedExtentState)
   const refresh = useRecoilValue(refreshState)
   const refreshLinkList = useRecoilValue(refreshLinkListState)
+  const [rootNodes, setRootNodes] = useState<RecursiveNodeTree[]>([
+    new RecursiveNodeTree(emptyNode),
+  ])
   const [anchors, setAnchors] = useState<IAnchor[]>([])
   const setAlertIsOpen = useSetRecoilState(alertOpenState)
   const setAlertTitle = useSetRecoilState(alertTitleState)
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [currNode, setCurrentNode] = useRecoilState(currentNodeState)
+  const [createNodeModalOpen, setCreateNodeModalOpen] = useState(false)
+  const [isAppLoaded, setIsAppLoaded] = useState(false)
+
   const {
     filePath: { path },
   } = currentNode
@@ -99,6 +119,29 @@ export const NodeView = (props: INodeViewProps) => {
       setIsLinking(true)
     }
   }
+
+  // handle create nodes in nodeview
+  const handleCreateNodeButtonClick = useCallback(() => {
+    setCreateNodeModalOpen(true)
+  }, [setCreateNodeModalOpen])
+
+  /** update our frontend root nodes from the database */
+  const loadRootsFromDB = useCallback(async () => {
+    const rootsFromDB = await FrontendNodeGateway.getRoots()
+    if (rootsFromDB.success) {
+      rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
+      setIsAppLoaded(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadRootsFromDB()
+  }, [loadRootsFromDB, refresh])
+
+  const rootRecursiveNodeTree: RecursiveNodeTree = useMemo(
+    () => makeRootWrapper(rootNodes),
+    [rootNodes]
+  )
 
   const handleCompleteLinkClick = async () => {
     const anchorsByNodeResp = await FrontendAnchorGateway.getAnchorsByNodeId(
@@ -185,23 +228,32 @@ export const NodeView = (props: INodeViewProps) => {
     document.removeEventListener('pointermove', onPointerMove)
     document.removeEventListener('pointerup', onPointerUp)
   }
-
   return (
     <div className="node">
-      <div className="nodeView">
+      <div className="nodeView" style={{ width: nodeViewWidth }}>
         <NodeHeader
           onMoveButtonClick={onMoveButtonClick}
           onDeleteButtonClick={onDeleteButtonClick}
           onHandleStartLinkClick={handleStartLinkClick}
           onHandleCompleteLinkClick={handleCompleteLinkClick}
+          onCreateNodeButtonClick={onCreateNodeButtonClick}
           onCollaborationButtonClick={onCollaborationButtonClick}
         />
+        <CreateNodeModal
+          isOpen={createNodeModalOpen}
+          onClose={() => setCreateNodeModalOpen(false)}
+          roots={rootNodes}
+          nodeIdsToNodesMap={nodeIdsToNodesMap}
+          onSubmit={loadRootsFromDB}
+        />
+
         <div className="nodeView-scrollable">
           {hasBreadcrumb && (
             <div className="nodeView-breadcrumb">
               <NodeBreadcrumb path={path} nodeIdsToNodesMap={nodeIdsToNodesMap} />
             </div>
           )}
+
           <div className="nodeView-content">
             <NodeContent
               childNodes={childNodes}
@@ -210,11 +262,15 @@ export const NodeView = (props: INodeViewProps) => {
           </div>
         </div>
       </div>
-      {/* {hasAnchors && (
-        <div className="divider" ref={divider} onPointerDown={onPointerDown} />
-      )} */}
       {hasAnchors && (
-        <div className={'nodeProperties'} ref={nodeProperties}>
+        <div className="divider" ref={divider} onPointerDown={onPointerDown} />
+      )}
+      {hasAnchors && (
+        <div
+          className={'nodeProperties'}
+          ref={nodeProperties}
+          style={{ width: nodePropertiesWidth }}
+        >
           <NodeLinkMenu nodeIdsToNodesMap={nodeIdsToNodesMap} />
         </div>
       )}

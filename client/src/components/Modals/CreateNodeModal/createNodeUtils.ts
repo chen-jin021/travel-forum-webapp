@@ -47,7 +47,7 @@ export const getMeta = async (imageUrl: string) => {
     normalizedHeight: number
     normalizedWidth: number
   }>((resolve) => {
-    img.addEventListener('load', function() {
+    img.addEventListener('load', function () {
       naturalWidth = img.naturalWidth
       naturalHeight = img.naturalHeight
       // The height and the width are normalized so that the height will always be 300px
@@ -84,7 +84,7 @@ export async function createNodeFromModal({
       console.error('Error: parent node is null')
     }
   }
-
+  
   let newNode: INode | IFolderNode
   switch (type) {
     case 'folder':

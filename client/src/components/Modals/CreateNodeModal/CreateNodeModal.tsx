@@ -40,7 +40,7 @@ export interface ICreateNodeModalProps {
  */
 export const CreateNodeModal = (props: ICreateNodeModalProps) => {
   // deconstruct props variables
-  
+
   const { isOpen, onClose, roots, nodeIdsToNodesMap, onSubmit } = props
   // state variables
   const setSelectedNode = useSetRecoilState(selectedNodeState)
@@ -78,6 +78,10 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
     }
     if (title.length === 0) {
       setError('Error: No title')
+      return
+    }
+    if (selectedParentNode == null) {
+      setError('Error: No Parent Node Chosen')
       return
     }
     const attributes = {
@@ -130,17 +134,21 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create new node</ModalHeader>
+          <ModalHeader>Create New Travel Log</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input value={title} onChange={handleTitleChange} placeholder="Title..." />
+            <Input
+              value={title}
+              onChange={handleTitleChange}
+              placeholder="Title Of Your Travel Log"
+            />
             <div className="modal-input">
               <Select
                 value={selectedType}
                 onChange={handleSelectedTypeChange}
                 placeholder="Select a type"
               >
-                {nodeTypes.map((type) => (
+                {nodeTypes.slice(0, 3).map((type) => (
                   <option key={type} value={type}>
                     {type.charAt(0).toUpperCase() + type.slice(1)}
                   </option>
@@ -176,7 +184,9 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
             )}
             <div className="modal-section">
               <span className="modal-title">
-                <div className="modal-title-header">Choose a parent node (optional):</div>
+                <div className="modal-title-header">
+                  Choosing Location to Add Your Travel Log:
+                </div>
               </span>
               <div className="modal-treeView">
                 <TreeView
