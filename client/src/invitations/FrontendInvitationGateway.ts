@@ -50,7 +50,36 @@ export const FrontendInvitationGateway = {
         }
       )
     } catch (exception) {
-      return failureServiceResponse('[getIvt] Unable to access backend')
+      return failureServiceResponse('[getSentIvt] Unable to access backend')
+    }
+  },
+
+  getRcvIvt: async (userId: string): Promise<IServiceResponse<IInvitation[]>> => {
+    try {
+      return await post<IServiceResponse<IInvitation[]>>(
+        baseEndpoint + servicePath + 'getRcvInvitesByUserId',
+        {
+          userId: userId,
+        }
+      )
+    } catch (exception) {
+      return failureServiceResponse('[getRcvIvt] Unable to access backend')
+    }
+  },
+
+  declineIvt: async (inviteId: string): Promise<IServiceResponse<{}>> => {
+    try {
+      return await remove<IServiceResponse<INode>>(baseEndpoint + servicePath + inviteId)
+    } catch (exception) {
+      return failureServiceResponse('[declineInvitation] Unable to access backend')
+    }
+  },
+
+  acceptIvt: async (inviteId: string): Promise<IServiceResponse<{}>> => {
+    try {
+      return await remove<IServiceResponse<INode>>(baseEndpoint + servicePath + inviteId)
+    } catch (exception) {
+      return failureServiceResponse('[declineInvitation] Unable to access backend')
     }
   },
 }
