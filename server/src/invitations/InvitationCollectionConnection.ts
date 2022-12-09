@@ -142,9 +142,9 @@ export class InvitationCollectionConnection {
    * @return successfulServiceResponse<Iinvitation> on success
    *         failureServiceResponse on failure
    */
-  async deleteInvitation(invitationId: string): Promise<IServiceResponse<{}>> {
+  async deleteInvitation(inviteId: string): Promise<IServiceResponse<{}>> {
     const collection = await this.client.db().collection(this.collectionName)
-    const deleteResponse = await collection.deleteOne({ invitationId: invitationId })
+    const deleteResponse = await collection.deleteOne({ inviteId: inviteId })
     if (deleteResponse.result.ok) {
       return successfulServiceResponse({})
     }
