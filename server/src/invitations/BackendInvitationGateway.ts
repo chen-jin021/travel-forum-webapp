@@ -77,9 +77,7 @@ export class BackendInvitationGateway {
       )
 
     if (inviteWithPropRsp.success) {
-      return failureServiceResponse(
-        'invitation with duplicate props already exist in database.'
-      )
+      return failureServiceResponse('You have sent one invitation on this location!')
     }
     // if everything checks out, insert invitation
     const insertinvitationResp =

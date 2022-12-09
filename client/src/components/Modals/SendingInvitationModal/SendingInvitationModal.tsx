@@ -100,7 +100,6 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
   }
 
   const handleAccept = async (ivtId: string) => {
-    console.log(1)
     const acceptResp = await FrontendInvitationGateway.acceptIvt(ivtId)
     if (!acceptResp.success || !acceptResp.payload) {
       setError(acceptResp.message)
