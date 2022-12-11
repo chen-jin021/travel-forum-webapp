@@ -201,4 +201,19 @@ export const FrontendNodeGateway = {
       return failureServiceResponse('[fetchNodeByUserId] Unable to access backend')
     }
   },
+
+  searchNodes: async (
+    searchRules: string,
+    signal?: AbortSignal
+  ): Promise<IServiceResponse<INode[]>> => {
+    try {
+      const result = await fetch(`${baseEndpoint}${servicePath}search/${searchRules}`, {
+        signal,
+      })
+
+      return result.json() as unknown as IServiceResponse<INode[]>
+    } catch (err) {
+      return failureServiceResponse('[searchNodes] Unable to access backend')
+    }
+  },
 }
