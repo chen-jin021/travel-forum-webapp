@@ -76,7 +76,6 @@ export const NodeHeader = (props: INodeHeaderProps) => {
   /* Method to update the node title */
   const handleUpdateTitle = async (title: string) => {
     // TODO: Task 8 - node title
-    setTitle(title)
     const newTitle = makeINodeProperty('title', title)
     const updateTitleResp = await FrontendNodeGateway.updateNode(currentNode.nodeId, [
       newTitle,
@@ -117,7 +116,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
   useEffect(() => {
     setTitle(currentNode.title)
     setEditingTitle(false)
-  }, [currentNode])
+  }, [currentNode, setEditingTitle])
 
   /* Node key handlers*/
   const nodeKeyHandlers = (e: KeyboardEvent) => {
@@ -178,9 +177,6 @@ export const NodeHeader = (props: INodeHeaderProps) => {
         className="nodeHeader-title"
         onDoubleClick={(e) => setEditingTitle(true)}
         onContextMenu={handleTitleRightClick}
-        onBlur={() => {
-          handleUpdateTitle(title)
-        }}
       >
         <EditableText
           text={title}
