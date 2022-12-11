@@ -13,7 +13,7 @@ import {
 import { InvitationCollectionConnection } from './InvitationCollectionConnection'
 import { UserCollectionConnection } from '../users'
 import { NodeCollectionConnection } from '../nodes'
-import { readlink } from 'fs'
+import { read, readlink } from 'fs'
 
 /**
  * BackendinvitationGateway handles requests from invitationRouter, and calls on methods
@@ -180,7 +180,6 @@ export class BackendInvitationGateway {
     // 4. get the Invitation type (write/ read) and receiver's userId from the invitation
     const inviteType = getInvitationsResp.payload.type
     const rcverId = getInvitationsResp.payload.rcverId
-
     // 5. construct the new property, push the receiver's userId into the list
     let property: INodeProperty
     if (inviteType == 'read') {
@@ -193,9 +192,14 @@ export class BackendInvitationGateway {
       property = makeINodeProperty('userWriteIds', writeList)
     }
 
+    const propertyDic: any = {}
+    const fieldName = property.fieldName
+    const value = property.value
+    propertyDic[fieldName] = value
+
     // 6. update Node with corresponding nodeId and the constructed property
     const updateNodeResp: IServiceResponse<{}> =
-      await this.nodeCollectionConnection.updateNode(nodeId, property)
+      await this.nodeCollectionConnection.updateNode(nodeId, propertyDic)
     return updateNodeResp
   }
 }

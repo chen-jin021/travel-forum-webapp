@@ -77,9 +77,9 @@ export const FrontendInvitationGateway = {
 
   acceptIvt: async (inviteId: string): Promise<IServiceResponse<{}>> => {
     try {
-      return await remove<IServiceResponse<INode>>(baseEndpoint + servicePath + inviteId)
+      return await get<IServiceResponse<INode>>(baseEndpoint + servicePath + inviteId)
     } catch (exception) {
-      return failureServiceResponse('[declineInvitation] Unable to access backend')
+      return failureServiceResponse('[acceptInvitation] Unable to access backend')
     }
   },
 }
