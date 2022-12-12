@@ -101,6 +101,7 @@ export const ShareModal = (props: IShareModalProps) => {
       setError(updatePublicResp.message)
       return
     }
+    setSelectedNode(updatePublicResp.payload)
     handleClose()
   }
 

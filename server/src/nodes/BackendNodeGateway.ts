@@ -198,7 +198,7 @@ export class BackendNodeGateway {
     const getParentResp = await this.nodeCollectionConnection.findNodeById(parentId)
     if (!getParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeId from parent's children field"
+        'Failed to remove nodeId from parent\'s children field'
       )
     }
     const parent = getParentResp.payload
@@ -213,7 +213,7 @@ export class BackendNodeGateway {
     ])
     if (!updateOldParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeToMove from its Parent's children field"
+        'Failed to remove nodeToMove from its Parent\'s children field'
       )
     }
     return successfulServiceResponse({})
@@ -279,7 +279,6 @@ export class BackendNodeGateway {
     return successfulServiceResponse(getMovedNodeResp.payload)
   }
 
-
   /**
    * Method to add a child's nodeId to parent node's filePath.children.
    * Should return failure response when child already exists in parent node's
@@ -292,7 +291,7 @@ export class BackendNodeGateway {
     const getParentResp = await this.getNodeById(parentId)
     if (!getParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeId from parent's children field"
+        'Failed to remove nodeId from parent\'s children field'
       )
     }
     const parent = getParentResp.payload
@@ -313,7 +312,7 @@ export class BackendNodeGateway {
     ])
     if (!updateOldParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeToMove from its Parent's children field"
+        'Failed to remove nodeToMove from its Parent\'s children field'
       )
     }
     return successfulServiceResponse({})
@@ -334,8 +333,22 @@ export class BackendNodeGateway {
     }
     return fetchNodesResp
   }
+
   async fetchLocNodes(): Promise<IServiceResponse<RecursiveNodeTree[]>> {
     const fetchNodesResp = await this.nodeCollectionConnection.fetchAllLocNodes()
+    if (!fetchNodesResp.success || !fetchNodesResp.payload) {
+      return failureServiceResponse(fetchNodesResp.message)
+    }
+    const nodeQueue = fetchNodesResp.payload
+    const rootsToReturn: RecursiveNodeTree[] = []
+    for (const root of nodeQueue) {
+      rootsToReturn.push(await this.buildSubtreeHelper(new RecursiveNodeTree(root)))
+    }
+    return successfulServiceResponse(rootsToReturn)
+  }
+
+  async fetchPublicNodes(): Promise<IServiceResponse<RecursiveNodeTree[]>> {
+    const fetchNodesResp = await this.nodeCollectionConnection.fetchAllPublicNodes()
     if (!fetchNodesResp.success || !fetchNodesResp.payload) {
       return failureServiceResponse(fetchNodesResp.message)
     }

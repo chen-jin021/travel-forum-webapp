@@ -27,6 +27,7 @@ import { FrontendNodeGateway } from '../../nodes'
 import { useAuth } from '../../contexts/AuthContext'
 import { ReaderHeader } from './ReaderHeader'
 import { WriterHeader } from './WriterHeader'
+import { SquareNodeHeader } from './SquareNodeHeader'
 
 export interface INodeViewProps {
   currentNode: INode
@@ -45,6 +46,7 @@ export interface INodeViewProps {
   // children used when renderinßg folder node
   onShareBtnClick: () => void
   childNodes?: INode[]
+  inSquare: boolean
 }
 
 /** Full page view focused on a node's content, with annotations and links */
@@ -59,6 +61,7 @@ export const NodeView = (props: INodeViewProps) => {
     onCollaborationButtonClick,
     onShareBtnClick,
     childNodes,
+    inSquare,
   } = props
   const setIsLinking = useSetRecoilState(isLinkingState)
   const [startAnchor, setStartAnchor] = useRecoilState(startAnchorState)
@@ -172,6 +175,11 @@ export const NodeView = (props: INodeViewProps) => {
     if (!user) {
       return
     }
+    // if node is public and currently in square
+    if ((permissionNode as ILocNode).public && inSquare) {
+      setPermission('publi')
+      return
+    }
     // if user is owner
     if (user.uid === (permissionNode as ILocNode).ownerId) {
       setPermission('owner')
@@ -258,6 +266,14 @@ export const NodeView = (props: INodeViewProps) => {
       case 'read':
         return (
           <ReaderHeader
+            onHandleStartLinkClick={handleStartLinkClick}
+            onHandleCompleteLinkClick={handleCompleteLinkClick}
+            ownerid={(currNode as ILocNode).ownerId}
+          />
+        )
+      case 'publi':
+        return (
+          <SquareNodeHeader
             onHandleStartLinkClick={handleStartLinkClick}
             onHandleCompleteLinkClick={handleCompleteLinkClick}
             ownerid={(currNode as ILocNode).ownerId}

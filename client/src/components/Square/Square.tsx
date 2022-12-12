@@ -83,7 +83,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
   /** update our frontend root nodes from the database */
   const loadRootsFromDB = useCallback(
     async (userId: string) => {
-      const rootsFromDB = await FrontendNodeGateway.fetchNodeByUserId(userId)
+      const rootsFromDB = await FrontendNodeGateway.getPublic()
       console.log(rootsFromDB)
       if (rootsFromDB.success) {
         rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
@@ -441,6 +441,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
                   onCollaborationButtonClick={handleCollaborationClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
                   onShareBtnClick={() => {}}
+                  inSquare={true}
                 />
               </div>
             )}
