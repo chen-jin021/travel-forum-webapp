@@ -1,10 +1,9 @@
 import { Avatar, Select } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import * as bi from 'react-icons/bi'
 import * as ai from 'react-icons/ai'
-import * as ri from 'react-icons/ri'
+import { AiOutlineUser } from 'react-icons/ai'
 import { BsPencilFill } from 'react-icons/bs'
-import { AiOutlineUsergroupAdd, AiOutlineUser, AiOutlineEye } from 'react-icons/ai'
+import { useHistory } from 'react-router-dom'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
   alertMessageState,
@@ -17,21 +16,13 @@ import {
   selectedNodeState,
 } from '../../../global/Atoms'
 import { FrontendNodeGateway } from '../../../nodes'
-import {
-  IFolderNode,
-  INode,
-  INodeProperty,
-  IUser,
-  makeINodeProperty,
-} from '../../../types'
+import { IFolderNode, INodeProperty, IUser, makeINodeProperty } from '../../../types'
+import { FrontendUserGateway } from '../../../users'
 import { Button } from '../../Button'
 import { ContextMenuItems } from '../../ContextMenu'
 import { EditableText } from '../../EditableText'
-import './ReaderHeader.scss'
-import { signOut } from 'firebase/auth'
 import NodeSelect from '../../NodeSelect'
-import { AiOutlineShareAlt } from 'react-icons/ai'
-import { FrontendUserGateway } from '../../../users'
+import './ReaderHeader.scss'
 
 interface IWriterHeaderProps {
   onHandleCompleteLinkClick: () => void
@@ -56,6 +47,8 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [refreshLinkList, setRefreshLinkList] = useRecoilState(refreshLinkListState)
   const [user, setUser] = useState<IUser>()
+  const history = useHistory()
+  const [error, setError] = useState('')
 
   // State variable for current node title
   const [title, setTitle] = useState(currentNode.title)
@@ -78,6 +71,21 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
       setAlertTitle('View not updated')
       setAlertMessage(updateViewResp.message)
     }
+  }
+
+  const onQuitClick = async () => {
+    if (!user) return
+    const userId = user.userId
+    const deleteUserPermitResp = await FrontendNodeGateway.deleteUserInList(
+      currentNode.nodeId,
+      userId,
+      'write'
+    )
+    if (!deleteUserPermitResp.success || !deleteUserPermitResp.payload) {
+      setError(deleteUserPermitResp.message)
+      return
+    }
+    history.push('/main')
   }
 
   /* Method to update the node title */
@@ -119,7 +127,7 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
   }
 
   const fetchOwner = async (userId: string) => {
-    const ownerResp = await FrontendUserGateway.getUser(ownerid)
+    const ownerResp = await FrontendUserGateway.getUser(userId)
     if (!ownerResp.success || !ownerResp.payload) {
       return
     }
@@ -181,8 +189,6 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
 
   // Trigger on node load or when editingTitle changes
   useEffect(() => {
-    // TODO: Task 9 - keyboard shortcuts
-    // make sure this component is always looking for keydown event
     document.addEventListener('keydown', nodeKeyHandlers)
     // prevent the default system behaviors
   }, [editingTitle])
@@ -218,7 +224,7 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
               icon={<ai.AiOutlinePlus />}
               onClick={onCreateNodeButtonClick}
             />
-
+            <Button text="Quit" onClick={onQuitClick} />
             <NodeSelect />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
