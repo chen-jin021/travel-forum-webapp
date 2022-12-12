@@ -70,6 +70,7 @@ export const NodeView = (props: INodeViewProps) => {
   const setAlertMessage = useSetRecoilState(alertMessageState)
 
   const [, setPlaying] = useRecoilState(controlCurrentPlayerState)
+  const [permission, setPermission] = useState('own')
 
   // eslint-disable-next-line
   const [currNode, setCurrentNode] = useRecoilState(currentNodeState)
