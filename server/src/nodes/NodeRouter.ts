@@ -261,24 +261,6 @@ export class NodeRouter {
     })
 
     /**
-     * Search Node
-     *
-     * @param req request object coming from client
-     * @param res response object to send to client
-     */
-
-    NodeExpressRouter.post('/search', async (req: Request, res: Response) => {
-      try {
-        const term = req.body.data
-        const response: IServiceResponse<INode[]> =
-          await this.BackendNodeGateway.searchTerm(term)
-        res.status(200).send(response)
-      } catch (e) {
-        res.status(500).send(e.message)
-      }
-    })
-
-    /**
      * Request to retrieve all nodes that does not have parent
      *
      * @param req request object coming from client
@@ -292,6 +274,33 @@ export class NodeRouter {
       } catch (e) {
         res.status(500).send(e.message)
       }
+    })
+
+    NodeExpressRouter.get('/search/:text', async (req: Request, res: Response) => {
+      try {
+        const { text } = req.params
+        const resp = await this.BackendNodeGateway.searchNodes(text)
+
+        res.status(200).send(resp)
+      } catch (e) {
+        console.log(e)
+        res.status(500).send(e.message)
+      }
+    })
+
+    NodeExpressRouter.get('/video/proxy', async (req: Request, res: Response) => {
+      const { location } = req.query
+
+      const lib = (location as string).includes('https') ? https : http
+
+      const request = lib.request(location as string, (resp) => {
+        res.writeHead(200, { ...resp.headers, connection: 'keep-alive' })
+
+        resp.pipe(res)
+      })
+
+      console.log(location)
+      request.end()
     })
   }
 
