@@ -22,7 +22,7 @@ import { Button } from '../../Button'
 import { ContextMenuItems } from '../../ContextMenu'
 import { EditableText } from '../../EditableText'
 import NodeSelect from '../../NodeSelect'
-import './ReaderHeader.scss'
+// import './ReaderHeader.scss'
 
 interface IWriterHeaderProps {
   onHandleCompleteLinkClick: () => void

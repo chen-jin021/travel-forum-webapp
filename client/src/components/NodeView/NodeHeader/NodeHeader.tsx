@@ -236,7 +236,9 @@ export const NodeHeader = (props: INodeHeaderProps) => {
                 onClick={onHandleCompleteLinkClick}
               />
             )}
-            <NodeSelect />
+
+            {currentNode.type == 'loc' && <NodeSelect />}
+
             {folder && (
               <div className="select">
                 <Select
