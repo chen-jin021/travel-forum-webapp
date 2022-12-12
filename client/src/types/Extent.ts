@@ -2,7 +2,7 @@
  * Defines the extent of an anchor in a document,
  * e.g. start / end characters in a text node.
  */
-export type Extent = ITextExtent | IImageExtent
+export type Extent = ITextExtent | IImageExtent | IVideoExtent
 
 /** Defines the extent of an anchor on a text node */
 export interface ITextExtent {
@@ -19,6 +19,12 @@ export interface IImageExtent {
   top: number
   type: 'image'
   width: number
+}
+
+export interface IVideoExtent {
+  start: number
+  end: number
+  type: 'video'
 }
 
 export function makeITextExtent(

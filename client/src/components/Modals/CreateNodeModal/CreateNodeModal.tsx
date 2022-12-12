@@ -128,6 +128,7 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
 
   const isImage: boolean = selectedType === 'image'
   const isText: boolean = selectedType === 'text'
+  const isVideo = selectedType === 'video'
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
@@ -148,7 +149,7 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
                 onChange={handleSelectedTypeChange}
                 placeholder="Select a type"
               >
-                {nodeTypes.slice(0, 3).map((type) => (
+                {nodeTypes.slice(0, 4).map((type) => (
                   <option key={type} value={type}>
                     {type.charAt(0).toUpperCase() + type.slice(1)}
                   </option>
@@ -182,6 +183,17 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
                 />
               </div>
             )}
+
+            {selectedType && isVideo && (
+              <div className="modal-input">
+                <Input
+                  value={content}
+                  onChange={handleImageContentChange}
+                  placeholder="video URL"
+                />
+              </div>
+            )}
+
             <div className="modal-section">
               <span className="modal-title">
                 <div className="modal-title-header">

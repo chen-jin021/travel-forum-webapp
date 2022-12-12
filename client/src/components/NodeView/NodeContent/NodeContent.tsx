@@ -6,6 +6,7 @@ import { FolderContent } from './FolderContent'
 import { ImageContent } from './ImageContent'
 import './NodeContent.scss'
 import { TextContent } from './TextContent'
+import VideoContent from './VideoContent'
 
 /** Props needed to render any node content */
 
@@ -29,6 +30,9 @@ export const NodeContent = (props: INodeContentProps) => {
       return <ImageContent />
     case 'text':
       return <TextContent />
+    case 'video':
+      return <VideoContent />
+
     case 'map':
       return <></>
     case 'folder':

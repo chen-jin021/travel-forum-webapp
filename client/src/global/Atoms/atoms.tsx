@@ -97,3 +97,18 @@ export const panoramaState = atom<boolean>({
   key: 'panoramaState ',
   default: false,
 })
+
+export const currentPlayerState = atom<any>({
+  key: 'player',
+  default: {},
+})
+
+export const firstPlayerState = atom<any>({
+  key: 'prevPlayer',
+  default: {},
+})
+
+export const controlCurrentPlayerState = atom<boolean>({
+  key: 'playerState',
+  default: true,
+})

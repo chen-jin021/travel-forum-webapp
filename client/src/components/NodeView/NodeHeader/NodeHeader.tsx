@@ -31,12 +31,14 @@ interface INodeHeaderProps {
   onMoveButtonClick: (node: INode) => void
   onCreateNodeButtonClick: () => void
   onCollaborationButtonClick: () => void
+  onGraphButtonClick: (node: INode) => void
 }
 
 export const NodeHeader = (props: INodeHeaderProps) => {
   const {
     onDeleteButtonClick,
     onMoveButtonClick,
+    onGraphButtonClick,
     onHandleStartLinkClick,
     onHandleCompleteLinkClick,
     onCollaborationButtonClick,
@@ -195,16 +197,23 @@ export const NodeHeader = (props: INodeHeaderProps) => {
               icon={<ai.AiOutlinePlus />}
               onClick={onCreateNodeButtonClick}
             />
+
+            {/* <Button
+              icon={<ri.RiMenuAddFill />}
+              text="Visual"
+              onClick={() => onGraphButtonClick(currentNode)}
+            /> */}
+
             <Button
               icon={<ri.RiDeleteBin6Line />}
               text="Delete"
               onClick={() => onDeleteButtonClick(currentNode)}
             />
-            {/* <Button
+            <Button
               icon={<ri.RiExternalLinkLine />}
               text="Start Link"
               onClick={onHandleStartLinkClick}
-            /> */}
+            />
 
             <Button
               icon={<AiOutlineUsergroupAdd />}
@@ -212,16 +221,14 @@ export const NodeHeader = (props: INodeHeaderProps) => {
               onClick={onCollaborationButtonClick}
             />
 
-            <NodeSelect />
-
-            {/* {isLinking && (
+            {isLinking && (
               <Button
                 text="Complete Link"
                 icon={<bi.BiLinkAlt />}
                 onClick={onHandleCompleteLinkClick}
               />
-            )} */}
-
+            )}
+            <NodeSelect />
             {folder && (
               <div className="select">
                 <Select
