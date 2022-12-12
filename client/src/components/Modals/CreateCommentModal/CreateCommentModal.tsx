@@ -18,6 +18,8 @@ import {
   HStack,
   Radio,
   Button,
+  setScript,
+  Avatar,
 } from '@chakra-ui/react'
 import { mapState } from '../../../global/Atoms'
 import { Form } from 'react-bootstrap'
@@ -29,6 +31,7 @@ import {
   nodeTypes,
   makeINodePath,
   RecursiveNodeTree,
+  IUser,
 } from '../../../types'
 // import { Button } from '../../Button'
 import { TreeView } from '../../TreeView'
@@ -52,7 +55,6 @@ import { FrontendInvitationGateway } from '../../../invitations'
 export interface ICreateCommentModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: () => unknown
   nodeIdsToNodes: NodeIdsToNodesMap
 }
 
@@ -63,7 +65,7 @@ export interface ICreateCommentModalProps {
 export const CreateCommentModal = (props: ICreateCommentModalProps) => {
   // deconstruct props variables
 
-  const { isOpen, onClose, onSubmit, nodeIdsToNodes } = props
+  const { isOpen, onClose, nodeIdsToNodes } = props
   // state variables
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const [selectedParentNode, setSelectedParentNode] = useState<INode | null>(null)
@@ -73,11 +75,30 @@ export const CreateCommentModal = (props: ICreateCommentModalProps) => {
   const [error, setError] = useState<string>('')
   const [map, setMap] = useRecoilState(mapState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
-  const [mail, setMail] = useState('')
+  const [comment, setComment] = useState('')
   const [permission, setPermission] = useState('read')
   const currentNode = useRecoilValue(currentNodeState)
+  const [curUser, setCurUser] = useState<IUser>()
 
   const { user } = useAuth()
+  if (!user) {
+    return <></>
+  }
+
+  const loadUserFromDB = async (uid: string) => {
+    const userResp = await FrontendUserGateway.getUser(uid)
+    if (!userResp.success || !userResp.payload) {
+      setError('Unable to access backend')
+      return
+    }
+    setCurUser(userResp.payload)
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      loadUserFromDB(user.uid)
+    }
+  }, [isOpen])
 
   const handleClose = () => {
     onClose()
@@ -87,85 +108,67 @@ export const CreateCommentModal = (props: ICreateCommentModalProps) => {
 
   const handleSubmit = async () => {
     setError('')
-    if (!user) {
-      setError('You have not logged yet!')
+    if (!comment) {
+      setError('Cannot leave empty comment!')
       return
     }
-    const reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/
-    if (!reg.test(mail)) {
-      setError('Please enter a valid email')
-      return
-    }
-    if (user.email === mail) {
-      setError('You can not invite yourself to collaborate!')
-      return
-    }
-    const selfResp = await FrontendUserGateway.getUser(user.uid)
-    if (!selfResp.success || !selfResp.payload) {
-      setError(selfResp.message)
-      return
-    }
-    const selfUser = selfResp.payload
-    const userResp = await FrontendUserGateway.getUserByMail(mail)
-    if (!userResp.success || !userResp.payload) {
-      setError(userResp.message)
-      return
-    }
-    const rcverUser = userResp.payload
-    const ivtOBj: IInvitation = {
-      inviteId: generateObjectId('ivt'),
-      rcverId: rcverUser.userId,
-      rcverMail: rcverUser.mail,
-      rcverName: rcverUser.userName,
-      rcverUrl: rcverUser.avatar,
-      senderId: selfUser.userId,
-      senderMail: selfUser.mail,
-      senderName: selfUser.userName,
-      senderUrl: selfUser.avatar,
-      createdDate: new Date(),
-      type: permission,
-      nodeId: currentNode.nodeId,
-    }
-    const ivtResp = await FrontendInvitationGateway.createIvt(ivtOBj)
-    if (!ivtResp.success || !ivtResp.payload) {
-      setError(ivtResp.message)
-      return
-    }
+
+    // const selfResp = await FrontendUserGateway.getUser(user.uid)
+
+    // const rcverUser = userResp.payload
+    // const ivtOBj: IInvitation = {
+    //   inviteId: generateObjectId('ivt'),
+    //   rcverId: rcverUser.userId,
+    //   rcverMail: rcverUser.mail,
+    //   rcverName: rcverUser.userName,
+    //   rcverUrl: rcverUser.avatar,
+    //   senderId: selfUser.userId,
+    //   senderMail: selfUser.mail,
+    //   senderName: selfUser.userName,
+    //   senderUrl: selfUser.avatar,
+    //   createdDate: new Date(),
+    //   type: permission,
+    //   nodeId: currentNode.nodeId,
+    // }
+    // const ivtResp = await FrontendInvitationGateway.createIvt(ivtOBj)
+    // if (!ivtResp.success || !ivtResp.payload) {
+    //   setError(ivtResp.message)
+    //   return
+    // }
   }
 
-  const handleMailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMail(event.target.value)
+  const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(event.target.value)
   }
 
   return (
-    <Modal size={'2xl'} isOpen={isOpen} onClose={handleClose}>
+    <Modal size={'xl'} isOpen={isOpen} onClose={handleClose}>
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Send an invitation!</ModalHeader>
+          <ModalHeader>Leave a comment to this Node!</ModalHeader>
           <ModalCloseButton />
           <Form onSubmit={handleSubmit}>
             <ModalBody>
+              <div className="text-center">
+                <div style={{ marginTop: '20px' }}>
+                  <Avatar src={curUser?.avatar} />
+                </div>
+                <div
+                  style={{ marginTop: '20px', fontFamily: 'Avenir', fontSize: '25px' }}
+                >
+                  {curUser?.userName}
+                </div>
+              </div>
               <FormControl isRequired>
-                <FormLabel htmlFor="email">Your Friends's email</FormLabel>
-                <Input id="email" type="email" value={mail} onChange={handleMailChange} />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel style={{ marginTop: '20px' }} as="legend">
-                  Permission
-                </FormLabel>
-                <RadioGroup value={permission} onChange={setPermission}>
-                  <HStack spacing="24px">
-                    <Radio value={'read'}>Read Only</Radio>
-                    <Radio value={'write'}>Read & Write</Radio>
-                  </HStack>
-                </RadioGroup>
+                <FormLabel htmlFor="email">Your Comment</FormLabel>
+                <Textarea value={comment} onChange={handleCommentChange} />
               </FormControl>
             </ModalBody>
             <ModalFooter>
               {error.length > 0 && <div className="modal-error">{error}</div>}
               <div className="modal-footer-buttons">
-                <Button onClick={handleSubmit}> Send invitation</Button>
+                <Button onClick={handleSubmit}> Leave Comment</Button>
               </div>
             </ModalFooter>
           </Form>
