@@ -279,6 +279,7 @@ export class BackendNodeGateway {
     return successfulServiceResponse(getMovedNodeResp.payload)
   }
 
+
   /**
    * Method to add a child's nodeId to parent node's filePath.children.
    * Should return failure response when child already exists in parent node's

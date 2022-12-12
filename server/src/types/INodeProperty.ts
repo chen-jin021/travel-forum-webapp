@@ -1,3 +1,4 @@
+import { type } from 'os'
 import { isINodePath, allNodeFields, NodeFields, nodeTypes } from '.'
 
 export interface INodeProperty {
@@ -39,6 +40,8 @@ export function isINodeProperty(object: any): boolean {
         return typeof (object as INodeProperty).value === 'number'
       case 'lng':
         return typeof (object as INodeProperty).value === 'number'
+      case 'public':
+        return typeof (object as INodeProperty).value === 'boolean'
       default:
         return true
     }

@@ -81,6 +81,8 @@ export const NodeView = (props: INodeViewProps) => {
     setCurrentNode(currentNode)
   })
 
+  useEffect(() => {}, [currNode])
+
   const loadAnchorsFromNodeId = useCallback(async () => {
     const anchorsFromNode = await FrontendAnchorGateway.getAnchorsByNodeId(
       currentNode.nodeId
@@ -88,7 +90,7 @@ export const NodeView = (props: INodeViewProps) => {
     if (anchorsFromNode.success && anchorsFromNode.payload) {
       setAnchors(anchorsFromNode.payload)
     }
-  }, [currentNode])
+  }, [])
 
   const handleStartLinkClick = () => {
     setPlaying(false)

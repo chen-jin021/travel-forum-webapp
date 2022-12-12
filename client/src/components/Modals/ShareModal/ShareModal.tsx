@@ -31,6 +31,7 @@ import {
   makeINodePath,
   RecursiveNodeTree,
   ILocNode,
+  makeINodeProperty,
 } from '../../../types'
 // import { Button } from '../../Button'
 import { TreeView } from '../../TreeView'
@@ -55,6 +56,7 @@ import { CiLocationOn } from 'react-icons/ci'
 import './ShareModal.scss'
 import { getAdditionalUserInfo } from 'firebase/auth'
 import { url } from 'inspector'
+import { GoAlert } from 'react-icons/go'
 
 export interface IShareModalProps {
   isOpen: boolean
@@ -90,6 +92,18 @@ export const ShareModal = (props: IShareModalProps) => {
     setError('')
   }
 
+  const handlePublic = async () => {
+    const pub = makeINodeProperty('public', true)
+    const updatePublicResp = await FrontendNodeGateway.updateNode(currentNode.nodeId, [
+      pub,
+    ])
+    if (!updatePublicResp.success || !updatePublicResp.payload) {
+      setError(updatePublicResp.message)
+      return
+    }
+    handleClose()
+  }
+
   const getUser = async (userId: string) => {
     const userResp = await FrontendUserGateway.getUser(userId)
     if (!userResp.success || !userResp.payload) {
@@ -121,6 +135,9 @@ export const ShareModal = (props: IShareModalProps) => {
               <div className="text-center">
                 <Alert variant="danger">
                   Are you sure to share this location to square?
+                  <br />
+                  <GoAlert style={{ display: 'inline' }} /> &nbsp; (This operation is
+                  irreversible)
                 </Alert>
                 <div>
                   <CiLocationOn style={{ display: 'inline' }} />
@@ -141,7 +158,9 @@ export const ShareModal = (props: IShareModalProps) => {
           <ModalFooter>
             {error.length > 0 && <div className="modal-error">{error}</div>}
             <div className="modal-footer-buttons">
-              <Button onClick={() => {}}> Send invitation</Button>
+              <div className="modal-footer-buttons">
+                <Button onClick={handlePublic}> Public to Square!</Button>
+              </div>
             </div>
           </ModalFooter>
         </ModalContent>

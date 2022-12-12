@@ -34,6 +34,7 @@ import {
   MoveNodeModal,
   CreateLocationModal,
   CreateInvitationModal,
+  ShareModal,
 } from '../Modals'
 import { NodeView } from '../NodeView'
 import { TreeView } from '../TreeView'
@@ -58,6 +59,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   const [moveNodeModalOpen, setMoveNodeModalOpen] = useState(false)
   const [createLocationModalOpen, setCreateLocationModalOpen] = useState(false)
   const [collaborationModalOpen, setCollaborationModalOpen] = useState(false)
+  const [ShareModalOpen, setShareModalOpen] = useState(false)
 
   // node states
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
@@ -303,6 +305,10 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
     setCollaborationModalOpen(true)
   }, [])
 
+  const handleShareBtnClick = useCallback(() => {
+    setShareModalOpen(true)
+  }, [])
+
   const getSelectedNodeChildren = useCallback(() => {
     if (!selectedNode) return undefined
     return selectedNode.filePath.children.map(
@@ -394,7 +400,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onSubmit={() => {}}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
-
+          <ShareModal isOpen={ShareModalOpen} onClose={() => setShareModalOpen(false)} />
           {selectedNode && (
             <MoveNodeModal
               isOpen={moveNodeModalOpen}
@@ -440,6 +446,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                   onCreateNodeButtonClick={handleCreateNodeButtonClick}
                   onCollaborationButtonClick={handleCollaborationClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
+                  onShareBtnClick={() => {}}
                 />
               </div>
             )}

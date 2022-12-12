@@ -139,7 +139,6 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
     }
     const nodeId: string = generateObjectId('loc')
 
-    console.log(RespGetNodeByLatLing)
     const newNode = {
       nodeId: nodeId,
       type: 'loc' as NodeType,
@@ -152,6 +151,7 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
       ownerId: user.uid,
       lat: target.geometry.location.lat(),
       lng: target.geometry.location.lng(),
+      public: false
     }
     const nodeResponse = await FrontendNodeGateway.createNode(newNode)
     if (!nodeResponse.success) {

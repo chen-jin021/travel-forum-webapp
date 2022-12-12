@@ -23,6 +23,7 @@ import { EditableText } from '../../EditableText'
 import './NodeHeader.scss'
 import { signOut } from 'firebase/auth'
 import NodeSelect from '../../NodeSelect'
+import { AiOutlineShareAlt } from 'react-icons/ai'
 
 interface INodeHeaderProps {
   onHandleCompleteLinkClick: () => void
@@ -219,8 +220,14 @@ export const NodeHeader = (props: INodeHeaderProps) => {
 
             <Button
               icon={<AiOutlineUsergroupAdd />}
-              text="Collaboration"
+              text="Collab"
               onClick={onCollaborationButtonClick}
+            />
+
+            <Button
+              icon={<AiOutlineShareAlt />}
+              text="Share"
+              onClick={onShareBtnClick}
             />
 
             {isLinking && (

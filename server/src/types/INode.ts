@@ -23,6 +23,7 @@ export interface ILocNode extends INode {
   ownerId: string
   lat: number
   lng: number
+  public: boolean
 }
 
 /**
@@ -56,6 +57,7 @@ export const allNodeFields: string[] = [
   'ownerId',
   'lat',
   'lng',
+  'public',
 ]
 
 // Type declaration for map from nodeId --> INode
@@ -131,6 +133,7 @@ export function makeILocNode(
     userWriteIds: userWriteIds ?? ' ',
     lat: lat ?? 0,
     lng: lng ?? 0,
+    public: false,
   }
 }
 
