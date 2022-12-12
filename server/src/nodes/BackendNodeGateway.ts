@@ -291,7 +291,7 @@ export class BackendNodeGateway {
     const getParentResp = await this.getNodeById(parentId)
     if (!getParentResp.success) {
       return failureServiceResponse(
-        'Failed to remove nodeId from parent\'s children field'
+        "Failed to remove nodeId from parent's children field"
       )
     }
     const parent = getParentResp.payload
@@ -312,7 +312,7 @@ export class BackendNodeGateway {
     ])
     if (!updateOldParentResp.success) {
       return failureServiceResponse(
-        'Failed to remove nodeToMove from its Parent\'s children field'
+        "Failed to remove nodeToMove from its Parent's children field"
       )
     }
     return successfulServiceResponse({})
