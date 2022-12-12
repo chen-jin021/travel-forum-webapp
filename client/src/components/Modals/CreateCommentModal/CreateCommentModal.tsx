@@ -18,10 +18,11 @@ import {
   HStack,
   Radio,
   Button,
+  setScript,
   Avatar,
 } from '@chakra-ui/react'
 import { mapState } from '../../../global/Atoms'
-import { Alert, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   INode,
@@ -30,8 +31,7 @@ import {
   nodeTypes,
   makeINodePath,
   RecursiveNodeTree,
-  ILocNode,
-  makeINodeProperty,
+  IUser,
 } from '../../../types'
 // import { Button } from '../../Button'
 import { TreeView } from '../../TreeView'
@@ -51,40 +51,54 @@ import { useAuth } from '../../../contexts/AuthContext'
 import { IInvitation } from '../../../types/IInvitation'
 import { FrontendUserGateway } from '../../../users'
 import { FrontendInvitationGateway } from '../../../invitations'
-import { Container } from '@chakra-ui/react'
-import { CiLocationOn } from 'react-icons/ci'
-import './ShareModal.scss'
-import { getAdditionalUserInfo } from 'firebase/auth'
-import { url } from 'inspector'
-import { GoAlert } from 'react-icons/go'
 
-export interface IShareModalProps {
+export interface ICreateCommentModalProps {
   isOpen: boolean
   onClose: () => void
+  nodeIdsToNodes: NodeIdsToNodesMap
 }
 
 /**
  * Modal for adding a new node; lets the user choose a title, type,
  * and parent node
  */
-export const ShareModal = (props: IShareModalProps) => {
+export const CreateCommentModal = (props: ICreateCommentModalProps) => {
   // deconstruct props variables
 
-  const { isOpen, onClose } = props
+  const { isOpen, onClose, nodeIdsToNodes } = props
   // state variables
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const [selectedParentNode, setSelectedParentNode] = useState<INode | null>(null)
   const [location, setLocation] = useState('')
   const [content, setContent] = useState('')
+  const [selectedType, setSelectedType] = useState<NodeType>('' as NodeType)
   const [error, setError] = useState<string>('')
   const [map, setMap] = useRecoilState(mapState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
-  const [mail, setMail] = useState('')
+  const [comment, setComment] = useState('')
   const [permission, setPermission] = useState('read')
   const currentNode = useRecoilValue(currentNodeState)
-  const [avatar, setAvatar] = useState('')
-  const [name, setName] = useState('')
+  const [curUser, setCurUser] = useState<IUser>()
+
   const { user } = useAuth()
+  if (!user) {
+    return <></>
+  }
+
+  const loadUserFromDB = async (uid: string) => {
+    const userResp = await FrontendUserGateway.getUser(uid)
+    if (!userResp.success || !userResp.payload) {
+      setError('Unable to access backend')
+      return
+    }
+    setCurUser(userResp.payload)
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      loadUserFromDB(user.uid)
+    }
+  }, [isOpen])
 
   const handleClose = () => {
     onClose()
@@ -92,78 +106,72 @@ export const ShareModal = (props: IShareModalProps) => {
     setError('')
   }
 
-  const handlePublic = async () => {
-    const pub = makeINodeProperty('public', true)
-    const updatePublicResp = await FrontendNodeGateway.updateNode(currentNode.nodeId, [
-      pub,
-    ])
-    if (!updatePublicResp.success || !updatePublicResp.payload) {
-      setError(updatePublicResp.message)
+  const handleSubmit = async () => {
+    setError('')
+    if (!comment) {
+      setError('Cannot leave empty comment!')
       return
     }
-    setSelectedNode(updatePublicResp.payload)
-    handleClose()
+
+    // const selfResp = await FrontendUserGateway.getUser(user.uid)
+
+    // const rcverUser = userResp.payload
+    // const ivtOBj: IInvitation = {
+    //   inviteId: generateObjectId('ivt'),
+    //   rcverId: rcverUser.userId,
+    //   rcverMail: rcverUser.mail,
+    //   rcverName: rcverUser.userName,
+    //   rcverUrl: rcverUser.avatar,
+    //   senderId: selfUser.userId,
+    //   senderMail: selfUser.mail,
+    //   senderName: selfUser.userName,
+    //   senderUrl: selfUser.avatar,
+    //   createdDate: new Date(),
+    //   type: permission,
+    //   nodeId: currentNode.nodeId,
+    // }
+    // const ivtResp = await FrontendInvitationGateway.createIvt(ivtOBj)
+    // if (!ivtResp.success || !ivtResp.payload) {
+    //   setError(ivtResp.message)
+    //   return
+    // }
   }
 
-  const getUser = async (userId: string) => {
-    const userResp = await FrontendUserGateway.getUser(userId)
-    if (!userResp.success || !userResp.payload) {
-      setError('failed to fetch this user')
-      return
-    }
-    setName(userResp.payload.userName)
-    setAvatar(userResp.payload.avatar)
+  const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(event.target.value)
   }
-
-  useEffect(() => {
-    if (isOpen) {
-      getUser((currentNode as ILocNode).ownerId)
-    }
-  }, [isOpen])
 
   return (
     <Modal size={'xl'} isOpen={isOpen} onClose={handleClose}>
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Share this location!</ModalHeader>
+          <ModalHeader>Leave a comment to this Node!</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Container
-              className="d-flex align-items-center justify-content-center "
-              style={{ maxHeight: '90vh', maxWidth: '100vw' }}
-            >
+          <Form onSubmit={handleSubmit}>
+            <ModalBody>
               <div className="text-center">
-                <Alert variant="danger">
-                  Are you sure to share this location to square?
-                  <br />
-                  <GoAlert style={{ display: 'inline' }} /> &nbsp; (This operation is
-                  irreversible)
-                </Alert>
-                <div>
-                  <CiLocationOn style={{ display: 'inline' }} />
-                  &nbsp; <b>Location Name:</b>
-                  &nbsp;{currentNode.title}
-                </div>
                 <div style={{ marginTop: '20px' }}>
-                  <Avatar src={avatar} />
+                  <Avatar src={curUser?.avatar} />
                 </div>
                 <div
                   style={{ marginTop: '20px', fontFamily: 'Avenir', fontSize: '25px' }}
                 >
-                  {name}
+                  {curUser?.userName}
                 </div>
               </div>
-            </Container>
-          </ModalBody>
-          <ModalFooter>
-            {error.length > 0 && <div className="modal-error">{error}</div>}
-            <div className="modal-footer-buttons">
+              <FormControl isRequired>
+                <FormLabel htmlFor="email">Your Comment</FormLabel>
+                <Textarea value={comment} onChange={handleCommentChange} />
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              {error.length > 0 && <div className="modal-error">{error}</div>}
               <div className="modal-footer-buttons">
-                <Button onClick={handlePublic}> Public to Square!</Button>
+                <Button onClick={handleSubmit}> Leave Comment</Button>
               </div>
-            </div>
-          </ModalFooter>
+            </ModalFooter>
+          </Form>
         </ModalContent>
       </div>
     </Modal>

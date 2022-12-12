@@ -398,6 +398,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onSubmit={() => {}}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
+
           <ShareModal isOpen={shareModalOpen} onClose={() => setShareModalOpen(false)} />
 
           {selectedNode && (
@@ -417,7 +418,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                 onLoad={onLoad}
                 center={center}
                 zoom={11}
-                
               />
             ) : (
               <div>Map Loading...</div>
@@ -447,6 +447,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                   onCollaborationButtonClick={handleCollaborationClick}
                   onShareBtnClick={handleShareClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
+                  inSquare={false}
                 />
               </div>
             )}

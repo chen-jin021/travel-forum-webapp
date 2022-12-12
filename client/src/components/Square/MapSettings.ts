@@ -17,6 +17,6 @@ export const center = {
 export const zoom = 3
 
 export const options = {
-  disabledDefaultUI: true,
+  disableDefaultUI: true,
   zoomControl: true,
 }

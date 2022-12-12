@@ -8,6 +8,8 @@ import {
   IServiceResponse,
   isINode,
 } from '../types'
+import http from 'http'
+import https from 'https'
 import { BackendNodeGateway } from './BackendNodeGateway'
 const bodyJsonParser = require('body-parser').json()
 
@@ -80,6 +82,21 @@ export class NodeRouter {
       }
     })
 
+    NodeExpressRouter.get('/video/proxy', async (req: Request, res: Response) => {
+      const { location } = req.query
+
+      const lib = (location as string).includes('https') ? https : http
+
+      const request = lib.request(location as string, (resp) => {
+        res.writeHead(200, { ...resp.headers, connection: 'keep-alive' })
+
+        resp.pipe(res)
+      })
+
+      console.log(location)
+      request.end()
+    })
+
     /**
      * Request to retrieve node by lat lng
      *
@@ -112,6 +129,22 @@ export class NodeRouter {
       try {
         const response: IServiceResponse<RecursiveNodeTree[]> =
           await this.BackendNodeGateway.fetchLocNodes()
+        res.status(200).send(response)
+      } catch (e) {
+        res.status(500).send(e.message)
+      }
+    })
+
+    /**
+     * Request to retrieve all public nodes in square
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+    NodeExpressRouter.get('/getAllPublicNodes', async (req: Request, res: Response) => {
+      try {
+        const response: IServiceResponse<RecursiveNodeTree[]> =
+          await this.BackendNodeGateway.fetchPublicNodes()
         res.status(200).send(response)
       } catch (e) {
         res.status(500).send(e.message)
