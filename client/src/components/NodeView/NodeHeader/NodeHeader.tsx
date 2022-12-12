@@ -195,13 +195,14 @@ export const NodeHeader = (props: INodeHeaderProps) => {
       <div className="nodeHeader-buttonBar">
         {notRoot && (
           <>
-            <Button
-              isWhite={isLinking}
-              text="Create"
-              icon={<ai.AiOutlinePlus />}
-              onClick={onCreateNodeButtonClick}
-            />
-
+            {currentNode.type == 'loc' && (
+              <Button
+                isWhite={isLinking}
+                text="Create"
+                icon={<ai.AiOutlinePlus />}
+                onClick={onCreateNodeButtonClick}
+              />
+            )}
             {/* <Button
               icon={<ri.RiMenuAddFill />}
               text="Visual"
@@ -235,7 +236,9 @@ export const NodeHeader = (props: INodeHeaderProps) => {
                 onClick={onHandleCompleteLinkClick}
               />
             )}
-            <NodeSelect />
+
+            {currentNode.type == 'loc' && <NodeSelect />}
+
             {folder && (
               <div className="select">
                 <Select
@@ -252,8 +255,6 @@ export const NodeHeader = (props: INodeHeaderProps) => {
           </>
         )}
       </div>
-
-  
     </div>
   )
 }
