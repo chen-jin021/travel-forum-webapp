@@ -7,11 +7,12 @@ import * as ri from 'react-icons/ri'
 export interface IGridViewProps {
   childNodes: INode[]
   onCreateNodeButtonClick: () => void
+  hideCreate?: boolean
 }
 
 /** Full page view focused on a node's content, with annotations and links */
 export const GridView = (props: IGridViewProps) => {
-  const { childNodes, onCreateNodeButtonClick } = props
+  const { childNodes, onCreateNodeButtonClick, hideCreate = false } = props
 
   const nodePreviews = childNodes.map(
     (childNode: INode) =>
@@ -21,9 +22,11 @@ export const GridView = (props: IGridViewProps) => {
   return (
     <div className={'gridView-wrapper'}>
       {nodePreviews}
-      <div className="grid-newNode" onClick={onCreateNodeButtonClick}>
-        <ri.RiAddFill />
-      </div>
+      {!hideCreate && (
+        <div className="grid-newNode" onClick={onCreateNodeButtonClick}>
+          <ri.RiAddFill />
+        </div>
+      )}
     </div>
   )
 }

@@ -11,11 +11,12 @@ export interface IFolderContentProps {
   node: IFolderNode
   onCreateNodeButtonClick: () => unknown
   viewType?: FolderContentType
+  hideCreate?: boolean
 }
 
 /** Full page view focused on a node's content, with annotations and links */
 export const FolderContent = (props: IFolderContentProps) => {
-  const { node, childNodes, onCreateNodeButtonClick } = props
+  const { node, childNodes, onCreateNodeButtonClick, hideCreate } = props
   const setSelectedExtent = useSetRecoilState(selectedExtentState)
 
   // useEffect
@@ -31,6 +32,7 @@ export const FolderContent = (props: IFolderContentProps) => {
           <GridView
             onCreateNodeButtonClick={onCreateNodeButtonClick}
             childNodes={childNodes}
+            hideCreate={hideCreate}
           />
         )
         break

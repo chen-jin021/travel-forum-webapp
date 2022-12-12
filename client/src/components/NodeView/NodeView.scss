@@ -26,7 +26,7 @@
 
     .nodeView-scrollable {
       position: relative;
-      height: 80%;
+      height: 100%;
       background-color: white;
       border-radius: 0 0 10px 10px;
       overflow-y: auto;
@@ -51,6 +51,12 @@
         padding-top: 20px;
       }
     }
+  }
+
+  .events {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 }
 

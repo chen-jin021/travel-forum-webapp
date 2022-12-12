@@ -392,6 +392,11 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
               if (user) loadRootsFromDB(user?.uid)
             }}
           />
+          <CompleteLinkModal
+            isOpen={completeLinkModalOpen}
+            onClose={() => setCompleteLinkModalOpen(false)}
+            nodeIdsToNodes={nodeIdsToNodesMap}
+          />
           <CreateInvitationModal
             isOpen={collaborationModalOpen}
             onClose={() => setCollaborationModalOpen(false)}

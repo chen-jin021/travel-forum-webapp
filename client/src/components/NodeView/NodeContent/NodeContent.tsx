@@ -7,6 +7,7 @@ import { ImageContent } from './ImageContent'
 import './NodeContent.scss'
 import { TextContent } from './TextContent'
 import VideoContent from './VideoContent'
+import DateContent from './DateContent'
 
 /** Props needed to render any node content */
 
@@ -32,6 +33,7 @@ export const NodeContent = (props: INodeContentProps) => {
       return <TextContent />
     case 'video':
       return <VideoContent />
+
     case 'map':
       return <></>
     case 'folder':
@@ -43,15 +45,14 @@ export const NodeContent = (props: INodeContentProps) => {
             childNodes={childNodes}
           />
         )
-      } else {
-        return <></>
       }
+      break
     case 'loc': {
       return (
-        <FolderContent
-          node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
+        <DateContent
+          childNodes={childNodes ?? []}
           onCreateNodeButtonClick={onCreateNodeButtonClick}
-          childNodes={childNodes as any}
+          node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
         />
       )
     }

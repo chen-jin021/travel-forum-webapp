@@ -214,12 +214,16 @@ export const FrontendNodeGateway = {
 
   searchNodes: async (
     searchRules: string,
+    userId: string,
     signal?: AbortSignal
   ): Promise<IServiceResponse<INode[]>> => {
     try {
-      const result = await fetch(`${baseEndpoint}${servicePath}search/${searchRules}`, {
-        signal,
-      })
+      const result = await fetch(
+        `${baseEndpoint}${servicePath}search/${searchRules}?userId=${userId}`,
+        {
+          signal,
+        }
+      )
 
       return result.json() as unknown as IServiceResponse<INode[]>
     } catch (err) {
