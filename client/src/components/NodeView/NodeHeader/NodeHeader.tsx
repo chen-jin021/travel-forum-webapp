@@ -31,6 +31,8 @@ interface INodeHeaderProps {
   onMoveButtonClick: (node: INode) => void
   onCreateNodeButtonClick: () => void
   onCollaborationButtonClick: () => void
+  onGraphButtonClick: () => void
+  onShareBtnClick: () => void
 }
 
 export const NodeHeader = (props: INodeHeaderProps) => {
@@ -42,7 +44,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
     onHandleCompleteLinkClick,
     onCollaborationButtonClick,
     onCreateNodeButtonClick,
-    onShareBtnClick
+    onShareBtnClick,
   } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
