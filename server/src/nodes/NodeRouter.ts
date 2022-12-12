@@ -136,6 +136,22 @@ export class NodeRouter {
     })
 
     /**
+     * Request to retrieve all public nodes in square
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+    NodeExpressRouter.get('/getAllPublicNodes', async (req: Request, res: Response) => {
+      try {
+        const response: IServiceResponse<RecursiveNodeTree[]> =
+          await this.BackendNodeGateway.fetchPublicNodes()
+        res.status(200).send(response)
+      } catch (e) {
+        res.status(500).send(e.message)
+      }
+    })
+
+    /**
      * Requeset to fetch all nodes by userId
      *
      * @param req request object coming from client

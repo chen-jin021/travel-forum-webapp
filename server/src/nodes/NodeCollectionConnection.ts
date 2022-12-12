@@ -105,7 +105,7 @@ export class NodeCollectionConnection {
       .db()
       .collection(this.collectionName)
       .find({ nodeId: { $in: nodeIds } })
-      .forEach(function (doc) {
+      .forEach(function(doc) {
         foundNodes.push(doc)
       })
     return successfulServiceResponse(foundNodes)
@@ -150,13 +150,33 @@ export class NodeCollectionConnection {
       .db()
       .collection(this.collectionName)
       .find({ type: 'loc' })
-      .forEach(function (node) {
+      .forEach(function(node) {
         const validNode = isINode(node)
         if (validNode) {
           locNodes.push(node)
         }
       })
     return successfulServiceResponse(locNodes)
+  }
+
+  /*
+   * Get all public nodes
+   * @return successfulServiceResponse<ILocNode[]> on success
+   *         failureServiceResponse on failure
+   */
+  async fetchAllPublicNodes(): Promise<IServiceResponse<INode[]>> {
+    const publicNodes: INode[] = []
+    const findResponse = await this.client
+      .db()
+      .collection(this.collectionName)
+      .find({ public: true })
+      .forEach(function(node) {
+        const validNode = isINode(node)
+        if (validNode) {
+          publicNodes.push(node)
+        }
+      })
+    return successfulServiceResponse(publicNodes)
   }
 
   /**
@@ -233,7 +253,7 @@ export class NodeCollectionConnection {
       .db()
       .collection(this.collectionName)
       .find({ 'filePath.path': { $size: 1 } })
-      .forEach(function (node) {
+      .forEach(function(node) {
         const validNode = isINode(node)
         if (validNode) {
           roots.push(node)
@@ -250,7 +270,7 @@ export class NodeCollectionConnection {
       .find({
         $or: [{ userReadIds: userId }, { userWriteIds: userId }, { ownerId: userId }],
       })
-      .forEach(function (node) {
+      .forEach(function(node) {
         const validNode = isINode(node)
         if (validNode) {
           nodes.push(node)
@@ -296,7 +316,7 @@ export class NodeCollectionConnection {
       .collection(this.collectionName)
       .find(query)
       .sort(sort)
-      .forEach(function (node) {
+      .forEach(function(node) {
         const validNode = isINode(node)
         if (validNode) {
           nodes.push(node)

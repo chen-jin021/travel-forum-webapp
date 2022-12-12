@@ -39,3 +39,26 @@
   }
 }
 
+.readHeader-nameBar {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.readHeader-info {
+  vertical-align: bottom;
+  font-size: 10px;
+  height: 100%;
+  font-style: italic;
+  margin-top: 5px;
+  color: red;
+}
+
+.writeHeader-info {
+  vertical-align: bottom;
+  font-size: 10px;
+  height: 100%;
+  font-style: italic;
+  margin-top: 5px;
+  color: green;
+}

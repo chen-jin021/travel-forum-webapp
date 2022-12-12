@@ -38,7 +38,8 @@ export interface ILocNode extends INode {
   ownerId: string
   lat: number
   lng: number
-  viewType: FolderContentType // so that users could view hierachy in folders
+  viewType: FolderContentType
+  public: boolean // so that users could view hierachy in folders
 }
 
 /**
@@ -58,7 +59,7 @@ export interface IFolderNode extends INode {
   viewType: FolderContentType
 }
 
-export type NodeFields = keyof INode | keyof IFolderNode
+export type NodeFields = keyof INode | keyof IFolderNode | keyof ILocNode
 
 // Type declaration for map from nodeId --> INode
 export type NodeIdsToNodesMap = { [nodeId: string]: INode }

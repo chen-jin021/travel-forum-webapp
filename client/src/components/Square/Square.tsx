@@ -36,21 +36,21 @@ import {
   CreateInvitationModal,
 } from '../Modals'
 import { NodeView } from '../NodeView'
-import { TreeView } from '../TreeView'
+import { SquareTreeView } from '../SquareTreeView'
 import { MapView } from '../MapView'
 import './MainView.scss'
-import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from './mainViewUtils'
+import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from '../MainView'
 import { FaSleigh } from 'react-icons/fa'
 import { containerStyle, center, options, zoom } from './MapSettings'
 import { useHistory } from 'react-router-dom'
 import { rootCertificates } from 'tls'
-import { ShareModal } from '../Modals/ShareModal'
+import { SquareHeader } from '../SquareHeader'
 
-export interface IMainViewProps {
+export interface ISquareProps {
   isLoaded: boolean
 }
 
-export const MainView = React.memo(function MainView(props: IMainViewProps) {
+export const Square = React.memo(function Square(props: ISquareProps) {
   const { isLoaded } = props
   const [isAppLoaded, setIsAppLoaded] = useState(false)
   // modal states
@@ -59,7 +59,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   const [moveNodeModalOpen, setMoveNodeModalOpen] = useState(false)
   const [createLocationModalOpen, setCreateLocationModalOpen] = useState(false)
   const [collaborationModalOpen, setCollaborationModalOpen] = useState(false)
-  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   // node states
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
@@ -84,11 +83,11 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   /** update our frontend root nodes from the database */
   const loadRootsFromDB = useCallback(
     async (userId: string) => {
-      const rootsFromDB = await FrontendNodeGateway.fetchNodeByUserId(userId)
+      const rootsFromDB = await FrontendNodeGateway.getPublic()
+      console.log(rootsFromDB)
       if (rootsFromDB.success) {
         rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
         setIsAppLoaded(true)
-        console.log(rootsFromDB.payload)
         if (map && rootsFromDB.payload) {
           updateAllMarkers(rootsFromDB.payload)
         }
@@ -197,8 +196,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
       })
     })
     marker.addListener('rightclick', () => {
-      history.push(`/main/${rootNodes[no].node.nodeId}/`)
-      setSelectedNode(rootNodes[no].node)
+      ;`/main/${rootNodes[no].node.nodeId}/`
     })
   }
 
@@ -306,10 +304,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
     setCollaborationModalOpen(true)
   }, [])
 
-  const handleShareClick = useCallback(() => {
-    setShareModalOpen(true)
-  }, [])
-
   const getSelectedNodeChildren = useCallback(() => {
     if (!selectedNode) return undefined
     return selectedNode.filePath.children.map(
@@ -364,9 +358,8 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
       ) : (
         <div className="main-container">
           <Alert></Alert>
-          <Header
+          <SquareHeader
             onHomeClick={handleHomeClick}
-            onCreateNodeButtonClick={handleCreateLocationClick}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
             onPanoramaClick={handlePanoramaClick}
             avatarUrl={avatar}
@@ -388,9 +381,12 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onClose={() => setCreateNodeModalOpen(false)}
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
-            onSubmit={() => {
-              if (user) loadRootsFromDB(user?.uid)
-            }}
+            onSubmit={() => {}}
+          />
+          <CompleteLinkModal
+            isOpen={completeLinkModalOpen}
+            onClose={() => setCompleteLinkModalOpen(false)}
+            nodeIdsToNodes={nodeIdsToNodesMap}
           />
           <CreateInvitationModal
             isOpen={collaborationModalOpen}
@@ -398,7 +394,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onSubmit={() => {}}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
-          <ShareModal isOpen={shareModalOpen} onClose={() => setShareModalOpen(false)} />
 
           {selectedNode && (
             <MoveNodeModal
@@ -423,7 +418,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             )}
             {!panorama && (
               <div className="treeView-container" ref={treeView}>
-                <TreeView
+                <SquareTreeView
                   roots={rootNodes}
                   parentNode={selectedNode}
                   setParentNode={setSelectedNode}
@@ -444,9 +439,9 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                   onCompleteLinkClick={handleCompleteLinkClick}
                   onCreateNodeButtonClick={handleCreateNodeButtonClick}
                   onCollaborationButtonClick={handleCollaborationClick}
-                  onShareBtnClick={handleShareClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
-                  inSquare={false}
+                  onShareBtnClick={() => {}}
+                  inSquare={true}
                 />
               </div>
             )}

@@ -1,0 +1,42 @@
+@import '../../global/globalCssVariables';
+
+.main-container {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+
+  .content {
+    width: 100%;
+    height: calc(100vh - 50px);
+    top: $header-height;
+    position: absolute;
+
+    .treeView-container {
+      position: absolute;
+      top: 60px;
+      left: 5%;
+      width: 15vw;
+      height: 80%;
+    }
+
+    .divider {
+      width: 3px;
+      background-color: $secondary-background-color;
+      cursor: ew-resize;
+      transition: 0.05s;
+
+      &:hover {
+        width: 10px;
+      }
+    }
+
+    .node-wrapper {
+      position: absolute;
+      top: 60px;
+      left: 25%;
+      width: 70vw;
+      height: 80%;
+      border-radius: 3px;
+    }
+  }
+}

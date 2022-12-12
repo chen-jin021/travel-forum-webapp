@@ -187,6 +187,16 @@ export const FrontendNodeGateway = {
     }
   },
 
+  getPublic: async (): Promise<IServiceResponse<RecursiveNodeTree[]>> => {
+    try {
+      return await get<IServiceResponse<RecursiveNodeTree[]>>(
+        baseEndpoint + servicePath + 'getAllPublicNodes'
+      )
+    } catch (exception) {
+      return failureServiceResponse('[getLocation] Unable to access backend')
+    }
+  },
+
   fetchNodeByUserId: async (
     userId: string
   ): Promise<IServiceResponse<RecursiveNodeTree[]>> => {

@@ -7,6 +7,7 @@ import { BrowserRouter, Switch, Route, Link, useHistory } from 'react-router-dom
 import { IUser } from '../../types'
 import { FrontendUserGateway } from '../../users'
 import { create } from 'domain'
+import { Image } from '@chakra-ui/react'
 
 export const SignUpView = React.memo(() => {
   const [email, setEmail] = useState('')
@@ -86,6 +87,12 @@ export const SignUpView = React.memo(() => {
         <div className="w-100" style={{ maxWidth: '600px' }}>
           <Card>
             <Card.Body>
+              <div className="text-center">
+                <Image
+                  height={'170px'}
+                  src="https://firebasestorage.googleapis.com/v0/b/hypertextfinalproj.appspot.com/o/utils%2Ffantasy_city_home_logo.png?alt=media&token=8b0d1a1d-6b1f-42ab-a961-0e9c1c9600e7"
+                />
+              </div>
               <h1 className="text-center mb-4">Sign Up </h1>
               <p className="text-center">
                 Start saving{' '}

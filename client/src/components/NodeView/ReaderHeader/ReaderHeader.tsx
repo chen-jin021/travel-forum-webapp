@@ -1,10 +1,9 @@
-import { Select } from '@chakra-ui/react'
+import { Avatar, Select } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import * as bi from 'react-icons/bi'
 import * as ai from 'react-icons/ai'
 import * as ri from 'react-icons/ri'
-import { AiOutlineUsergroupAdd } from 'react-icons/ai'
-import { BsPencilFill } from 'react-icons/bs'
+import { AiOutlineUsergroupAdd, AiOutlineUser, AiOutlineEye } from 'react-icons/ai'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
   alertMessageState,
@@ -17,37 +16,30 @@ import {
   selectedNodeState,
 } from '../../../global/Atoms'
 import { FrontendNodeGateway } from '../../../nodes'
-import { IFolderNode, INode, INodeProperty, makeINodeProperty } from '../../../types'
+import {
+  IFolderNode,
+  INode,
+  INodeProperty,
+  IUser,
+  makeINodeProperty,
+} from '../../../types'
 import { Button } from '../../Button'
 import { ContextMenuItems } from '../../ContextMenu'
 import { EditableText } from '../../EditableText'
-import './NodeHeader.scss'
+import './ReaderHeader.scss'
 import { signOut } from 'firebase/auth'
 import NodeSelect from '../../NodeSelect'
 import { AiOutlineShareAlt } from 'react-icons/ai'
+import { FrontendUserGateway } from '../../../users'
 
-interface INodeHeaderProps {
+interface IReaderHeaderProps {
   onHandleCompleteLinkClick: () => void
   onHandleStartLinkClick: () => void
-  onDeleteButtonClick: (node: INode) => void
-  onMoveButtonClick: (node: INode) => void
-  onCreateNodeButtonClick: () => void
-  onCollaborationButtonClick: () => void
-  onGraphButtonClick: () => void
-  onShareBtnClick: () => void
+  ownerid: string
 }
 
-export const NodeHeader = (props: INodeHeaderProps) => {
-  const {
-    onDeleteButtonClick,
-    onMoveButtonClick,
-    onGraphButtonClick,
-    onHandleStartLinkClick,
-    onHandleCompleteLinkClick,
-    onCollaborationButtonClick,
-    onCreateNodeButtonClick,
-    onShareBtnClick,
-  } = props
+export const ReaderHeader = (props: IReaderHeaderProps) => {
+  const { onHandleStartLinkClick, onHandleCompleteLinkClick, ownerid } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
   const isLinking = useRecoilValue(isLinkingState)
@@ -56,6 +48,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
   const setAlertTitle = useSetRecoilState(alertTitleState)
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [refreshLinkList, setRefreshLinkList] = useRecoilState(refreshLinkListState)
+  const [user, setUser] = useState<IUser>()
 
   // State variable for current node title
   const [title, setTitle] = useState(currentNode.title)
@@ -118,11 +111,23 @@ export const NodeHeader = (props: INodeHeaderProps) => {
     ContextMenuItems.push(menuItem)
   }
 
+  const fetchOwner = async (userId: string) => {
+    const ownerResp = await FrontendUserGateway.getUser(ownerid)
+    if (!ownerResp.success || !ownerResp.payload) {
+      return
+    }
+    setUser(ownerResp.payload)
+  }
+
   /* useEffect which updates the title and editing state when the node is changed */
   useEffect(() => {
     setTitle(currentNode.title)
     setEditingTitle(false)
   }, [currentNode, setEditingTitle])
+
+  useEffect(() => {
+    fetchOwner(ownerid)
+  }, [ownerid])
 
   /* Node key handlers*/
   const nodeKeyHandlers = (e: KeyboardEvent) => {
@@ -195,47 +200,17 @@ export const NodeHeader = (props: INodeHeaderProps) => {
       <div className="nodeHeader-buttonBar">
         {notRoot && (
           <>
-            <Button
-              isWhite={isLinking}
-              text="Create"
-              icon={<ai.AiOutlinePlus />}
-              onClick={onCreateNodeButtonClick}
-            />
-
             {/* <Button
               icon={<ri.RiMenuAddFill />}
               text="Visual"
               onClick={() => onGraphButtonClick(currentNode)}
             /> */}
 
-            <Button
-              icon={<ri.RiDeleteBin6Line />}
-              text="Delete"
-              onClick={() => onDeleteButtonClick(currentNode)}
-            />
-
-            <Button
-              icon={<ri.RiExternalLinkLine />}
-              text="Start Link"
-              onClick={onHandleStartLinkClick}
-            />
-
-            <Button
-              icon={<AiOutlineUsergroupAdd />}
-              text="Collab"
-              onClick={onCollaborationButtonClick}
-            />
-
-            <Button icon={<AiOutlineShareAlt />} text="Share" onClick={onShareBtnClick} />
-
-            {isLinking && (
-              <Button
-                text="Complete Link"
-                icon={<bi.BiLinkAlt />}
-                onClick={onHandleCompleteLinkClick}
-              />
-            )}
             <NodeSelect />
+            <div className="readHeader-nameBar">
+              <AiOutlineUser />
+              Owner: &nbsp; <Avatar src={user?.avatar} /> &nbsp; {user?.userName}
+            </div>
             {folder && (
               <div className="select">
                 <Select
@@ -252,8 +227,11 @@ export const NodeHeader = (props: INodeHeaderProps) => {
           </>
         )}
       </div>
-
-  
+      <div className="readHeader-info">
+        {' '}
+        <AiOutlineEye style={{ display: 'inline' }} />
+        &nbsp; You can only read this node
+      </div>
     </div>
   )
 }

@@ -1,0 +1,75 @@
+@import '../../../global/globalCssVariables';
+
+.treeView-item {
+  transition: 0.2;
+
+  .item-wrapper {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    padding-left: 20px;
+    gap: 4px;
+    cursor: pointer;
+    background-color: white;
+    align-items: center;
+    align-content: center;
+
+    &.false {
+      &:hover {
+        background-color: darken(white, 20);
+      }
+    }
+
+    &.true {
+      background-color: $selected-color;
+
+      &:hover {
+        background-color: darken($selected-color, 10);
+      }
+    }
+
+    .icon-hover {
+      display: flex;
+      margin: 2px;
+      width: 20px;
+      height: 20px;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
+      transition: 0.2s;
+      border-radius: 4px;
+
+      .icon-wrapper {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        transition: 0.2s;
+      }
+
+      &.true {
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+
+    .text-wrapper {
+      -webkit-user-select: none;
+      user-select: none;
+      padding-bottom: 2px;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .item-children {
+    position: relative;
+    left: 28px;
+
+    &.false {
+      display: none;
+    }
+  }
+}

@@ -32,7 +32,6 @@ export const NodeContent = (props: INodeContentProps) => {
       return <TextContent />
     case 'video':
       return <VideoContent />
-
     case 'map':
       return <></>
     case 'folder':
@@ -44,6 +43,8 @@ export const NodeContent = (props: INodeContentProps) => {
             childNodes={childNodes}
           />
         )
+      } else {
+        return <></>
       }
     case 'loc': {
       return (
