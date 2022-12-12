@@ -1,5 +1,3 @@
-import { send } from 'process'
-
 /*
  * User's Message
  * messageId, userId, information, nodeId, dateCreated
