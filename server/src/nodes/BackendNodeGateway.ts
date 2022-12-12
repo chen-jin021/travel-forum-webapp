@@ -389,6 +389,35 @@ export class BackendNodeGateway {
     }
     return nodeResponse
   }
+  async deleteUserInList(
+    nodeId: string,
+    userId: string,
+    listType: string
+  ): Promise<IServiceResponse<{}>> {
+    const getResponse = await this.nodeCollectionConnection.findNodeById(nodeId)
+    if (!getResponse.success) {
+      return failureServiceResponse('Node does not exist')
+    }
+    const node = getResponse.payload
+    let idList: string[] = []
+    if (listType == 'write') {
+      idList = (node as ILocNode).userWriteIds
+    } else if (listType == 'read') {
+      idList = (node as ILocNode).userReadIds
+    }
+    for (let i = 0; i < idList.length - 1; i++) {
+      if (idList[i] === userId) {
+        idList.splice(i, 1)
+      }
+    }
+    if (listType == 'write') {
+      const prop = makeINodeProperty('userWriteIds', idList)
+      this.updateNode(nodeId, [prop])
+    } else if (listType == 'read') {
+      const prop = makeINodeProperty('userReadIds', idList)
+      this.updateNode(nodeId, [prop])
+    }
+  }
 
   /**
    * Method to retrieve the node tree, where the root is the node with

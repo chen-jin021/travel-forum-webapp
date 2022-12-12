@@ -244,6 +244,25 @@ export class NodeRouter {
     })
 
     /**
+     * Request to delete a given user in the permission list
+     *
+     * @param req request object coming from client
+     * @param res response object to send to client
+     */
+    NodeExpressRouter.post('/deleteUserPermission', async (req: Request, res: Response) => {
+      try {
+        const userId = req.body.userId
+        const nodeId = req.body.nodeId
+        const listType = req.body.nodeId
+        const response: IServiceResponse<{}> =
+          await this.BackendNodeGateway.deleteUserInList(nodeId, userId, listType)
+        res.status(200).send(response)
+      } catch (e) {
+        res.status(500).send(e.message)
+      }
+    })
+
+    /**
      * Request to retrieve node with all its children
      *
      * @param req request object coming from client
