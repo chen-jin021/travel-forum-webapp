@@ -49,7 +49,7 @@ import { IInvitation } from '../../../types/IInvitation'
 import { FrontendUserGateway } from '../../../users'
 import { FrontendInvitationGateway } from '../../../invitations'
 
-export interface ICreateInvitationModalProps {
+export interface ICreateCommentModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: () => unknown
@@ -60,7 +60,7 @@ export interface ICreateInvitationModalProps {
  * Modal for adding a new node; lets the user choose a title, type,
  * and parent node
  */
-export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
+export const CreateCommentModal = (props: ICreateCommentModalProps) => {
   // deconstruct props variables
 
   const { isOpen, onClose, onSubmit, nodeIdsToNodes } = props
