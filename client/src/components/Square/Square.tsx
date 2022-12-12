@@ -1,51 +1,33 @@
-import { ChakraProvider, Input } from '@chakra-ui/react'
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { ChakraProvider } from '@chakra-ui/react'
 import {
-  refreshState,
-  selectedNodeState,
-  selectedAnchorsState,
-  selectedExtentState,
-  alertOpenState,
-  alertTitleState,
-  alertMessageState,
-  currentNodeState,
-  panoramaState,
-} from '../../global/Atoms'
-import { useAuth } from '../../contexts/AuthContext'
-import { useLocation } from 'react-router-dom'
-import { FrontendNodeGateway } from '../../nodes'
-import { FrontendUserGateway } from '../../users'
-import { ILocNode, INode, NodeIdsToNodesMap, RecursiveNodeTree, IUser } from '../../types'
-import {
-  GoogleMap,
-  Marker,
-  InfoWindow,
-  useJsApiLoader,
-  Autocomplete,
+  GoogleMap
 } from '@react-google-maps/api'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAuth } from '../../contexts/AuthContext'
+import {
+  alertMessageState, alertOpenState,
+  alertTitleState, currentNodeState,
+  panoramaState, refreshState, selectedAnchorsState,
+  selectedExtentState, selectedNodeState
+} from '../../global/Atoms'
+import { FrontendNodeGateway } from '../../nodes'
+import { ILocNode, INode, IUser, NodeIdsToNodesMap, RecursiveNodeTree } from '../../types'
+import { FrontendUserGateway } from '../../users'
 import { Alert } from '../Alert'
 import { ContextMenu } from '../ContextMenu/ContextMenu'
-import { Header } from '../Header'
 import { LoadingScreen } from '../LoadingScreen'
+import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from '../MainView'
 import {
-  CompleteLinkModal,
-  CreateNodeModal,
-  MoveNodeModal,
-  CreateLocationModal,
-  CreateInvitationModal,
-  CreateCommentModal,
+  CompleteLinkModal, CreateCommentModal, CreateInvitationModal, CreateLocationModal, CreateNodeModal,
+  MoveNodeModal
 } from '../Modals'
 import { NodeView } from '../NodeView'
-import { SquareTreeView } from '../SquareTreeView'
-import { MapView } from '../MapView'
-import './MainView.scss'
-import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from '../MainView'
-import { FaSleigh } from 'react-icons/fa'
-import { containerStyle, center, options, zoom } from './MapSettings'
-import { useHistory } from 'react-router-dom'
-import { rootCertificates } from 'tls'
 import { SquareHeader } from '../SquareHeader'
+import { SquareTreeView } from '../SquareTreeView'
+import './MainView.scss'
+import { center, containerStyle, options, zoom } from './MapSettings'
 
 export interface ISquareProps {
   isLoaded: boolean

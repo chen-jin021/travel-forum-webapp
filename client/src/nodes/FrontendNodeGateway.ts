@@ -10,6 +10,7 @@ import {
 import { endpoint, get, post, put, remove } from '../global'
 import { FrontendAnchorGateway } from '../anchors'
 import { FrontendLinkGateway } from '../links'
+import { list } from 'firebase/storage'
 
 /** In development mode (locally) the server is at localhost:5000*/
 const baseEndpoint = endpoint
@@ -176,7 +177,24 @@ export const FrontendNodeGateway = {
       return failureServiceResponse('[updateNode] Unable to access backend')
     }
   },
-
+  deleteUserInList: async (
+    nodeId: string,
+    userId: string,
+    listType: string
+  ): Promise<IServiceResponse<{}>> => {
+    try {
+      return await post<IServiceResponse<INode>>(
+        baseEndpoint + servicePath + 'deleteUserPermission',
+        {
+          nodeId: nodeId,
+          userId: userId,
+          listType: listType,
+        }
+      )
+    } catch (exception) {
+      return failureServiceResponse('[deleteUserInList] Unable to access backend')
+    }
+  },
   getLocation: async (): Promise<IServiceResponse<RecursiveNodeTree[]>> => {
     try {
       return await get<IServiceResponse<RecursiveNodeTree[]>>(

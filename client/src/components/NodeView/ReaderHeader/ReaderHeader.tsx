@@ -31,6 +31,7 @@ import { signOut } from 'firebase/auth'
 import NodeSelect from '../../NodeSelect'
 import { AiOutlineShareAlt } from 'react-icons/ai'
 import { FrontendUserGateway } from '../../../users'
+import { useHistory } from 'react-router'
 
 interface IReaderHeaderProps {
   onHandleCompleteLinkClick: () => void
@@ -49,6 +50,8 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [refreshLinkList, setRefreshLinkList] = useRecoilState(refreshLinkListState)
   const [user, setUser] = useState<IUser>()
+  const history = useHistory()
+  const [error, setError] = useState('')
 
   // State variable for current node title
   const [title, setTitle] = useState(currentNode.title)
@@ -171,7 +174,20 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
       }
     }
   }
-
+  const onQuitClick = async () => {
+    if (!user) return
+    const userId = user.userId
+    const deleteUserPermitResp = await FrontendNodeGateway.deleteUserInList(
+      currentNode.nodeId,
+      userId,
+      'read'
+    )
+    if (!deleteUserPermitResp.success || !deleteUserPermitResp.payload) {
+      setError(deleteUserPermitResp.message)
+      return
+    }
+    history.push('/main')
+  }
   // Trigger on node load or when editingTitle changes
   useEffect(() => {
     // TODO: Task 9 - keyboard shortcuts
@@ -205,7 +221,7 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
               text="Visual"
               onClick={() => onGraphButtonClick(currentNode)}
             /> */}
-
+            <Button text="Quit" onClick={onQuitClick} />
             <NodeSelect />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
