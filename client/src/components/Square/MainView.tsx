@@ -44,7 +44,6 @@ import { FaSleigh } from 'react-icons/fa'
 import { containerStyle, center, options, zoom } from './MapSettings'
 import { useHistory } from 'react-router-dom'
 import { rootCertificates } from 'tls'
-import { ShareModal } from '../Modals/ShareModal'
 
 export interface IMainViewProps {
   isLoaded: boolean
@@ -59,7 +58,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   const [moveNodeModalOpen, setMoveNodeModalOpen] = useState(false)
   const [createLocationModalOpen, setCreateLocationModalOpen] = useState(false)
   const [collaborationModalOpen, setCollaborationModalOpen] = useState(false)
-  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   // node states
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
@@ -305,10 +303,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
     setCollaborationModalOpen(true)
   }, [])
 
-  const handleShareClick = useCallback(() => {
-    setShareModalOpen(true)
-  }, [])
-
   const getSelectedNodeChildren = useCallback(() => {
     if (!selectedNode) return undefined
     return selectedNode.filePath.children.map(
@@ -387,9 +381,12 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onClose={() => setCreateNodeModalOpen(false)}
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
-            onSubmit={() => {
-              if (user) loadRootsFromDB(user?.uid)
-            }}
+            onSubmit={() => {}}
+          />
+          <CompleteLinkModal
+            isOpen={completeLinkModalOpen}
+            onClose={() => setCompleteLinkModalOpen(false)}
+            nodeIdsToNodes={nodeIdsToNodesMap}
           />
           <CreateInvitationModal
             isOpen={collaborationModalOpen}
@@ -397,7 +394,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onSubmit={() => {}}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
-          <ShareModal isOpen={shareModalOpen} onClose={() => setShareModalOpen(false)} />
 
           {selectedNode && (
             <MoveNodeModal
@@ -443,7 +439,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                   onCompleteLinkClick={handleCompleteLinkClick}
                   onCreateNodeButtonClick={handleCreateNodeButtonClick}
                   onCollaborationButtonClick={handleCollaborationClick}
-                  onShareBtnClick={handleShareClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
                 />
               </div>
