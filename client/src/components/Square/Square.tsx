@@ -34,6 +34,7 @@ import {
   MoveNodeModal,
   CreateLocationModal,
   CreateInvitationModal,
+  CreateCommentModal,
 } from '../Modals'
 import { NodeView } from '../NodeView'
 import { SquareTreeView } from '../SquareTreeView'
@@ -59,6 +60,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
   const [moveNodeModalOpen, setMoveNodeModalOpen] = useState(false)
   const [createLocationModalOpen, setCreateLocationModalOpen] = useState(false)
   const [collaborationModalOpen, setCollaborationModalOpen] = useState(false)
+  const [commentModalOpen, setCommentModalOpen] = useState(false)
 
   // node states
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
@@ -304,6 +306,10 @@ export const Square = React.memo(function Square(props: ISquareProps) {
     setCollaborationModalOpen(true)
   }, [])
 
+  const handleCommentClick = useCallback(() => {
+    setCommentModalOpen(true)
+  }, [])
+
   const getSelectedNodeChildren = useCallback(() => {
     if (!selectedNode) return undefined
     return selectedNode.filePath.children.map(
@@ -394,6 +400,11 @@ export const Square = React.memo(function Square(props: ISquareProps) {
             onSubmit={() => {}}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
+          <CreateCommentModal
+            isOpen={commentModalOpen}
+            onClose={() => setCommentModalOpen(false)}
+            nodeIdsToNodes={nodeIdsToNodesMap}
+          />
 
           {selectedNode && (
             <MoveNodeModal
@@ -440,6 +451,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
                   onCreateNodeButtonClick={handleCreateNodeButtonClick}
                   onCollaborationButtonClick={handleCollaborationClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
+                  onCommentBtnClick={handleCommentClick}
                   onShareBtnClick={() => {}}
                   inSquare={true}
                 />

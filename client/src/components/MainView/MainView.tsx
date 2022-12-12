@@ -398,6 +398,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onSubmit={() => {}}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
+
           <ShareModal isOpen={shareModalOpen} onClose={() => setShareModalOpen(false)} />
 
           {selectedNode && (

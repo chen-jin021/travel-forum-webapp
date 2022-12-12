@@ -36,11 +36,17 @@ import { BsMapFill } from 'react-icons/bs'
 interface ISquareNodeHeaderProps {
   onHandleCompleteLinkClick: () => void
   onHandleStartLinkClick: () => void
+  onCommentBtnClick: () => void
   ownerid: string
 }
 
 export const SquareNodeHeader = (props: ISquareNodeHeaderProps) => {
-  const { onHandleStartLinkClick, onHandleCompleteLinkClick, ownerid } = props
+  const {
+    onHandleStartLinkClick,
+    onHandleCompleteLinkClick,
+    ownerid,
+    onCommentBtnClick,
+  } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
   const isLinking = useRecoilValue(isLinkingState)
@@ -201,11 +207,11 @@ export const SquareNodeHeader = (props: ISquareNodeHeaderProps) => {
       <div className="nodeHeader-buttonBar">
         {notRoot && (
           <>
-            {/* <Button
-              icon={<ri.RiMenuAddFill />}
-              text="Visual"
-              onClick={() => onGraphButtonClick(currentNode)}
-            /> */}
+            <Button
+              icon={<ai.AiOutlineComment />}
+              text="Leave a comment"
+              onClick={onCommentBtnClick}
+            />
 
             <NodeSelect />
             <div className="readHeader-nameBar">

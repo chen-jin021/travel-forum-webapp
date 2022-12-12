@@ -51,6 +51,7 @@ export const Header = (props: IHeaderProps) => {
   }
 
   const handleSquareBtnClick = () => {
+    onHomeClick()
     history.push('/square')
   }
 
