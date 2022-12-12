@@ -26,7 +26,6 @@ const dateCellRender = (dataSource: Record<string, INode[]>) => (value: Dayjs) =
   const date = value.format('YYYY-MM-DD')
 
   const result = dataSource[date] ?? []
-
   return withList(result)
 }
 

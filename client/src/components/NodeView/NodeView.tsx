@@ -43,7 +43,7 @@ export interface INodeViewProps {
   onMoveButtonClick: (node: INode) => void
   // handler for collaboration
   onCollaborationButtonClick: () => void
-  // children used when renderinßg folder node
+  // children used when rendering folder node
   onShareBtnClick: () => void
   onCommentBtnClick: () => void
   childNodes?: INode[]
@@ -308,6 +308,7 @@ export const NodeView = (props: INodeViewProps) => {
             <NodeContent
               childNodes={childNodes}
               onCreateNodeButtonClick={onCreateNodeButtonClick}
+              inSquare={inSquare}
             />
           </div>
         </div>

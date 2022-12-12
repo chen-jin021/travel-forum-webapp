@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { currentNodeState } from '../../../global/Atoms'
 import { IFolderNode, INode } from '../../../types'
@@ -14,6 +14,7 @@ import DateContent from './DateContent'
 export interface INodeContentProps {
   childNodes?: INode[]
   onCreateNodeButtonClick: () => void
+  inSquare: boolean
 }
 
 /**
@@ -23,6 +24,7 @@ export interface INodeContentProps {
  * @returns Content that any type of node renders
  */
 export const NodeContent = (props: INodeContentProps) => {
+  const { inSquare } = props
   const { onCreateNodeButtonClick, childNodes } = props
   const currentNode = useRecoilValue(currentNodeState)
 
@@ -49,11 +51,23 @@ export const NodeContent = (props: INodeContentProps) => {
       break
     case 'loc': {
       return (
-        <DateContent
-          childNodes={childNodes ?? []}
-          onCreateNodeButtonClick={onCreateNodeButtonClick}
-          node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
-        />
+        <div>
+          {!inSquare && (
+            <DateContent
+              childNodes={childNodes ?? []}
+              onCreateNodeButtonClick={onCreateNodeButtonClick}
+              node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
+            />
+          )}
+
+          {
+            <FolderContent
+              node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
+              onCreateNodeButtonClick={onCreateNodeButtonClick}
+              childNodes={childNodes as any}
+            />
+          }
+        </div>
       )
     }
   }
