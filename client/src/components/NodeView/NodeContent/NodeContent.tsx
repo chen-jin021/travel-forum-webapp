@@ -28,29 +28,11 @@ export const NodeContent = (props: INodeContentProps) => {
   const { inSquare } = props
   const { onCreateNodeButtonClick, childNodes } = props
   const currentNode = useRecoilValue(currentNodeState)
-  const [open, setOpen] = useState(false)
-  const [condition, setCondition] = useState(true)
+  const [, setOpen] = useState(false)
   const [switchOnCal, setSwitchOnCal] = useState(true)
 
   const changeCondition = (checked: boolean) => {
     setSwitchOnCal(!switchOnCal) // toggle
-  }
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen) {
-      setOpen(newOpen)
-      return
-    }
-    // Determining condition before show the popconfirm.
-    console.log(condition)
-    if (condition) {
-      confirm() // next step
-    } else {
-      setOpen(newOpen)
-    }
-  }
-  const cancel = () => {
-    setOpen(false)
-    message.error('Click on cancel.')
   }
 
   const confirm = () => {

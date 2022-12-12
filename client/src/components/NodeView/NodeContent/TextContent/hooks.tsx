@@ -1,6 +1,8 @@
 // eslint-disable-next-line
 import React, { useMemo } from 'react'
 import type { Editor } from '@tiptap/react'
+import { Button, Space } from 'antd'
+
 
 export enum OpName {
   // eslint-disable-next-line
@@ -57,27 +59,27 @@ class Operation {
     const editor = this.editor
 
     return (
-      <button
+      <Button
         onClick={() => Operation.exec(editor, fnName)}
         key={key}
         className={Operation.activeCheck(editor, key)}
       >
         {key}
-      </button>
+      </Button>
     )
   }
 
   heading = {
     render: (editor: Editor) => {
       return [1, 2, 3, 4, 5, 6].map((level) => (
-        <button
+        <Button
           key={level}
           // eslint-disable-next-line no-invalid-this
           onClick={() => Operation.exec(editor, 'toggleHeading', { level })}
           className={Operation.activeCheck(editor, 'heading', { level })}
         >
           h{level}
-        </button>
+        </Button>
       ))
     },
   }

@@ -1,11 +1,15 @@
 @import '../../../../global/globalCssVariables';
 
+/* Basic editor styles */
 .ProseMirror {
   a {
     color: blue !important;
     text-decoration: underline !important;
     cursor: pointer;
   }
+}
+> * + * {
+  margin-top: 0.75em;
 }
 
 li {
@@ -15,16 +19,31 @@ li {
 
 // styling our text buttons
 .textEditorButton {
+  text-align: center;
   font-size: inherit;
   font-family: inherit;
-  color: #000;
+  // color: #000;
+  color: rgb(86, 137, 167);
   margin: 0.2rem;
-  border: 1px solid black;
-  border-radius: 0.3rem;
+  margin-right: 0.1rem;
+  border: 0.16em solid rgba(255, 255, 255, 0);
+  border-radius: 0.5em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
+  text-align: center;
   padding: 0.1rem 0.4rem;
-  background: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: all 0.2s;
+  background-color: #e5c27b;
   accent-color: black;
   margin-bottom: 20px;
+}
+.textEditorButton:hover {
+   border-color: rgb(175, 172, 172);
 }
 
 .active-textEditorButton {
