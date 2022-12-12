@@ -241,7 +241,11 @@ export const TextContent = (props: ITextContentProps) => {
   return (
     <div>
       <TextMenu editor={editor} />
-      <EditorContent editor={editor} onPointerUp={onPointerUp} />
+      <EditorContent
+        style={{ width: '100%', padding: '10px;' }}
+        editor={editor}
+        onPointerUp={onPointerUp}
+      />
     </div>
   )
 }
