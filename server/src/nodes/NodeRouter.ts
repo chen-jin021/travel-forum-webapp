@@ -8,6 +8,8 @@ import {
   IServiceResponse,
   isINode,
 } from '../types'
+import http from 'http'
+import https from 'https'
 import { BackendNodeGateway } from './BackendNodeGateway'
 const bodyJsonParser = require('body-parser').json()
 
@@ -78,6 +80,21 @@ export class NodeRouter {
         console.log(e)
         res.status(500).send(e.message)
       }
+    })
+
+    NodeExpressRouter.get('/video/proxy', async (req: Request, res: Response) => {
+      const { location } = req.query
+
+      const lib = (location as string).includes('https') ? https : http
+
+      const request = lib.request(location as string, (resp) => {
+        res.writeHead(200, { ...resp.headers, connection: 'keep-alive' })
+
+        resp.pipe(res)
+      })
+
+      console.log(location)
+      request.end()
     })
 
     /**
