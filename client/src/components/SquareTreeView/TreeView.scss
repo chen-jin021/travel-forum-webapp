@@ -1,0 +1,32 @@
+@import '../../global/globalCssVariables';
+
+.treeView-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  overflow: hidden;
+  padding: 20px 0px 20px 0px;
+  border-radius: 8px;
+  margin: 10px 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  &-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+
+  &-thumb {
+    background: lightgray;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+
+    &:hover {
+      background: darkgray;
+    }
+  }
+}

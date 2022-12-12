@@ -15,7 +15,6 @@ export const PrivateRoute = ({ component: Component, isLoaded, ...rest }: any) =
     <Route
       {...rest}
       render={(props) => {
-        console.log(props)
         return user ? <Component isLoaded={isLoaded} {...props} /> : <Redirect to="/" />
       }}
     ></Route>

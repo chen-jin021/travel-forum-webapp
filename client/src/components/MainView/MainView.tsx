@@ -85,10 +85,10 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   const loadRootsFromDB = useCallback(
     async (userId: string) => {
       const rootsFromDB = await FrontendNodeGateway.fetchNodeByUserId(userId)
-      console.log(rootsFromDB)
       if (rootsFromDB.success) {
         rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
         setIsAppLoaded(true)
+        console.log(rootsFromDB.payload)
         if (map && rootsFromDB.payload) {
           updateAllMarkers(rootsFromDB.payload)
         }
@@ -197,7 +197,8 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
       })
     })
     marker.addListener('rightclick', () => {
-      ;`/main/${rootNodes[no].node.nodeId}/`
+      history.push(`/main/${rootNodes[no].node.nodeId}/`)
+      setSelectedNode(rootNodes[no].node)
     })
   }
 
@@ -416,6 +417,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                 onLoad={onLoad}
                 center={center}
                 zoom={11}
+                
               />
             ) : (
               <div>Map Loading...</div>

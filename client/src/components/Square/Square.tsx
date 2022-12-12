@@ -36,7 +36,7 @@ import {
   CreateInvitationModal,
 } from '../Modals'
 import { NodeView } from '../NodeView'
-import { TreeView } from '../TreeView'
+import { SquareTreeView } from '../SquareTreeView'
 import { MapView } from '../MapView'
 import './MainView.scss'
 import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from '../MainView'
@@ -44,6 +44,7 @@ import { FaSleigh } from 'react-icons/fa'
 import { containerStyle, center, options, zoom } from './MapSettings'
 import { useHistory } from 'react-router-dom'
 import { rootCertificates } from 'tls'
+import { SquareHeader } from '../SquareHeader'
 
 export interface ISquareProps {
   isLoaded: boolean
@@ -357,9 +358,8 @@ export const Square = React.memo(function Square(props: ISquareProps) {
       ) : (
         <div className="main-container">
           <Alert></Alert>
-          <Header
+          <SquareHeader
             onHomeClick={handleHomeClick}
-            onCreateNodeButtonClick={handleCreateLocationClick}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
             onPanoramaClick={handlePanoramaClick}
             avatarUrl={avatar}
@@ -418,7 +418,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
             )}
             {!panorama && (
               <div className="treeView-container" ref={treeView}>
-                <TreeView
+                <SquareTreeView
                   roots={rootNodes}
                   parentNode={selectedNode}
                   setParentNode={setSelectedNode}
@@ -440,7 +440,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
                   onCreateNodeButtonClick={handleCreateNodeButtonClick}
                   onCollaborationButtonClick={handleCollaborationClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
-                  onShareBtnClick={()=>{}}
+                  onShareBtnClick={() => {}}
                 />
               </div>
             )}

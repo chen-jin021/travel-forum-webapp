@@ -26,6 +26,7 @@ import './NodeView.scss'
 import { FrontendNodeGateway } from '../../nodes'
 import { useAuth } from '../../contexts/AuthContext'
 import { ReaderHeader } from './ReaderHeader'
+import { WriterHeader } from './WriterHeader'
 
 export interface INodeViewProps {
   currentNode: INode
@@ -240,7 +241,6 @@ export const NodeView = (props: INodeViewProps) => {
   }
 
   const getHeader = (perm: string) => {
-    console.log(perm)
     switch (perm) {
       case 'owner':
         return (
@@ -260,6 +260,15 @@ export const NodeView = (props: INodeViewProps) => {
           <ReaderHeader
             onHandleStartLinkClick={handleStartLinkClick}
             onHandleCompleteLinkClick={handleCompleteLinkClick}
+            ownerid={(currNode as ILocNode).ownerId}
+          />
+        )
+      case 'write':
+        return (
+          <WriterHeader
+            onHandleStartLinkClick={handleStartLinkClick}
+            onHandleCompleteLinkClick={handleCompleteLinkClick}
+            onCreateNodeButtonClick={onCreateNodeButtonClick}
             ownerid={(currNode as ILocNode).ownerId}
           />
         )

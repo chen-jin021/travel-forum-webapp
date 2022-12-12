@@ -205,11 +205,12 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
               text="Visual"
               onClick={() => onGraphButtonClick(currentNode)}
             /> */}
+
+            <NodeSelect />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
               Owner: &nbsp; <Avatar src={user?.avatar} /> &nbsp; {user?.userName}
             </div>
-            <NodeSelect />
             {folder && (
               <div className="select">
                 <Select

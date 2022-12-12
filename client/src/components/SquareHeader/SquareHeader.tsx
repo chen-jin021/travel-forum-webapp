@@ -15,26 +15,19 @@ import {
   selectedNodeState,
   panoramaState,
 } from '../../global/Atoms'
-import './Header.scss'
+import './SquareHeader.scss'
 import { Avatar } from '@chakra-ui/react'
 import { useAuth } from '../../contexts/AuthContext'
 
-interface IHeaderProps {
+interface ISquareHeaderProps {
   nodeIdsToNodesMap: NodeIdsToNodesMap
-  onCreateNodeButtonClick: () => void
   onHomeClick: () => void
   onPanoramaClick: () => void
   avatarUrl: string
 }
 
-export const Header = (props: IHeaderProps) => {
-  const {
-    onCreateNodeButtonClick,
-    onHomeClick,
-    nodeIdsToNodesMap,
-    onPanoramaClick,
-    avatarUrl,
-  } = props
+export const SquareHeader = (props: ISquareHeaderProps) => {
+  const { onHomeClick, nodeIdsToNodesMap, onPanoramaClick, avatarUrl } = props
   const customButtonStyle = { height: 30, marginLeft: 10, width: 30 }
   const [isLinking, setIsLinking] = useRecoilState(isLinkingState)
   const [startAnchor, setStartAnchor] = useRecoilState(startAnchorState)
@@ -67,7 +60,7 @@ export const Header = (props: IHeaderProps) => {
         </Link>
         <div>
           <b>|</b> {'  '}{' '}
-          <span style={{ fontStyle: 'italic', cursor: 'default' }}> My Fantasy Map</span>
+          <span style={{ fontStyle: 'italic', cursor: 'default' }}> Fantasy Square</span>
         </div>
         <Link to={'/main'} style={{ marginLeft: '20px' }}>
           <Button
@@ -82,18 +75,6 @@ export const Header = (props: IHeaderProps) => {
           style={customButtonStyle}
           icon={panorama ? <ai.AiOutlineEye /> : <ai.AiOutlineEyeInvisible />}
           onClick={onPanoramaClick}
-        />
-        <Button
-          isWhite={isLinking}
-          style={customButtonStyle}
-          icon={<ai.AiOutlinePlus />}
-          onClick={onCreateNodeButtonClick}
-        />
-        <Button
-          isWhite={false}
-          style={customButtonStyle}
-          icon={<BsFillMapFill />}
-          onClick={handleSquareBtnClick}
         />
       </div>
       <div className="right-bar">
