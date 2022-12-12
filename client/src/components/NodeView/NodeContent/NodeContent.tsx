@@ -43,6 +43,8 @@ export const NodeContent = (props: INodeContentProps) => {
             childNodes={childNodes}
           />
         )
+      } else {
+        return <></>
       }
     case 'loc': {
       return (

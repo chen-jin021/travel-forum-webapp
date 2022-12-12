@@ -440,6 +440,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
                   onCreateNodeButtonClick={handleCreateNodeButtonClick}
                   onCollaborationButtonClick={handleCollaborationClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
+                  onShareBtnClick={()=>{}}
                 />
               </div>
             )}

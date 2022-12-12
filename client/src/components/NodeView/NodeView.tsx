@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FrontendAnchorGateway } from '../../anchors'
 import { generateObjectId } from '../../global'
-import { IAnchor, INode, isSameExtent, NodeIdsToNodesMap } from '../../types'
+import { IAnchor, ILocNode, INode, isSameExtent, NodeIdsToNodesMap } from '../../types'
 import { NodeBreadcrumb } from './NodeBreadcrumb'
 import { NodeContent } from './NodeContent'
 import { NodeHeader } from './NodeHeader'
@@ -23,6 +23,9 @@ import {
   controlCurrentPlayerState,
 } from '../../global/Atoms'
 import './NodeView.scss'
+import { FrontendNodeGateway } from '../../nodes'
+import { useAuth } from '../../contexts/AuthContext'
+import { ReaderHeader } from './ReaderHeader'
 
 export interface INodeViewProps {
   currentNode: INode
@@ -70,19 +73,21 @@ export const NodeView = (props: INodeViewProps) => {
   const setAlertMessage = useSetRecoilState(alertMessageState)
 
   const [, setPlaying] = useRecoilState(controlCurrentPlayerState)
-  const [permission, setPermission] = useState('own')
+  const [permission, setPermission] = useState('owner')
 
   // eslint-disable-next-line
   const [currNode, setCurrentNode] = useRecoilState(currentNodeState)
   const {
     filePath: { path },
   } = currentNode
+  const { user } = useAuth()
+  if (!user) {
+    return <></>
+  }
 
   useEffect(() => {
     setCurrentNode(currentNode)
   })
-
-  useEffect(() => {}, [currNode])
 
   const loadAnchorsFromNodeId = useCallback(async () => {
     const anchorsFromNode = await FrontendAnchorGateway.getAnchorsByNodeId(
@@ -147,9 +152,44 @@ export const NodeView = (props: INodeViewProps) => {
     }
   }
 
+  const getPermission = async () => {
+    let permissionNode: INode
+    if (currNode.type === 'map') {
+      setPermission('owner')
+      return
+    }
+    if (currNode.type === 'loc') {
+      permissionNode = currNode
+    } else {
+      const parentId = currNode.filePath.path[0]
+      const locNodeResp = await FrontendNodeGateway.getNode(parentId)
+      if (!locNodeResp.success || !locNodeResp.payload) {
+        return
+      }
+      permissionNode = locNodeResp.payload
+    }
+    if (!user) {
+      return
+    }
+    // if user is owner
+    if (user.uid === (permissionNode as ILocNode).ownerId) {
+      setPermission('owner')
+      return
+    }
+    // in read id
+    else if ((permissionNode as ILocNode).userReadIds.indexOf(user.uid) > -1) {
+      setPermission('read')
+      return
+    } else if ((permissionNode as ILocNode).userWriteIds.indexOf(user.uid) > -1) {
+      setPermission('write')
+      return
+    }
+  }
+
   useEffect(() => {
     setSelectedAnchors([])
     loadAnchorsFromNodeId()
+    getPermission()
   }, [loadAnchorsFromNodeId, currentNode, refreshLinkList, setSelectedAnchors])
 
   const hasBreadcrumb: boolean = path.length > 1
@@ -199,19 +239,37 @@ export const NodeView = (props: INodeViewProps) => {
     document.removeEventListener('pointerup', onPointerUp)
   }
 
+  const getHeader = (perm: string) => {
+    console.log(perm)
+    switch (perm) {
+      case 'owner':
+        return (
+          <NodeHeader
+            onMoveButtonClick={onMoveButtonClick}
+            onDeleteButtonClick={onDeleteButtonClick}
+            onHandleStartLinkClick={handleStartLinkClick}
+            onHandleCompleteLinkClick={handleCompleteLinkClick}
+            onCreateNodeButtonClick={onCreateNodeButtonClick}
+            onCollaborationButtonClick={onCollaborationButtonClick}
+            onShareBtnClick={onShareBtnClick}
+            onGraphButtonClick={() => {}}
+          />
+        )
+      case 'read':
+        return (
+          <ReaderHeader
+            onHandleStartLinkClick={handleStartLinkClick}
+            onHandleCompleteLinkClick={handleCompleteLinkClick}
+            ownerid={(currNode as ILocNode).ownerId}
+          />
+        )
+    }
+  }
+
   return (
     <div className="node">
       <div className="nodeView" style={{ width: nodeViewWidth }}>
-        <NodeHeader
-          onMoveButtonClick={onMoveButtonClick}
-          onDeleteButtonClick={onDeleteButtonClick}
-          onHandleStartLinkClick={handleStartLinkClick}
-          onHandleCompleteLinkClick={handleCompleteLinkClick}
-          onCreateNodeButtonClick={onCreateNodeButtonClick}
-          onCollaborationButtonClick={onCollaborationButtonClick}
-          onShareBtnClick={onShareBtnClick}
-          onGraphButtonClick={() => {}}
-        />
+        {getHeader(permission)}
         <div className="nodeView-scrollable">
           {hasBreadcrumb && (
             <div className="nodeView-breadcrumb">
