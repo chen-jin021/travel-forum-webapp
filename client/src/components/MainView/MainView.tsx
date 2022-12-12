@@ -452,6 +452,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                   onCollaborationButtonClick={handleCollaborationClick}
                   onShareBtnClick={handleShareClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
+                  onCommentBtnClick={() => {}}
                   inSquare={false}
                 />
               </div>

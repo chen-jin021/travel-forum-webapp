@@ -29,6 +29,7 @@ export class BackendMessageGateway {
    *          created
    */
   async createMessage(message: any): Promise<IServiceResponse<IMessage>> {
+
     // check whether is valid message
     const isValidMessage = isIMessage(message)
     if (!isValidMessage) {

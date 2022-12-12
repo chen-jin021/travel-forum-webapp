@@ -17,7 +17,14 @@ import {
   selectedNodeState,
 } from '../../../global/Atoms'
 import { FrontendNodeGateway } from '../../../nodes'
-import { IFolderNode, INode, INodeProperty, makeINodeProperty } from '../../../types'
+import {
+  IFolderNode,
+  ILocNode,
+  INode,
+  INodeProperty,
+  makeINodeProperty,
+} from '../../../types'
+import { AiOutlineComment } from 'react-icons/ai'
 import { Button } from '../../Button'
 import { ContextMenuItems } from '../../ContextMenu'
 import { EditableText } from '../../EditableText'
@@ -228,6 +235,14 @@ export const NodeHeader = (props: INodeHeaderProps) => {
             />
 
             <Button icon={<AiOutlineShareAlt />} text="Share" onClick={onShareBtnClick} />
+            {currentNode.type == 'loc' && (currentNode as ILocNode).public && (
+              <Button
+                isWhite={isLinking}
+                text=""
+                icon={<AiOutlineComment />}
+                onClick={onCreateNodeButtonClick}
+              />
+            )}
 
             {isLinking && (
               <Button
@@ -255,6 +270,19 @@ export const NodeHeader = (props: INodeHeaderProps) => {
           </>
         )}
       </div>
+      {(currentNode as ILocNode).public ? (
+        <div className="owner-HeaderInfo">
+          {' '}
+          <ai.AiFillCrown style={{ display: 'inline' }} />
+          &nbsp; You own this node, and have shared it to Fantasy Square!
+        </div>
+      ) : (
+        <div className="owner-HeaderInfo">
+          {' '}
+          <ai.AiFillCrown style={{ display: 'inline' }} />
+          &nbsp; You own this node.
+        </div>
+      )}
     </div>
   )
 }

@@ -32,6 +32,7 @@ import {
   makeINodePath,
   RecursiveNodeTree,
   IUser,
+  IMessage,
 } from '../../../types'
 // import { Button } from '../../Button'
 import { TreeView } from '../../TreeView'
@@ -51,6 +52,7 @@ import { useAuth } from '../../../contexts/AuthContext'
 import { IInvitation } from '../../../types/IInvitation'
 import { FrontendUserGateway } from '../../../users'
 import { FrontendInvitationGateway } from '../../../invitations'
+import { FrontendMessageGateway } from '../../../messages'
 
 export interface ICreateCommentModalProps {
   isOpen: boolean
@@ -113,28 +115,20 @@ export const CreateCommentModal = (props: ICreateCommentModalProps) => {
       return
     }
 
-    // const selfResp = await FrontendUserGateway.getUser(user.uid)
+    const message: IMessage = {
+      messageId: generateObjectId('mes'),
+      userId: user.uid,
+      information: comment,
+      dateCreated: new Date(),
+      nodeId: currentNode.nodeId,
+    }
 
-    // const rcverUser = userResp.payload
-    // const ivtOBj: IInvitation = {
-    //   inviteId: generateObjectId('ivt'),
-    //   rcverId: rcverUser.userId,
-    //   rcverMail: rcverUser.mail,
-    //   rcverName: rcverUser.userName,
-    //   rcverUrl: rcverUser.avatar,
-    //   senderId: selfUser.userId,
-    //   senderMail: selfUser.mail,
-    //   senderName: selfUser.userName,
-    //   senderUrl: selfUser.avatar,
-    //   createdDate: new Date(),
-    //   type: permission,
-    //   nodeId: currentNode.nodeId,
-    // }
-    // const ivtResp = await FrontendInvitationGateway.createIvt(ivtOBj)
-    // if (!ivtResp.success || !ivtResp.payload) {
-    //   setError(ivtResp.message)
-    //   return
-    // }
+    const commentResp = await FrontendMessageGateway.createMessage(message)
+    if (!commentResp.success || !commentResp.payload) {
+      setError(commentResp.message)
+      return
+    }
+    console.log(commentResp)
   }
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
