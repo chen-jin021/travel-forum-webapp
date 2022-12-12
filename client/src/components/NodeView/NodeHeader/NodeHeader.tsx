@@ -22,6 +22,7 @@ import { ContextMenuItems } from '../../ContextMenu'
 import { EditableText } from '../../EditableText'
 import './NodeHeader.scss'
 import { signOut } from 'firebase/auth'
+import NodeSelect from '../../NodeSelect'
 
 interface INodeHeaderProps {
   onHandleCompleteLinkClick: () => void
@@ -86,7 +87,6 @@ export const NodeHeader = (props: INodeHeaderProps) => {
       setAlertTitle('Title not updated')
       setAlertMessage(updateTitleResp.message)
     }
-    console.log(updateTitleResp)
     setRefresh(!refresh)
     setRefreshLinkList(!refreshLinkList)
   }
@@ -208,9 +208,11 @@ export const NodeHeader = (props: INodeHeaderProps) => {
 
             <Button
               icon={<AiOutlineUsergroupAdd />}
-              text="Collaboration"
+              text="Collab"
               onClick={onCollaborationButtonClick}
             />
+
+            <NodeSelect />
 
             {/* {isLinking && (
               <Button

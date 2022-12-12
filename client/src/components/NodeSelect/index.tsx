@@ -7,8 +7,12 @@ import { Link } from 'react-router-dom'
 const renderItem =
   (handle: Function) =>
   ({ nodeId, title, filePath }: INode) => {
+    // console.log(filePath)
     return (
-      <Link to={`/${filePath?.path?.join('/')}/`} key={`/${filePath?.path?.join('/')}/`}>
+      <Link
+        to={`/main/${filePath?.path?.join('/')}/`}
+        key={`/${filePath?.path?.join('/')}/`}
+      >
         <li className="item" onClick={() => handle(nodeId, filePath)}>
           {title}
         </li>
@@ -27,20 +31,24 @@ const NodeSelect = () => {
   }
 
   const onChange = (e: any) => setSearch(e?.target?.value)
-
   const onSelectChange = (e: any) => setFilter(e.target.value)
+
+  // TODO: change to date picker
   return (
     <>
-      type:{' '}
+      {/* type:{' '}
       <select onChange={onSelectChange} value={filter}>
         <option value="all">All</option>
         <option value="text">text</option>
-        <option value="folder">folder</option>
         <option value="image">image</option>
         <option value="video">video</option>
-      </select>
+      </select> */}
       <div className="node-select">
-        <input className="node-select-input" placeholder="Search" onChange={onChange} />
+        <input
+          className="node-select-input"
+          placeholder="Search Journal"
+          onChange={onChange}
+        />
         <ul className="node-select-mention">
           {result
             ?.filter((item) => (filter === 'all' ? true : item.type === filter))

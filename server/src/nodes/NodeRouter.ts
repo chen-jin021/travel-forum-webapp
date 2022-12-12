@@ -66,24 +66,41 @@ export class NodeRouter {
       }
     })
 
+    NodeExpressRouter.get('/search/:text', async (req: Request, res: Response) => {
+      try {
+        const { text } = req.params
+        // TODO: find corresponding text nodes
+        const resp = await this.BackendNodeGateway.searchNodes(text)
+        console.log(resp)
+
+        res.status(200).send(resp)
+      } catch (e) {
+        console.log(e)
+        res.status(500).send(e.message)
+      }
+    })
+
     /**
      * Request to retrieve node by lat lng
      *
      * @param req request object coming from client
      * @param res response object to send to client
      */
-    NodeExpressRouter.post('/findNodeByLatLngAndId', async (req: Request, res: Response) => {
-      try {
-        const lat = Number(req.body.lat)
-        const lng = Number(req.body.lng)
-        const userId = req.body.userId
-        const response: IServiceResponse<ILocNode> =
-          await this.BackendNodeGateway.getNodeByLatLngAndId(lat, lng, userId)
-        res.status(200).send(response)
-      } catch (e) {
-        res.status(500).send(e.message)
+    NodeExpressRouter.post(
+      '/findNodeByLatLngAndId',
+      async (req: Request, res: Response) => {
+        try {
+          const lat = Number(req.body.lat)
+          const lng = Number(req.body.lng)
+          const userId = req.body.userId
+          const response: IServiceResponse<ILocNode> =
+            await this.BackendNodeGateway.getNodeByLatLngAndId(lat, lng, userId)
+          res.status(200).send(response)
+        } catch (e) {
+          res.status(500).send(e.message)
+        }
       }
-    })
+    )
 
     /**
      * Request to retrieve all loc nodes

@@ -2,7 +2,8 @@
 
 .nodeHeader {
   display: flex;
-  gap: 10px;
+  font-family: 'Roboto';
+  gap: 5px;
   font-size: 30px;
   font-weight: 500;
   padding: 10px;
@@ -10,7 +11,6 @@
   justify-content: left;
   align-items: center;
   border-bottom: $standard-border;
-  overflow: hidden;
   width: 100%;
   background-color: $primary-background-color;
   z-index: 3;

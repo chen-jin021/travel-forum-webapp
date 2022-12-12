@@ -1,5 +1,6 @@
 .node-select {
   position: relative;
+
   .node-select-input {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -14,6 +15,7 @@
     width: 100%;
     height: 32px;
     padding: 4px 11px;
+    padding-bottom: 10px;
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     line-height: 1.5;
@@ -23,6 +25,8 @@
     border-radius: 4px;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
+    margin-bottom: 12px;
+    padding-bottom: 3px;
 
     &:hover {
       border-color: #40a9ff;
@@ -34,7 +38,6 @@
     bottom: 0;
     width: 100%;
     transform: translateY(100%);
-
     margin: 0;
     padding: 0;
     color: rgba(0, 0, 0, 0.65);
@@ -43,7 +46,6 @@
     list-style: none;
     -webkit-font-feature-settings: 'tnum';
     font-feature-settings: 'tnum';
-    position: absolute;
     z-index: 1050;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;

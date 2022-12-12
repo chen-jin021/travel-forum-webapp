@@ -36,6 +36,40 @@ export class BackendNodeGateway {
     )
   }
 
+  // search
+  async searchNodes(text: string): Promise<IServiceResponse<INode[]>> {
+    if (!text) return
+
+    const query = { $text: { $search: text } }
+    const sort = { score: { $meta: 'textScore' }, dateCreated: -1 }
+    const projection = {
+      _id: 0,
+      type: 1,
+      content: 1,
+      filePath: 1,
+      nodeId: 1,
+      title: 1,
+      dateCreated: 1,
+      score: { $meta: 'textScore' },
+    }
+
+    const result = []
+
+    const coll = await this.nodeCollectionConnection.getRawCollection()
+
+    try {
+      await coll.createIndex({ content: 'text', title: 'text' })
+    } catch (e) {}
+
+    await this.nodeCollectionConnection
+      .getRawCollection()
+      .find(query)
+      .sort(sort)
+      .project(projection)
+      .forEach((item) => result.push(item))
+    console.log(result)
+    return successfulServiceResponse(result as INode[])
+  }
   /**
    * Method to create a node and insert it into the database.
    *
