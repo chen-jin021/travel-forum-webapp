@@ -99,15 +99,15 @@ export class MessageCollectionConnection {
    *         failureServiceResponse on failure
    */
   async findMessagesByNodeId(nodeId: string): Promise<IServiceResponse<IMessage[]>> {
+    const res: IMessage[] = []
     const findResponse = await this.client
       .db()
       .collection(this.collectionName)
-      .findOne({ nodeId: nodeId })
-    if (findResponse == null) {
-      return failureServiceResponse('Failed to find messages with this nodeId.')
-    } else {
-      return successfulServiceResponse(findResponse)
-    }
+      .find({ nodeId: nodeId })
+      .forEach((item) => {
+        res.push(item)
+      })
+    return successfulServiceResponse(res)
   }
 
   /**

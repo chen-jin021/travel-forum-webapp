@@ -1,16 +1,19 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import {
-  GoogleMap
-} from '@react-google-maps/api'
+import { GoogleMap } from '@react-google-maps/api'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { useAuth } from '../../contexts/AuthContext'
 import {
-  alertMessageState, alertOpenState,
-  alertTitleState, currentNodeState,
-  panoramaState, refreshState, selectedAnchorsState,
-  selectedExtentState, selectedNodeState
+  alertMessageState,
+  alertOpenState,
+  alertTitleState,
+  currentNodeState,
+  panoramaState,
+  refreshState,
+  selectedAnchorsState,
+  selectedExtentState,
+  selectedNodeState,
 } from '../../global/Atoms'
 import { FrontendNodeGateway } from '../../nodes'
 import { ILocNode, INode, IUser, NodeIdsToNodesMap, RecursiveNodeTree } from '../../types'
@@ -20,8 +23,12 @@ import { ContextMenu } from '../ContextMenu/ContextMenu'
 import { LoadingScreen } from '../LoadingScreen'
 import { createNodeIdsToNodesMap, emptyNode, makeRootWrapper } from '../MainView'
 import {
-  CompleteLinkModal, CreateCommentModal, CreateInvitationModal, CreateLocationModal, CreateNodeModal,
-  MoveNodeModal
+  CompleteLinkModal,
+  CreateCommentModal,
+  CreateInvitationModal,
+  CreateLocationModal,
+  CreateNodeModal,
+  MoveNodeModal,
 } from '../Modals'
 import { NodeView } from '../NodeView'
 import { SquareHeader } from '../SquareHeader'
@@ -435,6 +442,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
                   onCommentBtnClick={handleCommentClick}
                   onShareBtnClick={() => {}}
+                  onCommentListClick={() => {}}
                   inSquare={true}
                 />
               </div>

@@ -42,6 +42,7 @@ interface INodeHeaderProps {
   onCollaborationButtonClick: () => void
   onGraphButtonClick: () => void
   onShareBtnClick: () => void
+  onCommentListClick: () => void
 }
 
 export const NodeHeader = (props: INodeHeaderProps) => {
@@ -54,6 +55,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
     onCollaborationButtonClick,
     onCreateNodeButtonClick,
     onShareBtnClick,
+    onCommentListClick,
   } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
@@ -240,7 +242,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
                 isWhite={isLinking}
                 text=""
                 icon={<AiOutlineComment />}
-                onClick={onCreateNodeButtonClick}
+                onClick={onCommentListClick}
               />
             )}
 

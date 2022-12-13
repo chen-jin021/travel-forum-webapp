@@ -46,6 +46,7 @@ export interface INodeViewProps {
   // children used when rendering folder node
   onShareBtnClick: () => void
   onCommentBtnClick: () => void
+  onCommentListClick: () => void
   childNodes?: INode[]
   inSquare: boolean
 }
@@ -62,6 +63,7 @@ export const NodeView = (props: INodeViewProps) => {
     onCollaborationButtonClick,
     onShareBtnClick,
     onCommentBtnClick,
+    onCommentListClick,
     childNodes,
     inSquare,
   } = props
@@ -263,6 +265,7 @@ export const NodeView = (props: INodeViewProps) => {
             onCollaborationButtonClick={onCollaborationButtonClick}
             onShareBtnClick={onShareBtnClick}
             onGraphButtonClick={() => {}}
+            onCommentListClick={onCommentListClick}
           />
         )
       case 'read':

@@ -1,0 +1,65 @@
+@import '../../../../global/globalCssVariables';
+.msg-name {
+  font-family: 'Roboto';
+  color: $primary-text-color;
+  font-family: $header-font;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  gap: 10px;
+  justify-content: space-between;
+  height: 60px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.msg {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 5px;
+  gap: 5px;
+}
+
+.comment-info {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: rgb(241, 241, 241);
+  display: flex;
+  flex-direction: column;
+}
+
+.left-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  .user-name {
+    margin-left: 10px;
+  }
+}
+
+.right-bar {
+  font-style: italic;
+}
+
+.emphasis {
+  font-style: italic;
+  font-weight: bold;
+  max-width: 100px;
+  overflow-x: hidden;
+  display: inline;
+}
+
+.right-bar {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: hidden;
+}

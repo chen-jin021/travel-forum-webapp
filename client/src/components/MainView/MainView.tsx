@@ -45,6 +45,7 @@ import { containerStyle, center, options, zoom } from './MapSettings'
 import { useHistory } from 'react-router-dom'
 import { rootCertificates } from 'tls'
 import { ShareModal } from '../Modals/ShareModal'
+import { CommentModal } from '../Modals/CommentModal'
 
 export interface IMainViewProps {
   isLoaded: boolean
@@ -60,6 +61,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   const [createLocationModalOpen, setCreateLocationModalOpen] = useState(false)
   const [collaborationModalOpen, setCollaborationModalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
+  const [commentModalOpen, setCommentModalOpen] = useState(false)
 
   // node states
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
@@ -310,6 +312,10 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
     setShareModalOpen(true)
   }, [])
 
+  const handleCommentClick = useCallback(() => {
+    setCommentModalOpen(true)
+  }, [])
+
   const getSelectedNodeChildren = useCallback(() => {
     if (!selectedNode) return undefined
     return selectedNode.filePath.children.map(
@@ -403,6 +409,10 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onSubmit={() => {}}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
+          <CommentModal
+            isOpen={commentModalOpen}
+            onClose={() => setCommentModalOpen(false)}
+          />
 
           <ShareModal isOpen={shareModalOpen} onClose={() => setShareModalOpen(false)} />
 
@@ -453,6 +463,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
                   onShareBtnClick={handleShareClick}
                   nodeIdsToNodesMap={nodeIdsToNodesMap}
                   onCommentBtnClick={() => {}}
+                  onCommentListClick={handleCommentClick}
                   inSquare={false}
                 />
               </div>
