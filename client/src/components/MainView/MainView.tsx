@@ -281,7 +281,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
         }
       }
     },
-    [loadRootsFromDB]
+    [loadRootsFromDB, refresh]
   )
 
   const handleMoveNodeButtonClick = useCallback(() => {
