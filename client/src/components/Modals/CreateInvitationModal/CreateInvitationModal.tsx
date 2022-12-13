@@ -81,7 +81,7 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
 
   const handleClose = () => {
     onClose()
-    setContent('')
+    setMail('')
     setError('')
   }
 
@@ -131,6 +131,7 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
       setError(ivtResp.message)
       return
     }
+    handleClose()
   }
 
   const handleMailChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -77,7 +77,9 @@ export class BackendInvitationGateway {
       )
 
     if (inviteWithPropRsp.success) {
-      return failureServiceResponse('You have sent one invitation on this location!')
+      return failureServiceResponse(
+        'You have sent an invitation to this user on this location!'
+      )
     }
     // if everything checks out, insert invitation
     const insertinvitationResp =
