@@ -42,6 +42,22 @@ export function isINodeProperty(object: any): boolean {
         return typeof (object as INodeProperty).value === 'number'
       case 'public':
         return typeof (object as INodeProperty).value === 'boolean'
+      case 'curX':
+        return typeof (object as INodeProperty).value === 'number'
+      case 'curY':
+        return typeof (object as INodeProperty).value === 'number'
+      case 'originX':
+        return typeof (object as INodeProperty).value === 'number'
+      case 'originY':
+        return typeof (object as INodeProperty).value === 'number'
+      case 'flipH':
+        return typeof (object as INodeProperty).value === 'boolean'
+      case 'flipV':
+        return typeof (object as INodeProperty).value === 'boolean'
+      case 'isGray':
+        return typeof (object as INodeProperty).value === 'boolean'
+      case 'brightness':
+        return typeof (object as INodeProperty).value === 'number'
       default:
         return true
     }

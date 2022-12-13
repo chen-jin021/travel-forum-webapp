@@ -9,6 +9,7 @@ import { TextContent } from './TextContent'
 import VideoContent from './VideoContent'
 import DateContent from './DateContent'
 import { message, Popconfirm, Switch } from 'antd'
+import { EditableImageContent } from './EditabeImageContent'
 
 /** Props needed to render any node content */
 
@@ -16,6 +17,7 @@ export interface INodeContentProps {
   childNodes?: INode[]
   onCreateNodeButtonClick: () => void
   inSquare: boolean
+  permission?: string
 }
 
 /**
@@ -25,7 +27,7 @@ export interface INodeContentProps {
  * @returns Content that any type of node renders
  */
 export const NodeContent = (props: INodeContentProps) => {
-  const { inSquare } = props
+  const { inSquare, permission } = props
   const { onCreateNodeButtonClick, childNodes } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [, setOpen] = useState(false)
@@ -43,7 +45,11 @@ export const NodeContent = (props: INodeContentProps) => {
 
   switch (currentNode.type) {
     case 'image':
-      return <ImageContent />
+      if (permission === 'owner' || permission === 'write' || permission === 'public') {
+        return <EditableImageContent />
+      } else {
+        return <ImageContent />
+      }
     case 'text':
       return <TextContent />
     case 'video':
@@ -92,7 +98,7 @@ export const NodeContent = (props: INodeContentProps) => {
               node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
               onCreateNodeButtonClick={onCreateNodeButtonClick}
               childNodes={childNodes as any}
-              hideCreate={inSquare}
+              hideCreate={inSquare || permission === 'read'}
             />
           }
         </div>

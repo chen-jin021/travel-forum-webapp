@@ -26,6 +26,17 @@ export interface ILocNode extends INode {
   public: boolean
 }
 
+export interface IImageNode extends INode {
+  originX: number
+  originY: number
+  curX: number
+  curY: number
+  flipH: boolean
+  flipV: boolean
+  isGray: boolean
+  brightness: number
+}
+
 /**
  * TODO [Editable]: Since we want to store new metadata for images we should add
  * new metadata fields to our INode object. There are different ways you can do this.
@@ -43,7 +54,11 @@ export interface IFolderNode extends INode {
   viewType: FolderContentType
 }
 
-export type NodeFields = keyof INode | keyof IFolderNode | keyof ILocNode
+export type NodeFields =
+  | keyof INode
+  | keyof IFolderNode
+  | keyof ILocNode
+  | keyof IImageNode
 
 export const allNodeFields: string[] = [
   'nodeId',
@@ -58,6 +73,14 @@ export const allNodeFields: string[] = [
   'lat',
   'lng',
   'public',
+  'originX',
+  'originY',
+  'curX',
+  'curY',
+  'flipH',
+  'flipV',
+  'isGray',
+  'brightness',
 ]
 
 // Type declaration for map from nodeId --> INode

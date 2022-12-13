@@ -312,6 +312,7 @@ export const NodeView = (props: INodeViewProps) => {
               childNodes={childNodes}
               onCreateNodeButtonClick={onCreateNodeButtonClick}
               inSquare={inSquare}
+              permission={permission}
             />
           </div>
         </div>

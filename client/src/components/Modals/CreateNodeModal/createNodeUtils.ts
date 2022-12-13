@@ -8,6 +8,7 @@ import {
   makeINodePath,
   NodeIdsToNodesMap,
   NodeType,
+  IImageNode,
 } from '../../../types'
 import { storage } from '../../../firebase'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
@@ -97,7 +98,15 @@ export async function createNodeFromModal({
     }
   }
 
-  let newNode: INode | IFolderNode
+  let imgX: number = 0
+  let imgY: number = 0
+
+  if (type === 'image') {
+    imgX = (await getMeta(content)).normalizedWidth
+    imgY = (await getMeta(content)).normalizedHeight
+  }
+
+  let newNode: INode | IFolderNode | IImageNode
   switch (type) {
     case 'folder':
       newNode = {
@@ -108,6 +117,24 @@ export async function createNodeFromModal({
         title: title,
         type: type,
         viewType: 'grid',
+      }
+      break
+    case 'image':
+      newNode = {
+        content: content,
+        dateCreated: new Date(),
+        filePath: filePath,
+        nodeId: nodeId,
+        title: title,
+        type: type,
+        originX: parseInt(String(imgX), 10),
+        originY: parseInt(String(imgY), 10),
+        curX: parseInt(String(imgX), 10),
+        curY: parseInt(String(imgY), 10),
+        flipH: false,
+        flipV: false,
+        isGray: false,
+        brightness: 100,
       }
       break
     default:
