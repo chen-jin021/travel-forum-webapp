@@ -37,10 +37,11 @@ interface IReaderHeaderProps {
   onHandleCompleteLinkClick: () => void
   onHandleStartLinkClick: () => void
   ownerid: string
+  inSquare: boolean
 }
 
 export const ReaderHeader = (props: IReaderHeaderProps) => {
-  const { onHandleStartLinkClick, onHandleCompleteLinkClick, ownerid } = props
+  const { onHandleStartLinkClick, onHandleCompleteLinkClick, ownerid, inSquare } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
   const isLinking = useRecoilValue(isLinkingState)
@@ -211,6 +212,7 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
           setEditing={setEditingTitle}
           onEdit={handleUpdateTitle}
           isPersonal={false}
+          inSquare={inSquare}
         />
       </div>
       <div className="nodeHeader-buttonBar">

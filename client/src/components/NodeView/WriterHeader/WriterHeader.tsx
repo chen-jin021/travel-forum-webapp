@@ -29,6 +29,7 @@ interface IWriterHeaderProps {
   onHandleStartLinkClick: () => void
   onCreateNodeButtonClick: () => void
   ownerid: string
+  inSquare: boolean
 }
 
 export const WriterHeader = (props: IWriterHeaderProps) => {
@@ -37,6 +38,7 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
     onHandleCompleteLinkClick,
     onCreateNodeButtonClick,
     ownerid,
+    inSquare,
   } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
@@ -208,6 +210,7 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
           setEditing={setEditingTitle}
           onEdit={handleUpdateTitle}
           isPersonal={false}
+          inSquare={inSquare}
         />
       </div>
       <div className="nodeHeader-buttonBar">

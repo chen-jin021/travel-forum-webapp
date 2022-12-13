@@ -43,6 +43,7 @@ interface INodeHeaderProps {
   onGraphButtonClick: () => void
   onShareBtnClick: () => void
   onCommentListClick: () => void
+  inSquare: boolean
 }
 
 export const NodeHeader = (props: INodeHeaderProps) => {
@@ -56,6 +57,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
     onCreateNodeButtonClick,
     onShareBtnClick,
     onCommentListClick,
+    inSquare,
   } = props
   const currentNode = useRecoilValue(currentNodeState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
@@ -135,7 +137,6 @@ export const NodeHeader = (props: INodeHeaderProps) => {
 
   /* Node key handlers*/
   const nodeKeyHandlers = (e: KeyboardEvent) => {
-    // TODO: Task 9 - keyboard shortcuts
     // determine user's
     // eslint-disable-next-line
     let os: string = ''
@@ -193,13 +194,16 @@ export const NodeHeader = (props: INodeHeaderProps) => {
         onDoubleClick={(e) => setEditingTitle(true)}
         onContextMenu={handleTitleRightClick}
       >
-        <EditableText
-          text={title}
-          editing={editingTitle}
-          setEditing={setEditingTitle}
-          onEdit={handleUpdateTitle}
-          isPersonal={false}
-        />
+        {!inSquare && (
+          <EditableText
+            text={title}
+            editing={editingTitle}
+            setEditing={setEditingTitle}
+            onEdit={handleUpdateTitle}
+            isPersonal={false}
+            inSquare={inSquare}
+          />
+        )}
       </div>
       <div className="nodeHeader-buttonBar">
         {notRoot && (

@@ -182,6 +182,7 @@ export const PersonalInfo = React.memo(() => {
                         editing={editing}
                         setEditing={setEditing}
                         onEdit={handleUpdateName}
+                        inSquare={false}
                       />
                     </div>
                     <div className="mail">

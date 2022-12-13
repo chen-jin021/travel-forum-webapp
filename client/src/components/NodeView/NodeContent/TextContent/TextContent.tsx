@@ -36,7 +36,9 @@ import { Highlight } from '@tiptap/extension-highlight'
 import { endpoint } from '../../../../global'
 const baseEndpoint = endpoint
 
-interface ITextContentProps {}
+interface ITextContentProps {
+  inSquare: boolean
+}
 
 const LINK_REG = /\<a target\=\"(.*?)\" (.*?)\>(.*?)\<\/a\>/g
 
@@ -59,6 +61,7 @@ const parseLink = (content: string) => {
 
 /** The content of an text node, including all its anchors */
 export const TextContent = (props: ITextContentProps) => {
+  const { inSquare } = props
   const currentNode = useRecoilValue(currentNodeState)
   const startAnchor = useRecoilValue(startAnchorState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
@@ -215,9 +218,10 @@ export const TextContent = (props: ITextContentProps) => {
 
   // Handle setting the selected extent
   const onPointerUp = (e: React.PointerEvent) => {
-    if (!editor) {
-      return
+    if (!editor || inSquare) {
+      return <div>{currentNode.content}</div>
     }
+
     const from = editor.state.selection.from
     const to = editor.state.selection.to
     const text = editor.state.doc.textBetween(from, to)
@@ -234,18 +238,16 @@ export const TextContent = (props: ITextContentProps) => {
     }
   }
 
-  if (!editor) {
-    return <div>{currentNode.content}</div>
-  }
-
   return (
     <div>
-      <TextMenu editor={editor} />
-      <EditorContent
-        style={{ width: '100%', padding: '10px;' }}
-        editor={editor}
-        onPointerUp={onPointerUp}
-      />
+      <div>
+        <TextMenu editor={editor} />
+        <EditorContent
+          style={{ width: '100%', padding: '10px;' }}
+          editor={editor}
+          onPointerUp={onPointerUp}
+        />
+      </div>
     </div>
   )
 }
