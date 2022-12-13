@@ -65,6 +65,9 @@ export default () => {
   return (
     <div>
       {/* @ts-ignore */}
+      <div style={{ marginBottom: '10px', fontWeight: 'bold', fontSize: '0.7cm' }}>
+        Video Memory{' '}
+      </div>
       <ReactPlayer
         controls
         ref={ref}

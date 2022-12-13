@@ -233,13 +233,21 @@ export const NodeHeader = (props: INodeHeaderProps) => {
               onClick={onHandleStartLinkClick}
             />
 
-            <Button
-              icon={<AiOutlineUsergroupAdd />}
-              text="Collab"
-              onClick={onCollaborationButtonClick}
-            />
+            {currentNode.type === 'loc' && (
+              <Button
+                icon={<AiOutlineUsergroupAdd />}
+                text="Collab"
+                onClick={onCollaborationButtonClick}
+              />
+            )}
 
-            <Button icon={<AiOutlineShareAlt />} text="Share" onClick={onShareBtnClick} />
+            {currentNode.type === 'loc' && (
+              <Button
+                icon={<AiOutlineShareAlt />}
+                text="Share"
+                onClick={onShareBtnClick}
+              />
+            )}
             {currentNode.type == 'loc' && (currentNode as ILocNode).public && (
               <Button
                 isWhite={isLinking}

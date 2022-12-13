@@ -239,6 +239,9 @@ export const TextContent = (props: ITextContentProps) => {
 
   return (
     <div style={{ width: '700px' }}>
+      <div style={{ marginBottom: '5px', fontWeight: 'bold', fontSize: '0.7cm' }}>
+        Text Memory{' '}
+      </div>
       <EditorContent
         contentEditable={false}
         style={{ width: '100%' }}

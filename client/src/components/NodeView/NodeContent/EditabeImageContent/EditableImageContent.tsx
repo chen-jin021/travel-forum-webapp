@@ -587,8 +587,8 @@ export const EditableImageContent = () => {
         </NumberInputStepper>
       </NumberInput> */}
       <div>
-        <div style={{ marginBottom: '25px', fontWeight: 'bold', fontSize: '1cm' }}>
-          Manage Your Image{' '}
+        <div style={{ marginBottom: '25px', fontWeight: 'bold', fontSize: '0.7cm' }}>
+          Manage Your Image Memory{' '}
         </div>
         <div>
           <Flex maxW="60%">

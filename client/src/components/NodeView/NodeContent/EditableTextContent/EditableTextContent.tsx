@@ -240,6 +240,9 @@ export const EditableTextContent = (props: ITextContentProps) => {
 
   return (
     <div style={{ width: '700px' }}>
+      <div style={{ marginBottom: '5px', fontWeight: 'bold', fontSize: '0.7cm' }}>
+        Manage Your Text Memory{' '}
+      </div>
       <TextMenu editor={editor} />
       <EditorContent
         style={{ width: '100%' }}
