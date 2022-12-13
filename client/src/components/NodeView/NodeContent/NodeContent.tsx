@@ -10,6 +10,7 @@ import VideoContent from './VideoContent'
 import DateContent from './DateContent'
 import { message, Popconfirm, Switch } from 'antd'
 import { EditableImageContent } from './EditabeImageContent'
+import { EditableTextContent } from './EditableTextContent'
 
 /** Props needed to render any node content */
 
@@ -45,13 +46,17 @@ export const NodeContent = (props: INodeContentProps) => {
 
   switch (currentNode.type) {
     case 'image':
-      if (permission === 'owner' || permission === 'write' || permission === 'public') {
+      if (permission === 'owner' || permission === 'write') {
         return <EditableImageContent />
       } else {
         return <ImageContent />
       }
     case 'text':
-      return <TextContent />
+      if (permission === 'owner' || permission === 'write') {
+        return <EditableTextContent />
+      } else {
+        return <TextContent />
+      }
     case 'video':
       return <VideoContent />
 

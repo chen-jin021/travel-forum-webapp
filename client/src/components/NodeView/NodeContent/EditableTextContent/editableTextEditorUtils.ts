@@ -3,6 +3,10 @@ import { FrontendAnchorGateway } from '../../../../anchors'
 import { FrontendLinkGateway } from '../../../../links'
 import { IAnchor, ILink } from '../../../../types'
 
+// export const markdownToHtml = (markdown: string) => {
+//   return marked(markdown)
+// }
+
 export const fetchLinks = async (href: string): Promise<ILink[]> => {
   if (!href.includes('anchor')) {
     window.open(href, '_blank')

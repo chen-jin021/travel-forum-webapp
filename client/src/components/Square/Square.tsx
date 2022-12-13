@@ -377,6 +377,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
             onSubmit={() => {}}
+            locNode = {currentNode as ILocNode}
           />
           <CompleteLinkModal
             isOpen={completeLinkModalOpen}

@@ -1,4 +1,4 @@
 export * from './NodeContent'
 export * from './FolderContent'
-export * from './TextContent'
+export * from './EditableTextContent'
 export * from './ImageContent'

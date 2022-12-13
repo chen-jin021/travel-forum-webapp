@@ -1,39 +1,46 @@
-import Highlight from '@tiptap/extension-highlight'
-import { Link } from '@tiptap/extension-link'
-import Typography from '@tiptap/extension-typography'
-import { EditorContent, useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { FrontendAnchorGateway } from '../../../../anchors'
 import {
-  alertMessageState,
-  alertOpenState,
-  alertTitleState, currentNodeState,
+  currentNodeState,
   refreshAnchorState,
   refreshLinkListState,
   refreshState,
   selectedAnchorsState,
   selectedExtentState,
-  startAnchorState
+  startAnchorState,
+  alertMessageState,
+  alertOpenState,
+  alertTitleState,
 } from '../../../../global/Atoms'
 import { FrontendLinkGateway } from '../../../../links'
 import { FrontendNodeGateway } from '../../../../nodes'
 import {
   Extent,
   failureServiceResponse,
-  IAnchor, INodeProperty,
+  IAnchor,
+  ILink,
+  INodeProperty,
   IServiceResponse,
   ITextExtent,
   makeINodeProperty,
-  successfulServiceResponse
+  successfulServiceResponse,
 } from '../../../../types'
-import './TextContent.scss'
+import './EditableTextContent.scss'
+import { TextMenu } from './EditableTextMenu'
+import { Link } from '@tiptap/extension-link'
+import { Editor, EditorContent, useEditor } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import Typography from '@tiptap/extension-typography'
+import Highlight from '@tiptap/extension-highlight'
+import { Extension } from '@tiptap/core'
 // load all highlight.js languages
+import { markAsUntransferable } from 'worker_threads'
 interface ITextContentProps {}
 
 /** The content of an text node, including all its anchors */
-export const TextContent = (props: ITextContentProps) => {
+export const EditableTextContent = (props: ITextContentProps) => {
   const currentNode = useRecoilValue(currentNodeState)
   const startAnchor = useRecoilValue(startAnchorState)
   const [refresh, setRefresh] = useRecoilState(refreshState)
@@ -237,8 +244,8 @@ export const TextContent = (props: ITextContentProps) => {
 
   return (
     <div style={{ width: '700px' }}>
+      <TextMenu editor={editor} />
       <EditorContent
-        contentEditable={false}
         style={{ width: '100%' }}
         editor={editor}
         onPointerUp={onPointerUp}
