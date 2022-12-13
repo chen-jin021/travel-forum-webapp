@@ -230,7 +230,7 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
               onClick={() => onGraphButtonClick(currentNode)}
             /> */}
             <Button icon={<ai.AiFillBackward />} text="Quit" onClick={onQuitClick} />
-            <NodeSelect />
+            <NodeSelect inSquare={false} />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
               Owner: &nbsp; <Avatar src={curUser?.avatar} /> &nbsp; {curUser?.userName}

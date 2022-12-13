@@ -213,7 +213,7 @@ export const SquareNodeHeader = (props: ISquareNodeHeaderProps) => {
               onClick={onCommentBtnClick}
             />
 
-            <NodeSelect />
+            <NodeSelect inSquare={true} />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
               Owner: &nbsp; <Avatar src={user?.avatar} /> &nbsp; {user?.userName}

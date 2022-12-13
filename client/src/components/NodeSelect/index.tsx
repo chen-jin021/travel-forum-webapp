@@ -5,12 +5,17 @@ import { useSearchs } from './hooks'
 import { Link } from 'react-router-dom'
 /* eslint-disable */
 const renderItem =
-  (handle: Function) =>
+  (handle: Function, inSquare: boolean) =>
   ({ nodeId, title, filePath }: INode) => {
     // console.log(filePath)
+    console.log(inSquare)
     return (
       <Link
-        to={`/main/${filePath?.path?.join('/')}/`}
+        to={
+          inSquare
+            ? `/square/${filePath?.path?.join('/')}/`
+            : `/main/${filePath?.path?.join('/')}/`
+        }
         key={`/${filePath?.path?.join('/')}/`}
       >
         <li className="item" onClick={() => handle(nodeId, filePath)}>
@@ -20,7 +25,12 @@ const renderItem =
     )
   }
 
-const NodeSelect = () => {
+interface INodeSelectProps {
+  inSquare: boolean
+}
+
+const NodeSelect = (props: INodeSelectProps) => {
+  const { inSquare } = props
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
 
@@ -52,7 +62,7 @@ const NodeSelect = () => {
         <ul className="node-select-mention">
           {result
             ?.filter((item) => (filter === 'all' ? true : item.type === filter))
-            ?.map?.(renderItem(handleChange))}
+            ?.map?.(renderItem(handleChange, inSquare))}
         </ul>
       </div>
     </>

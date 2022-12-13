@@ -106,7 +106,6 @@ export const SignUpView = React.memo(function SignUpView() {
                 !{' '}
               </p>
               {error && <Alert variant="danger">{error}</Alert>}
-              {user?.email}
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" id="email">
                   <Form.Label>

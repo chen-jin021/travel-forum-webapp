@@ -265,7 +265,7 @@ export const NodeHeader = (props: INodeHeaderProps) => {
               />
             )}
 
-            {currentNode.type == 'loc' && <NodeSelect />}
+            {currentNode.type == 'loc' && <NodeSelect inSquare={inSquare} />}
 
             {folder && (
               <div className="select">

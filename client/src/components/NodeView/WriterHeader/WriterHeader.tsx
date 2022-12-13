@@ -234,7 +234,7 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
               onClick={onCreateNodeButtonClick}
             />
             <Button icon={<ai.AiFillBackward />} text="Quit" onClick={onQuitClick} />
-            <NodeSelect />
+            <NodeSelect inSquare={false} />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
               Owner: &nbsp; <Avatar src={ownerUser?.avatar} /> &nbsp;{' '}
