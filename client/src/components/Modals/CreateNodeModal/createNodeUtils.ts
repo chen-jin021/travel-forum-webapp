@@ -9,6 +9,18 @@ import {
   NodeIdsToNodesMap,
   NodeType,
 } from '../../../types'
+import { storage } from '../../../firebase'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+
+// upload img to google cloud storage and return URL
+export const upload = async (file: any): Promise<string> => {
+  if (!file) return 'empty file!'
+  console.log(file)
+  const storageRef = ref(storage, `/files/${file.name}`)
+  const uploadTask = await uploadBytesResumable(storageRef, file)
+  const url: string = await getDownloadURL(uploadTask.ref)
+  return url
+}
 
 export async function http<T>(request: AxiosRequestConfig): Promise<T> {
   const response: AxiosResponse<T> = await axios(request)
@@ -47,7 +59,7 @@ export const getMeta = async (imageUrl: string) => {
     normalizedHeight: number
     normalizedWidth: number
   }>((resolve) => {
-    img.addEventListener('load', function () {
+    img.addEventListener('load', function() {
       naturalWidth = img.naturalWidth
       naturalHeight = img.naturalHeight
       // The height and the width are normalized so that the height will always be 300px
@@ -84,7 +96,7 @@ export async function createNodeFromModal({
       console.error('Error: parent node is null')
     }
   }
-  
+
   let newNode: INode | IFolderNode
   switch (type) {
     case 'folder':

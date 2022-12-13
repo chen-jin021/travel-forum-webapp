@@ -128,7 +128,7 @@ export const CreateCommentModal = (props: ICreateCommentModalProps) => {
       setError(commentResp.message)
       return
     }
-    console.log(commentResp)
+    handleClose()
   }
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {

@@ -21,7 +21,7 @@ import {
 import { Button } from '../../Button'
 import { TreeView } from '../../TreeView'
 import './CreateNodeModal.scss'
-import { createNodeFromModal, uploadImage } from './createNodeUtils'
+import { createNodeFromModal, uploadImage, upload } from './createNodeUtils'
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api'
 import { useSetRecoilState } from 'recoil'
 import { selectedNodeState } from '../../../global/Atoms'
@@ -109,7 +109,7 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
-    const link = files && files[0] && (await uploadImage(files[0]))
+    const link = files && files[0] && (await upload(files[0]))
     link && setContent(link)
   }
 

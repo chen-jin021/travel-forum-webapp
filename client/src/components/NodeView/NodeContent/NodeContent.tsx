@@ -92,6 +92,7 @@ export const NodeContent = (props: INodeContentProps) => {
               node={{ ...currentNode, viewType: 'grid' } as IFolderNode}
               onCreateNodeButtonClick={onCreateNodeButtonClick}
               childNodes={childNodes as any}
+              hideCreate={inSquare}
             />
           }
         </div>
