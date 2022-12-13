@@ -1,3 +1,5 @@
+import { style } from './mapstyle'
+
 export const containerStyle = {
   width: '100%',
   height: 'calc(100vh - 50px)',
@@ -17,6 +19,7 @@ export const center = {
 export const zoom = 3
 
 export const options = {
+  styles: style,
   disableDefaultUI: true,
   zoomControl: true,
 }
