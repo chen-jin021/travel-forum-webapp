@@ -9,15 +9,22 @@ import { selectedNodeState } from '../../../../../global/Atoms'
 
 export interface INodePreviewProps {
   node: INode
+  inSquare?: boolean
 }
 
 /** Full page view focused on a node's content, with annotations and links */
 export const NodePreview = (props: INodePreviewProps) => {
-  const { node } = props
+  const { node, inSquare } = props
   const { type, title, content } = node
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   return (
-    <Link to={`/main/${pathToString(node.filePath)}`}>
+    <Link
+      to={
+        inSquare
+          ? `/square/${pathToString(node.filePath)}`
+          : `/main/${pathToString(node.filePath)}`
+      }
+    >
       <div
         className={'grid-nodePreview'}
         onClick={() => {

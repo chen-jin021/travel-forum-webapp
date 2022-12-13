@@ -12,11 +12,12 @@ export interface IFolderContentProps {
   onCreateNodeButtonClick: () => unknown
   viewType?: FolderContentType
   hideCreate?: boolean
+  inSquare?: boolean
 }
 
 /** Full page view focused on a node's content, with annotations and links */
 export const FolderContent = (props: IFolderContentProps) => {
-  const { node, childNodes, onCreateNodeButtonClick, hideCreate } = props
+  const { node, childNodes, onCreateNodeButtonClick, hideCreate, inSquare } = props
   const setSelectedExtent = useSetRecoilState(selectedExtentState)
 
   // useEffect
@@ -33,6 +34,7 @@ export const FolderContent = (props: IFolderContentProps) => {
             onCreateNodeButtonClick={onCreateNodeButtonClick}
             childNodes={childNodes}
             hideCreate={hideCreate}
+            inSquare={inSquare}
           />
         )
         break

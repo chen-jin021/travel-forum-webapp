@@ -109,6 +109,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   }
 
   useEffect(() => {
+    console.log()
     if (user) {
       getUserFromDB(user.uid)
     }

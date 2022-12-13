@@ -8,15 +8,18 @@ export interface IGridViewProps {
   childNodes: INode[]
   onCreateNodeButtonClick: () => void
   hideCreate?: boolean
+  inSquare?: boolean
 }
 
 /** Full page view focused on a node's content, with annotations and links */
 export const GridView = (props: IGridViewProps) => {
-  const { childNodes, onCreateNodeButtonClick, hideCreate = false } = props
+  const { childNodes, onCreateNodeButtonClick, hideCreate = false, inSquare } = props
 
   const nodePreviews = childNodes.map(
     (childNode: INode) =>
-      childNode && <NodePreview node={childNode} key={childNode.nodeId} />
+      childNode && (
+        <NodePreview inSquare={inSquare} node={childNode} key={childNode.nodeId} />
+      )
   )
 
   return (

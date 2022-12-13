@@ -99,6 +99,7 @@ export const NodeContent = (props: INodeContentProps) => {
               onCreateNodeButtonClick={onCreateNodeButtonClick}
               childNodes={childNodes as any}
               hideCreate={inSquare || permission === 'read'}
+              inSquare={inSquare}
             />
           }
         </div>

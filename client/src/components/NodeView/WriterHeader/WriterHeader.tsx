@@ -5,6 +5,7 @@ import { AiOutlineUser } from 'react-icons/ai'
 import { BsPencilFill } from 'react-icons/bs'
 import { useHistory } from 'react-router-dom'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAuth } from '../../../contexts/AuthContext'
 import {
   alertMessageState,
   alertOpenState,
@@ -48,9 +49,14 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
   const setAlertTitle = useSetRecoilState(alertTitleState)
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [refreshLinkList, setRefreshLinkList] = useRecoilState(refreshLinkListState)
-  const [user, setUser] = useState<IUser>()
+  const [ownerUser, setOwnerUser] = useState<IUser>()
   const history = useHistory()
   const [error, setError] = useState('')
+
+  const { user } = useAuth()
+  if (!user) {
+    return <></>
+  }
 
   // State variable for current node title
   const [title, setTitle] = useState(currentNode.title)
@@ -76,8 +82,7 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
   }
 
   const onQuitClick = async () => {
-    if (!user) return
-    const userId = user.userId
+    const userId = user.uid
     const deleteUserPermitResp = await FrontendNodeGateway.deleteUserInList(
       currentNode.nodeId,
       userId,
@@ -88,6 +93,8 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
       return
     }
     history.push('/main')
+    setSelectedNode(null)
+    setRefresh(!refresh)
   }
 
   /* Method to update the node title */
@@ -133,7 +140,7 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
     if (!ownerResp.success || !ownerResp.payload) {
       return
     }
-    setUser(ownerResp.payload)
+    setOwnerUser(ownerResp.payload)
   }
 
   /* useEffect which updates the title and editing state when the node is changed */
@@ -227,11 +234,12 @@ export const WriterHeader = (props: IWriterHeaderProps) => {
               icon={<ai.AiOutlinePlus />}
               onClick={onCreateNodeButtonClick}
             />
-            <Button text="Quit" onClick={onQuitClick} />
+            <Button icon={<ai.AiFillBackward />} text="Quit" onClick={onQuitClick} />
             <NodeSelect />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
-              Owner: &nbsp; <Avatar src={user?.avatar} /> &nbsp; {user?.userName}
+              Owner: &nbsp; <Avatar src={ownerUser?.avatar} /> &nbsp;{' '}
+              {ownerUser?.userName}
             </div>
             {folder && (
               <div className="select">
