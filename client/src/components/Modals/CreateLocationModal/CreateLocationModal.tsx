@@ -119,7 +119,7 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
       return
     }
     if (!user) {
-      setError("You haven't logged in yet...")
+      setError('You haven\'t logged in yet...')
       return
     }
     const r = await retrieveGeocode(location)
@@ -151,7 +151,7 @@ export const CreateLocationModal = (props: ICreateLocationModalProps) => {
       ownerId: user.uid,
       lat: target.geometry.location.lat(),
       lng: target.geometry.location.lng(),
-      public: false
+      public: false,
     }
     const nodeResponse = await FrontendNodeGateway.createNode(newNode)
     if (!nodeResponse.success) {

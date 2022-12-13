@@ -188,9 +188,7 @@ export const NodeView = (props: INodeViewProps) => {
     if (user.uid === (permissionNode as ILocNode).ownerId) {
       setPermission('owner')
       return
-    }
-    // in read id
-    else if ((permissionNode as ILocNode).userReadIds.indexOf(user.uid) > -1) {
+    } else if ((permissionNode as ILocNode).userReadIds.indexOf(user.uid) > -1) {
       setPermission('read')
       return
     } else if ((permissionNode as ILocNode).userWriteIds.indexOf(user.uid) > -1) {

@@ -133,7 +133,7 @@ export const CommentModal = (props: ICommentModalProps) => {
           <ModalBody>
             <div className="list-wrapper">
               {msg.map((msg: IMessage) => {
-                return <CommentItem msg={msg}></CommentItem>
+                return <CommentItem msg={msg} key={msg.messageId}></CommentItem>
               })}
             </div>
             <div></div>

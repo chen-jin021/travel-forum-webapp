@@ -96,7 +96,6 @@ export const Header = (props: IHeaderProps) => {
           icon={<BsFillMapFill />}
           onClick={handleSquareBtnClick}
         />
-        
       </div>
       <div className="right-bar">
         {isLinking && startAnchor && (

@@ -7,7 +7,7 @@ import { BrowserRouter, Switch, Route, useHistory } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Image } from '@chakra-ui/react'
 
-export const LogInView = React.memo(() => {
+export const LogInView = React.memo(function LogInView() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -88,7 +88,7 @@ export const LogInView = React.memo(() => {
                     required
                   ></Form.Control>
                   <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
+                    We&apos;ll never share your email with anyone else.
                   </Form.Text>
                 </Form.Group>
                 <Form.Group className="mb-3" id="password">

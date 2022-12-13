@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from 'recoil'
+import React, { useRecoilState, useRecoilValue } from 'recoil'
 import ReactPlayer from 'react-player/lazy'
 import { useRef, useEffect } from 'react'
 import { endpoint } from '../../../../global'
@@ -10,7 +10,7 @@ import {
   selectedAnchorsState,
 } from '../../../../global/Atoms'
 
-export default () => {
+export function VideoContent() {
   const currentNode = useRecoilValue(currentNodeState)
 
   const [, setPlayer] = useRecoilState(currentPlayerState)

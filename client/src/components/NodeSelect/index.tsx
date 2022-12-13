@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import './select.scss'
 import { INode } from '../../types'
 import { useSearchs } from './hooks'
 import { Link } from 'react-router-dom'
-
+/* eslint-disable */
 const renderItem =
   (handle: Function) =>
   ({ nodeId, title, filePath }: INode) => {
@@ -60,3 +60,4 @@ const NodeSelect = () => {
 }
 
 export default NodeSelect
+/* eslint-enable */

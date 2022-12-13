@@ -195,7 +195,6 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
     setRefresh(!refresh)
   }
 
-  
   // Trigger on node load or when editingTitle changes
   useEffect(() => {
     // TODO: Task 9 - keyboard shortcuts
@@ -230,7 +229,7 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
               text="Visual"
               onClick={() => onGraphButtonClick(currentNode)}
             /> */}
-            <Button icon={<ai.AiFillBackward/>} text="Quit" onClick={onQuitClick} />
+            <Button icon={<ai.AiFillBackward />} text="Quit" onClick={onQuitClick} />
             <NodeSelect />
             <div className="readHeader-nameBar">
               <AiOutlineUser />

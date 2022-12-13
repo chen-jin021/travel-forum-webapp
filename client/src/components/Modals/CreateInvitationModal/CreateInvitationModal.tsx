@@ -148,7 +148,7 @@ export const CreateInvitationModal = (props: ICreateInvitationModalProps) => {
           <Form onSubmit={handleSubmit}>
             <ModalBody>
               <FormControl isRequired>
-                <FormLabel htmlFor="email">Your Friends's email</FormLabel>
+                <FormLabel htmlFor="email">Your Friend&apos;s email</FormLabel>
                 <Input id="email" type="email" value={mail} onChange={handleMailChange} />
               </FormControl>
               <FormControl isRequired>

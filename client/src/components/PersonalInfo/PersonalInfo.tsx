@@ -29,7 +29,7 @@ import { upload } from './PersonalInfoUtils'
 import { SendingInvitationModal } from '../Modals'
 import { async } from '@firebase/util'
 
-export const PersonalInfo = React.memo(() => {
+export const PersonalInfo = React.memo(function MainView() {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const [nickName, setNickName] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')

@@ -9,7 +9,7 @@ import { FrontendUserGateway } from '../../users'
 import { create } from 'domain'
 import { Image } from '@chakra-ui/react'
 
-export const SignUpView = React.memo(() => {
+export const SignUpView = React.memo(function SignUpView() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
@@ -40,8 +40,8 @@ export const SignUpView = React.memo(() => {
       const res = await signUp(email, password)
 
       /** store the user in mangoDB */
-      let user: IUser
-      user = {
+
+      const user: IUser = {
         userId: res.user.uid,
         mail: res.user.email as string,
         avatar:
@@ -120,7 +120,7 @@ export const SignUpView = React.memo(() => {
                     required
                   ></Form.Control>
                   <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
+                    We&apos;ll never share your email with anyone else.
                   </Form.Text>
                 </Form.Group>
                 <Form.Group className="mb-3" id="password">

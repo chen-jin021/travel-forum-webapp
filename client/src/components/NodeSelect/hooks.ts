@@ -26,7 +26,7 @@ export const useSearchs = (content: string) => {
       const res = data.payload
       const ret = []
       if (res != null) {
-        for (var row of res) {
+        for (const row of res) {
           if (row.filePath.path[0] == currentNode.nodeId) {
             ret.push(row)
           }
