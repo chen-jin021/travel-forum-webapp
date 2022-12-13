@@ -50,55 +50,6 @@ export const TextMenu = (props: IEditorProps) => {
         Strike
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        disabled={!editor.can().chain().focus().toggleCode().run()}
-        className={
-          editor.isActive('code') ? 'active-textEditorButton' : 'textEditorButton code'
-        }
-      >
-        code
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        className={
-          editor.isActive('codeBlock')
-            ? 'active-textEditorButton'
-            : 'textEditorButton codeBlock'
-        }
-      >
-        code block
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={
-          editor.isActive('heading', { level: 1 })
-            ? 'active-textEditorButton'
-            : 'textEditorButton h1'
-        }
-      >
-        H1
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={
-          editor.isActive('heading', { level: 1 })
-            ? 'active-textEditorButton'
-            : 'textEditorButton h2'
-        }
-      >
-        H2
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={
-          editor.isActive('heading', { level: 1 })
-            ? 'active-textEditorButton'
-            : 'textEditorButton h3'
-        }
-      >
-        H3
-      </button>
-      <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={
           editor.isActive('bulletList')
