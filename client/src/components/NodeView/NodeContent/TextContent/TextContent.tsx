@@ -9,24 +9,26 @@ import { FrontendAnchorGateway } from '../../../../anchors'
 import {
   alertMessageState,
   alertOpenState,
-  alertTitleState, currentNodeState,
+  alertTitleState,
+  currentNodeState,
   refreshAnchorState,
   refreshLinkListState,
   refreshState,
   selectedAnchorsState,
   selectedExtentState,
-  startAnchorState
+  startAnchorState,
 } from '../../../../global/Atoms'
 import { FrontendLinkGateway } from '../../../../links'
 import { FrontendNodeGateway } from '../../../../nodes'
 import {
   Extent,
   failureServiceResponse,
-  IAnchor, INodeProperty,
+  IAnchor,
+  INodeProperty,
   IServiceResponse,
   ITextExtent,
   makeINodeProperty,
-  successfulServiceResponse
+  successfulServiceResponse,
 } from '../../../../types'
 import './TextContent.scss'
 // load all highlight.js languages
@@ -54,7 +56,7 @@ export const TextContent = (props: ITextContentProps) => {
       Highlight,
     ],
     content: currentNode.content,
-    editable: true,
+    editable: false,
     injectCSS: false,
   })
 
@@ -243,14 +245,7 @@ export const TextContent = (props: ITextContentProps) => {
         editor={editor}
         onPointerUp={onPointerUp}
       />
-      <div>
-        <div style={{ display: 'inline', fontWeight: 'bold', fontSize: '20px' }}>
-          Do not forget to save your text!
-        </div>
-        <button onClick={updateContent} className={'textEditorButton save'}>
-          Save
-        </button>
-      </div>
+      <div></div>
     </div>
   )
 }
