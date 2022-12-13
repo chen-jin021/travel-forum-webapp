@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import type { Editor } from '@tiptap/react'
 import { Button, Space } from 'antd'
 
-
 export enum OpName {
   // eslint-disable-next-line
   Bold = 'bold',

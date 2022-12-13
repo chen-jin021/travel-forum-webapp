@@ -32,6 +32,7 @@ export interface ICreateNodeModalProps {
   onClose: () => void
   onSubmit: () => unknown
   roots: RecursiveNodeTree[]
+  locNode: INode
 }
 
 /**
@@ -43,6 +44,7 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
 
   const { isOpen, onClose, roots, nodeIdsToNodesMap, onSubmit } = props
   // state variables
+  const { locNode } = props
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const [selectedParentNode, setSelectedParentNode] = useState<INode | null>(null)
   const [title, setTitle] = useState('')
@@ -72,6 +74,7 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
 
   // called when the "Create" button is clicked
   const handleSubmit = async () => {
+    setSelectedParentNode(locNode)
     if (!nodeTypes.includes(selectedType)) {
       setError('Error: No type selected')
       return
@@ -80,6 +83,7 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
       setError('Error: No title')
       return
     }
+
     if (selectedParentNode == null) {
       setError('Error: No Parent Node Chosen')
       return
@@ -193,22 +197,6 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
                 />
               </div>
             )}
-
-            <div className="modal-section">
-              <span className="modal-title">
-                <div className="modal-title-header">
-                  Choosing Location to Add Your Travel Log:
-                </div>
-              </span>
-              <div className="modal-treeView">
-                <TreeView
-                  roots={roots}
-                  parentNode={selectedParentNode}
-                  setParentNode={setSelectedParentNode}
-                  changeUrlOnClick={false}
-                />
-              </div>
-            </div>
           </ModalBody>
           <ModalFooter>
             {error.length > 0 && <div className="modal-error">{error}</div>}

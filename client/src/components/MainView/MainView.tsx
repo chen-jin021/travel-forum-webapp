@@ -394,6 +394,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
             onClose={() => setCreateNodeModalOpen(false)}
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
+            locNode={currentNode}
             onSubmit={() => {
               if (user) loadRootsFromDB(user?.uid)
             }}
