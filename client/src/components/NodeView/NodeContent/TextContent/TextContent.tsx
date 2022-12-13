@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { FrontendAnchorGateway } from '../../../../anchors'
 import {
   currentNodeState,
@@ -10,6 +10,9 @@ import {
   selectedAnchorsState,
   selectedExtentState,
   startAnchorState,
+  alertMessageState,
+  alertOpenState,
+  alertTitleState,
 } from '../../../../global/Atoms'
 import { FrontendLinkGateway } from '../../../../links'
 import { FrontendNodeGateway } from '../../../../nodes'
@@ -25,37 +28,16 @@ import {
   successfulServiceResponse,
 } from '../../../../types'
 import './TextContent.scss'
+import { TextMenu } from './TextMenu'
+import { Link } from '@tiptap/extension-link'
 import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import './TextContent.scss'
-import { TextMenu } from './TextMenu'
-
-// import from tiptap
-import { Link } from '@tiptap/extension-link'
-import { Highlight } from '@tiptap/extension-highlight'
-import { endpoint } from '../../../../global'
-const baseEndpoint = endpoint
-
+import Typography from '@tiptap/extension-typography'
+import Highlight from '@tiptap/extension-highlight'
+import { Extension } from '@tiptap/core'
+// load all highlight.js languages
+import { markAsUntransferable } from 'worker_threads'
 interface ITextContentProps {}
-
-const LINK_REG = /\<a target\=\"(.*?)\" (.*?)\>(.*?)\<\/a\>/g
-
-const ELE_REG = /\<.*?\>|\<\/.*?\>/g
-
-// here we are parsing the link
-const parseLink = (content: string) => {
-  let result
-  const record = []
-  while ((result = LINK_REG.exec(content))) {
-    const [element, anchorId, , text] = result
-    const startCharacter = result.index
-    const endCharacter = startCharacter + text.length
-
-    record.push({ element, anchorId, text, coord: { startCharacter, endCharacter } })
-  }
-
-  return record
-}
 
 /** The content of an text node, including all its anchors */
 export const TextContent = (props: ITextContentProps) => {
@@ -66,92 +48,21 @@ export const TextContent = (props: ITextContentProps) => {
   const [linkMenuRefresh, setLinkMenuRefresh] = useRecoilState(refreshLinkListState)
   const [selectedAnchors, setSelectedAnchors] = useRecoilState(selectedAnchorsState)
   const [selectedExtent, setSelectedExtent] = useRecoilState(selectedExtentState)
+  const setAlertIsOpen = useSetRecoilState(alertOpenState)
+  const setAlertTitle = useSetRecoilState(alertTitleState)
+  const setAlertMessage = useSetRecoilState(alertMessageState)
   const [onSave, setOnSave] = useState(false)
-  const history = useHistory()
 
-  // const editor = useEditor({
-  //   extensions: [
-  //     StarterKit,
-  //     Link.configure({ openOnClick: true, autolink: false, linkOnPaste: false }),
-  //   ],
-  //   content: currentNode.content,
-  // })
-  const box = useMemo(
-    () =>
-      ({ anchors: [], links: {} } as {
-        anchors: IAnchor[]
-        links: { [propName: string]: ILink }
-      }),
-    []
-  )
-  // creating an instance of the editor
   const editor = useEditor({
     extensions: [
       StarterKit,
       Link.configure({ openOnClick: true, autolink: false, linkOnPaste: false }),
-      Highlight.configure({
-        multicolor: true,
-      }),
+      Typography,
+      Highlight,
     ],
-    onBlur: async ({ editor }) => {
-      if (!editor?.getText) return
-      const text = editor?.getHTML()
-
-      const anchorInfos = parseLink(text)
-
-      const { content, anchors } = anchorInfos?.reduce?.<Record<string, any>>(
-        (r, c) => {
-          const { content, anchors } = r
-
-          const { element, text, anchorId } = c
-
-          const aIndex = content.indexOf(element) as number
-
-          const startCharacter = content.slice(0, aIndex).replace(ELE_REG, '').length
-
-          if (!startCharacter) return r
-
-          const endCharacter = startCharacter + text.length
-
-          return {
-            content: content.replace(element, text),
-            anchors: [
-              ...anchors,
-              { anchorId, extent: { startCharacter, endCharacter, type: 'text', text } },
-            ],
-          }
-        },
-        { content: text, anchors: [] }
-      )
-
-      const payload = { fieldName: 'content', value: content } as any
-
-      // delete Anchor
-      const aliveAnchorIds = anchors.map(({ anchorId }: { anchorId: string }) => anchorId)
-
-      const needDeleteAnchorIds = box.anchors
-        .filter((item) => !aliveAnchorIds.includes(item.anchorId))
-        .map(({ anchorId }) => anchorId)
-
-      const twoWayNeedDeleteAnchors = Object.entries(box.links)
-        .filter(([key]) => needDeleteAnchorIds.includes(key))
-        .map(([, { anchor1Id, anchor2Id }]) => [anchor1Id, anchor2Id])
-        .flat()
-
-      const deleteTask = FrontendAnchorGateway.deleteAnchors(twoWayNeedDeleteAnchors)
-
-      const updateAnchors = Promise.allSettled(
-        (anchors as { anchorId: string; extent: Extent }[]).map(({ anchorId, extent }) =>
-          FrontendAnchorGateway.updateExtent(anchorId, extent)
-        )
-      )
-
-      const update = FrontendNodeGateway.updateNode(currentNode.nodeId, [payload])
-
-      await Promise.allSettled([updateAnchors, update, deleteTask])
-      setLinkMenuRefresh(!linkMenuRefresh)
-    },
     content: currentNode.content,
+    editable: true,
+    injectCSS: false,
   })
 
   // This function adds anchor marks for anchors in the database to the text editor
@@ -176,37 +87,130 @@ export const TextContent = (props: ITextContentProps) => {
       if (!linkResponse.success || !linkResponse.payload) {
         return failureServiceResponse('failed to get link')
       }
-      box.links[anchor.anchorId] = linkResponse.payload[0] || {}
       const link = linkResponse.payload[0]
-
-      if (!link) continue
-
       let node = link.anchor1NodeId
       if (node == currentNode.nodeId) {
         node = link.anchor2NodeId
       }
       if (anchor.extent && anchor.extent.type == 'text') {
         editor.commands.setTextSelection({
-          from: anchor.extent.startCharacter + 1,
-          to: anchor.extent.endCharacter + 1,
+          from: anchor.extent.startCharacter,
+          to: anchor.extent.endCharacter,
         })
-
         editor.commands.setLink({
-          href: baseEndpoint + node + '/',
+          href: 'https://hyperediteablenodes.web.app/' + node + '/',
           target: anchor.anchorId,
-        } as any)
+        })
       }
     }
     return successfulServiceResponse('added anchors')
+  }
+
+  const updateContent = async () => {
+    if (!editor) {
+      setAlertIsOpen(true)
+      setAlertTitle('Content update failed')
+      setAlertMessage('Editor does not exist!')
+      return failureServiceResponse('Update failed')
+    }
+    await updateAnchors()
+    const html = editor.getHTML()
+    const nodeProperty: INodeProperty[] = []
+    nodeProperty.push(makeINodeProperty('content', html))
+    const contentUpdateResp = await FrontendNodeGateway.updateNode(
+      currentNode.nodeId,
+      nodeProperty
+    )
+    if (!contentUpdateResp.success) {
+      setAlertIsOpen(true)
+      setAlertTitle('Content update failed')
+      setAlertMessage(contentUpdateResp.message)
+    } else {
+      setAlertIsOpen(true)
+      setAlertTitle('Successfully saved!')
+      setAlertMessage('')
+    }
+    setRefresh(!refresh)
+    setLinkMenuRefresh(!linkMenuRefresh)
+  }
+
+  // update still existed anchors , and delete not existed anchors
+  const updateAnchors = async () => {
+    if (!editor) {
+      return
+    }
+    const anchorsResp = await FrontendAnchorGateway.getAnchorsByNodeId(currentNode.nodeId)
+    if (!anchorsResp.success || !anchorsResp.payload) {
+      return anchorsResp
+    }
+    const anchorsInDB: IAnchor[] = anchorsResp.payload
+    // convert it to anchorId string list
+    const anchorIds: string[] = anchorsInDB.map((value) => {
+      return value.anchorId
+    })
+    const anchorUpdates: string[] = []
+    editor.state.doc.descendants(function(node, pos, parent, index) {
+      node.marks.forEach(async (mark) => {
+        if (
+          node.type.name == 'text' &&
+          mark.type.name == 'link' &&
+          'target' in mark.attrs
+        ) {
+          anchorUpdates.push(mark.attrs.target)
+          if (node.text) {
+            const newExtent: ITextExtent = {
+              endCharacter: pos + node.text.length,
+              startCharacter: pos,
+              text: node.text,
+              type: 'text',
+            }
+            const anchorUpdateResp = await FrontendAnchorGateway.updateExtent(
+              mark.attrs.target,
+              newExtent
+            )
+            if (!anchorUpdateResp.success) {
+              setAlertIsOpen(true)
+              setAlertTitle('Cannot update anchors')
+              setAlertMessage(anchorUpdateResp.message)
+            }
+          }
+        }
+      })
+    })
+    const deleteIds = anchorIds.filter((value) => {
+      return anchorUpdates.indexOf(value) < 0
+    })
+    const linksResp = await FrontendLinkGateway.getLinksByAnchorIds(deleteIds)
+    if (!linksResp.success || !linksResp.payload) {
+      return linksResp
+    }
+    const linkIds: string[] = []
+    linksResp.payload.forEach((value) => {
+      linkIds.push(value.linkId)
+    })
+    const deleteResp = await FrontendLinkGateway.deleteLinks(linkIds)
+    if (!deleteResp.success || !deleteResp.payload) {
+      return deleteResp
+    }
   }
 
   // Set the content and add anchor marks when this component loads
   useEffect(() => {
     if (editor) {
       editor.commands.setContent(currentNode.content)
+      editor.commands.selectAll()
+      editor.commands.unsetLink()
       addAnchorMarks()
     }
   }, [currentNode, editor])
+
+  useEffect(() => {
+    if (editor) {
+      editor.commands.selectAll()
+      editor.commands.unsetLink()
+      addAnchorMarks()
+    }
+  }, [refresh])
 
   // Set the selected extent to null when this component loads
   useEffect(() => {
@@ -224,8 +228,8 @@ export const TextContent = (props: ITextContentProps) => {
     if (from !== to) {
       const selectedExtent: Extent = {
         type: 'text',
-        startCharacter: from - 1,
-        endCharacter: to - 1,
+        startCharacter: from,
+        endCharacter: to,
         text: text,
       }
       setSelectedExtent(selectedExtent)
@@ -239,13 +243,21 @@ export const TextContent = (props: ITextContentProps) => {
   }
 
   return (
-    <div>
+    <div style={{ width: '700px' }}>
       <TextMenu editor={editor} />
       <EditorContent
-        style={{ width: '100%', padding: '10px;' }}
+        style={{ width: '100%' }}
         editor={editor}
         onPointerUp={onPointerUp}
       />
+      <div>
+        <div style={{ display: 'inline', fontWeight: 'bold', fontSize: '20px' }}>
+          Do not forget to save your text!
+        </div>
+        <button onClick={updateContent} className={'textEditorButton save'}>
+          Save
+        </button>
+      </div>
     </div>
   )
 }
