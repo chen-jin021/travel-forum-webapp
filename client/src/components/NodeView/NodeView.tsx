@@ -202,8 +202,11 @@ export const NodeView = (props: INodeViewProps) => {
   useEffect(() => {
     setSelectedAnchors([])
     loadAnchorsFromNodeId()
-    getPermission()
   }, [loadAnchorsFromNodeId, currentNode, refreshLinkList, setSelectedAnchors])
+
+  useEffect(() => {
+    getPermission()
+  }, [currentNode])
 
   const hasBreadcrumb: boolean = path.length > 1
   const hasAnchors: boolean = anchors.length > 0
@@ -253,6 +256,7 @@ export const NodeView = (props: INodeViewProps) => {
   }
 
   const getHeader = (perm: string) => {
+    console.log(perm)
     switch (perm) {
       case 'owner':
         return (
@@ -304,7 +308,11 @@ export const NodeView = (props: INodeViewProps) => {
         <div className="nodeView-scrollable">
           {hasBreadcrumb && (
             <div className="nodeView-breadcrumb">
-              <NodeBreadcrumb path={path} nodeIdsToNodesMap={nodeIdsToNodesMap} />
+              <NodeBreadcrumb
+                path={path}
+                nodeIdsToNodesMap={nodeIdsToNodesMap}
+                inSquare={inSquare}
+              />
             </div>
           )}
           <div className="nodeView-content">

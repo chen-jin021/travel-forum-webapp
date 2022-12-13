@@ -10,10 +10,15 @@ import { Link } from 'react-router-dom'
 export interface INodeBreadcrumbProps {
   nodeIdsToNodesMap: NodeIdsToNodesMap
   path: string[]
+  inSquare?: boolean
 }
 
 /** Render a breadcrumb that shows the path from the root to the current node */
-export const NodeBreadcrumb = ({ path, nodeIdsToNodesMap }: INodeBreadcrumbProps) => {
+export const NodeBreadcrumb = ({
+  path,
+  nodeIdsToNodesMap,
+  inSquare,
+}: INodeBreadcrumbProps) => {
   const pathNodes = path
     .map((nodeId: string) => nodeIdsToNodesMap[nodeId])
     .filter(isNotNullOrUndefined)
@@ -25,7 +30,14 @@ export const NodeBreadcrumb = ({ path, nodeIdsToNodesMap }: INodeBreadcrumbProps
   return (
     <div className="node-breadcrumb">
       {parentNodes.map((node: INode) => (
-        <Link to={`/main/${pathToString(node.filePath)}`} key={node.nodeId}>
+        <Link
+          to={
+            inSquare
+              ? `/square/${pathToString(node.filePath)}`
+              : `/main/${pathToString(node.filePath)}`
+          }
+          key={node.nodeId}
+        >
           <div className="breadcrumb-item-wrapper">
             <div className={'breadcrumb-item'} onClick={() => setSelectedNode(node)}>
               {node.title}

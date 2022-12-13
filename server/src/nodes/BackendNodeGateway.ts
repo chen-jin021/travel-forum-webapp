@@ -198,7 +198,7 @@ export class BackendNodeGateway {
     const getParentResp = await this.nodeCollectionConnection.findNodeById(parentId)
     if (!getParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeId from parent's children field"
+        'Failed to remove nodeId from parent\'s children field'
       )
     }
     const parent = getParentResp.payload
@@ -213,7 +213,7 @@ export class BackendNodeGateway {
     ])
     if (!updateOldParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeToMove from its Parent's children field"
+        'Failed to remove nodeToMove from its Parent\'s children field'
       )
     }
     return successfulServiceResponse({})
@@ -291,7 +291,7 @@ export class BackendNodeGateway {
     const getParentResp = await this.getNodeById(parentId)
     if (!getParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeId from parent's children field"
+        'Failed to remove nodeId from parent\'s children field'
       )
     }
     const parent = getParentResp.payload
@@ -312,7 +312,7 @@ export class BackendNodeGateway {
     ])
     if (!updateOldParentResp.success) {
       return failureServiceResponse(
-        "Failed to remove nodeToMove from its Parent's children field"
+        'Failed to remove nodeToMove from its Parent\'s children field'
       )
     }
     return successfulServiceResponse({})
@@ -401,22 +401,25 @@ export class BackendNodeGateway {
     }
     const node = getResponse.payload
     let idList: string[] = []
-    if (listType == 'write') {
+
+    if (listType === 'write') {
       idList = (node as ILocNode).userWriteIds
-    } else if (listType == 'read') {
+    } else if (listType === 'read') {
       idList = (node as ILocNode).userReadIds
     }
-    for (let i = 0; i < idList.length - 1; i++) {
-      if (idList[i] === userId) {
+    console.log(userId)
+    for (let i = 0; i < idList.length; i++) {
+      if (idList[i] == userId) {
         idList.splice(i, 1)
       }
     }
-    if (listType == 'write') {
+
+    if (listType === 'write') {
       const prop = makeINodeProperty('userWriteIds', idList)
-      this.updateNode(nodeId, [prop])
-    } else if (listType == 'read') {
+      return await this.updateNode(nodeId, [prop])
+    } else if (listType === 'read') {
       const prop = makeINodeProperty('userReadIds', idList)
-      this.updateNode(nodeId, [prop])
+      return await this.updateNode(nodeId, [prop])
     }
   }
 

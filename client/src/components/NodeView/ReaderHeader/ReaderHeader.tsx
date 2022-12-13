@@ -32,6 +32,7 @@ import NodeSelect from '../../NodeSelect'
 import { AiOutlineShareAlt } from 'react-icons/ai'
 import { FrontendUserGateway } from '../../../users'
 import { useHistory } from 'react-router'
+import { useAuth } from '../../../contexts/AuthContext'
 
 interface IReaderHeaderProps {
   onHandleCompleteLinkClick: () => void
@@ -49,9 +50,10 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
   const setAlertTitle = useSetRecoilState(alertTitleState)
   const setAlertMessage = useSetRecoilState(alertMessageState)
   const [refreshLinkList, setRefreshLinkList] = useRecoilState(refreshLinkListState)
-  const [user, setUser] = useState<IUser>()
+  const [curUser, setCurUser] = useState<IUser>()
   const history = useHistory()
   const [error, setError] = useState('')
+  const { user } = useAuth()
 
   // State variable for current node title
   const [title, setTitle] = useState(currentNode.title)
@@ -119,7 +121,7 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
     if (!ownerResp.success || !ownerResp.payload) {
       return
     }
-    setUser(ownerResp.payload)
+    setCurUser(ownerResp.payload)
   }
 
   /* useEffect which updates the title and editing state when the node is changed */
@@ -175,8 +177,10 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
     }
   }
   const onQuitClick = async () => {
-    if (!user) return
-    const userId = user.userId
+    if (!user) {
+      return
+    }
+    const userId = user.uid
     const deleteUserPermitResp = await FrontendNodeGateway.deleteUserInList(
       currentNode.nodeId,
       userId,
@@ -187,7 +191,11 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
       return
     }
     history.push('/main')
+    setSelectedNode(null)
+    setRefresh(!refresh)
   }
+
+  
   // Trigger on node load or when editingTitle changes
   useEffect(() => {
     // TODO: Task 9 - keyboard shortcuts
@@ -221,11 +229,11 @@ export const ReaderHeader = (props: IReaderHeaderProps) => {
               text="Visual"
               onClick={() => onGraphButtonClick(currentNode)}
             /> */}
-            <Button text="Quit" onClick={onQuitClick} />
+            <Button icon={<ai.AiFillBackward/>} text="Quit" onClick={onQuitClick} />
             <NodeSelect />
             <div className="readHeader-nameBar">
               <AiOutlineUser />
-              Owner: &nbsp; <Avatar src={user?.avatar} /> &nbsp; {user?.userName}
+              Owner: &nbsp; <Avatar src={curUser?.avatar} /> &nbsp; {curUser?.userName}
             </div>
             {folder && (
               <div className="select">
