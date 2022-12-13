@@ -202,6 +202,7 @@ export const SquareNodeHeader = (props: ISquareNodeHeaderProps) => {
           setEditing={setEditingTitle}
           onEdit={handleUpdateTitle}
           isPersonal={false}
+          inSquare={true}
         />
       </div>
       <div className="nodeHeader-buttonBar">

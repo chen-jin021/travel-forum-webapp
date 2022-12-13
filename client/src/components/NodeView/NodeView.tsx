@@ -298,6 +298,7 @@ export const NodeView = (props: INodeViewProps) => {
             onHandleCompleteLinkClick={handleCompleteLinkClick}
             onCreateNodeButtonClick={onCreateNodeButtonClick}
             ownerid={(currNode as ILocNode).ownerId}
+            inSquare={inSquare}
           />
         )
     }
