@@ -2,221 +2,59 @@
 
 /* Basic editor styles */
 .ProseMirror {
-  min-height: 500px;
-  height: fit-content;
-  width: 100%;
-  padding: 20px 20px 100px;
-  border: solid black;
-  border-width: 3px;
-  border-radius: 4px;
-
-  > * + * {
-    margin-top: 0.75em;
-  }
-
-  ul,
-  ol {
-    padding: 0 1rem;
-  }
-
-  code {
-    background-color: rgba(#616161, 0.1);
-    color: #616161;
-    font-family: monospace;
-    border-radius: 1px;
-  }
-
-  h1 {
-    line-height: 1.1;
-    font-weight: bold;
-    font-size: 2em;
-    margin-block-start: 0.67em;
-    margin-block-end: 0.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-  }
-
-  h2 {
-    display: block;
-    font-size: 1.5em;
-    margin-block-start: 0.83em;
-    margin-block-end: 0.83em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-  }
-
-  h3 {
-    display: block;
-    font-size: 1.17em;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-  }
-
-  h4 {
-    display: block;
-    margin-block-start: 1.33em;
-    margin-block-end: 1.33em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-  }
-
-  h5 {
-    display: block;
-    font-size: 0.83em;
-    margin-block-start: 1.67em;
-    margin-block-end: 1.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-  }
-
-  pre {
-    background: #0d0d0d;
-    color: #fff;
-    font-family: 'JetBrainsMono', monospace;
-    white-space: pre-wrap;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-
-    code {
-      color: inherit;
-      padding: 0;
-      background: none;
-      font-size: 0.8rem;
-      max-width: 100%;
-    }
-  }
-
   a {
-    color: blue;
-    font-weight: bold;
-    text-decoration: underline;
-  }
-
-  blockquote {
-    padding-left: 1rem;
-    border-left: 2px solid rgba(#0d0d0d, 0.1);
-  }
-
-  hr {
-    border: none;
-    border-top: 2px solid rgba(#0d0d0d, 0.1);
-    margin: 2rem 0;
+    color: blue !important;
+    text-decoration: underline !important;
+    cursor: pointer;
   }
 }
-
-.my-link{
-  color: blue;
-  font-weight: bold;
-  text-decoration: underline;
+> * + * {
+  margin-top: 0.75em;
 }
 
+li {
+  padding: 0 1rem;
+  list-style-position: inside;
+}
+
+// styling our text buttons
 .textEditorButton {
-  height: 30px;
-  width: max-content;
-  font-family: 'Futura';
-  font-size: 12px;
-  padding: 3px 15px;
-  user-select: none;
-  background-color: #f1f1f1;
-  border-radius: 5px;
-  transition: 0.3s;
-  cursor: pointer;
-  margin: 3px;
-  grid-gap: 5px;
-  gap: 5px;
-  color: white;
-  &:hover {
-    filter: brightness(1.2);
-    font-size: 15px;
-  }
+  text-align: center;
+  font-size: inherit;
+  font-family: inherit;
+  // color: #000;
+  color: rgb(86, 137, 167);
+  margin: 0.2rem;
+  margin-right: 0.1rem;
+  border: 0.16em solid rgba(255, 255, 255, 0);
+  border-radius: 0.5em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
+  text-align: center;
+  padding: 0.1rem 0.4rem;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: all 0.2s;
+  accent-color: black;
+  margin-bottom: 20px;
 }
-
-.bold {
-  background-color: rgb(255, 51, 0);
-}
-
-.italic {
-  background-color: orange;
-}
-
-.strike {
-  background-color: green;
-}
-
-.strike {
-  background-color: green;
-}
-
-.code {
-  background-color: blue;
-}
-
-.codeBlock {
-  background-color: purple;
-}
-
-.h1 {
-  background-color: darkcyan;
-}
-
-.h2 {
-  background-color: darkorange;
-}
-
-.h3 {
-  background-color: darkblue;
-}
-
-.bulletlist {
-  background-color: brown;
-}
-
-.orderedlist {
-  background-color: coral;
-}
-.undo {
-  background-color: darkslateblue;
-}
-.redo {
-  background-color: darkseagreen;
-}
-
-.save {
-  background-color: darkslateblue;
-}
-
-.imgbutton {
-  margin: 10px;
-}
-
-.gray {
-  background: rgb(57, 57, 57);
+.textEditorButton:hover {
+   border-color: rgb(175, 172, 172);
 }
 
 .active-textEditorButton {
-  height: 30px;
-  width: max-content;
-  font-family: 'Futura';
-  font-size: 12px;
-  padding: 3px 15px;
-  user-select: none;
-  background-color: black;
-  border-radius: 5px;
-  transition: 0.3s;
-  cursor: pointer;
-  margin: 3px;
-  grid-gap: 5px;
-  gap: 5px;
-  color: white;
-  &:hover {
-    filter: brightness(1.2);
-    font-size: 15px;
-  }
+  background: black;
+  color: #fff;
+}
+
+.highlight {
+  background-color: rgba(250, 245, 148, var(--tw-bg-opacity));
+}
+
+.editor {
+  padding: 10px;
+  margin: 10px;
 }

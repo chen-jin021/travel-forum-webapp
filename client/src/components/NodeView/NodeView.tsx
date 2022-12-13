@@ -270,6 +270,7 @@ export const NodeView = (props: INodeViewProps) => {
             onShareBtnClick={onShareBtnClick}
             onGraphButtonClick={() => {}}
             onCommentListClick={onCommentListClick}
+            inSquare={inSquare}
           />
         )
       case 'read':
@@ -278,6 +279,7 @@ export const NodeView = (props: INodeViewProps) => {
             onHandleStartLinkClick={handleStartLinkClick}
             onHandleCompleteLinkClick={handleCompleteLinkClick}
             ownerid={(currNode as ILocNode).ownerId}
+            inSquare={inSquare}
           />
         )
       case 'publi':

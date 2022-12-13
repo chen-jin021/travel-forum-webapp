@@ -7,13 +7,15 @@ interface IEditableTextProps {
   onEdit: (newText: string) => void
   setEditing: (editing: boolean) => void
   isPersonal: boolean
+  inSquare: boolean
 }
 
 export const EditableText = (props: IEditableTextProps) => {
-  const { editing, text, onEdit, setEditing, isPersonal } = props
+  const { editing, text, onEdit, setEditing, isPersonal, inSquare } = props
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onEdit(event.target.value)
+    console.log('This is me')
   }
 
   const handleOnBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
