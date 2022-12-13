@@ -69,7 +69,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   const [rootNodes, setRootNodes] = useState<RecursiveNodeTree[]>([
     new RecursiveNodeTree(emptyNode),
   ])
-  const refresh = useRecoilValue(refreshState)
+  const [refresh, setRefresh] = useRecoilState(refreshState)
   const currentNode = useRecoilValue(currentNodeState)
   // anchor states
   const setSelectedAnchors = useSetRecoilState(selectedAnchorsState)
@@ -292,6 +292,11 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
     setCompleteLinkModalOpen(true)
   }, [])
 
+  const handleCloseCompleteLinkModal = useCallback(() => {
+    setCompleteLinkModalOpen(false)
+    setRefresh(!refresh)
+  }, [])
+
   const handleHomeClick = useCallback(() => {
     setSelectedNode(null)
   }, [])
@@ -401,7 +406,7 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
           />
           <CompleteLinkModal
             isOpen={completeLinkModalOpen}
-            onClose={() => setCompleteLinkModalOpen(false)}
+            onClose={handleCloseCompleteLinkModal}
             nodeIdsToNodes={nodeIdsToNodesMap}
           />
           <CreateInvitationModal
