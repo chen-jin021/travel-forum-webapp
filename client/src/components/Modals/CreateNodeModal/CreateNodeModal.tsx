@@ -41,10 +41,9 @@ export interface ICreateNodeModalProps {
  */
 export const CreateNodeModal = (props: ICreateNodeModalProps) => {
   // deconstruct props variables
-
-  const { isOpen, onClose, roots, nodeIdsToNodesMap, onSubmit } = props
+  const { isOpen, onClose, roots, nodeIdsToNodesMap, onSubmit, locNode } = props
   // state variables
-  const { locNode } = props
+
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const [selectedParentNode, setSelectedParentNode] = useState<INode | null>(null)
   const [title, setTitle] = useState('')
@@ -84,14 +83,14 @@ export const CreateNodeModal = (props: ICreateNodeModalProps) => {
       return
     }
 
-    if (selectedParentNode == null) {
+    if (locNode == null) {
       setError('Error: No Parent Node Chosen')
       return
     }
     const attributes = {
       content,
       nodeIdsToNodesMap,
-      parentNodeId: selectedParentNode ? selectedParentNode.nodeId : null,
+      parentNodeId: locNode.nodeId,
       title,
       type: selectedType as NodeType,
     }
