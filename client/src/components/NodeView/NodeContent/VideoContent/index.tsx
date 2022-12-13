@@ -62,7 +62,6 @@ export default () => {
     ref.current.seekTo(Number((extent as any).start) || 0)
   }, [selected, ref])
 
-  console.log(selected, 'hahah')
   return (
     <div>
       {/* @ts-ignore */}

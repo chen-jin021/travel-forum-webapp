@@ -73,11 +73,9 @@ export class NodeRouter {
         const { text } = req.params
         // TODO: find corresponding text nodes
         const resp = await this.BackendNodeGateway.searchNodes(text)
-        console.log(resp)
 
         res.status(200).send(resp)
       } catch (e) {
-        console.log(e)
         res.status(500).send(e.message)
       }
     })
@@ -93,7 +91,6 @@ export class NodeRouter {
         resp.pipe(res)
       })
 
-      console.log(location)
       request.end()
     })
 
@@ -305,7 +302,6 @@ export class NodeRouter {
 
         res.status(200).send(resp)
       } catch (e) {
-        console.log(e)
         res.status(500).send(e.message)
       }
     })
@@ -321,7 +317,6 @@ export class NodeRouter {
         resp.pipe(res)
       })
 
-      console.log(location)
       request.end()
     })
   }

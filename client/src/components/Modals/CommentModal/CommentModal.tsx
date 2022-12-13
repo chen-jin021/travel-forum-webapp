@@ -105,13 +105,11 @@ export const CommentModal = (props: ICommentModalProps) => {
       setError(acceptResp.message)
       return
     }
-    console.log(acceptResp)
     setRefresh(!refresh)
   }
 
   const getComments = async (nodeId: string) => {
     const commentsResp = await FrontendMessageGateway.getMessagesByNodeId(nodeId)
-    console.log(commentsResp)
     if (!commentsResp.success || !commentsResp.payload) {
       setError('This node has not had comments yet~')
       return

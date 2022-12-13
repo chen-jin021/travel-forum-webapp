@@ -26,7 +26,6 @@ export const MapView = (props: IMapViewProps) => {
 
   const onLoad = (map:google.maps.Map) =>{
     mapRef.current = map
-    console.log(map)
     setMap(map)
   }
 

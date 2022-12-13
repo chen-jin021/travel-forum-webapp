@@ -90,7 +90,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
       if (rootsFromDB.success) {
         rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
         setIsAppLoaded(true)
-        console.log(rootsFromDB.payload)
         if (map && rootsFromDB.payload) {
           updateAllMarkers(rootsFromDB.payload)
         }
@@ -109,7 +108,6 @@ export const MainView = React.memo(function MainView(props: IMainViewProps) {
   }
 
   useEffect(() => {
-    console.log()
     if (user) {
       getUserFromDB(user.uid)
     }

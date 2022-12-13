@@ -87,7 +87,6 @@ export const SquareNodeHeader = (props: ISquareNodeHeaderProps) => {
     const updateTitleResp = await FrontendNodeGateway.updateNode(currentNode.nodeId, [
       newTitle,
     ])
-    console.log('The new title is: ' + title)
     if (!updateTitleResp.success) {
       setAlertIsOpen(true)
       setAlertTitle('Title not updated')

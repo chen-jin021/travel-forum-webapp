@@ -123,7 +123,6 @@ export async function createNodeFromModal({
 // upload img to google cloud storage and return URL
 export const upload = async (file: any): Promise<string> => {
   if (!file) return 'empty file!'
-  console.log(file)
   const storageRef = ref(storage, `/files/${file.name}`)
   const uploadTask = await uploadBytesResumable(storageRef, file)
   const url: string = await getDownloadURL(uploadTask.ref)
@@ -132,7 +131,6 @@ export const upload = async (file: any): Promise<string> => {
 
 export const uploadImage = async (file: any): Promise<string> => {
   // begin file upload
-  console.log('Uploading file to Imgur..')
 
   // using key for imgur API
   const apiUrl = 'https://api.imgur.com/3/image'

@@ -15,7 +15,6 @@ export const EditableText = (props: IEditableTextProps) => {
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onEdit(event.target.value)
-    console.log('This is me')
   }
 
   const handleOnBlur = (event: React.ChangeEvent<HTMLInputElement>) => {

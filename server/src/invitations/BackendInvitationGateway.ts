@@ -183,7 +183,6 @@ export class BackendInvitationGateway {
     const rcverId = getInvitationsResp.payload.rcverId
     // 5. construct the new property, push the receiver's userId into the list
     let property: INodeProperty
-    console.log(inviteType)
     if (inviteType == 'read') {
       const readList = locNode.userReadIds
       readList.push(rcverId)

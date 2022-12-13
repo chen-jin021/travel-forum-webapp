@@ -67,7 +67,6 @@ export class BackendNodeGateway {
       .sort(sort)
       .project(projection)
       .forEach((item) => result.push(item))
-    console.log(result)
     return successfulServiceResponse(result as INode[])
   }
   /**
@@ -407,7 +406,6 @@ export class BackendNodeGateway {
     } else if (listType === 'read') {
       idList = (node as ILocNode).userReadIds
     }
-    console.log(userId)
     for (let i = 0; i < idList.length; i++) {
       if (idList[i] == userId) {
         idList.splice(i, 1)

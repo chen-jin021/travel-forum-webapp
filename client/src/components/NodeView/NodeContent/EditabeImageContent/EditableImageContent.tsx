@@ -358,7 +358,6 @@ export const EditableImageContent = () => {
    * set height and width
    */
   useEffect(() => {
-    console.log(currentNode)
     if (imageContainer.current) {
       const node = currentNode as IImageNode
       setCurrentX(node.curX)

@@ -75,7 +75,6 @@ export const PersonalInfo = React.memo(() => {
     setNickName(name)
     const userProperty: IUserProperty = makeIUserProperty('userName', name)
     const nameUpdateResp = await FrontendUserGateway.updateUser(user.uid, [userProperty])
-    console.log(nameUpdateResp)
     if (!nameUpdateResp.success) {
       setError(nameUpdateResp.message)
     }

@@ -75,7 +75,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
   const loadRootsFromDB = useCallback(
     async (userId: string) => {
       const rootsFromDB = await FrontendNodeGateway.getPublic()
-      console.log(rootsFromDB)
+
       if (rootsFromDB.success) {
         rootsFromDB.payload && setRootNodes(rootsFromDB.payload)
         setIsAppLoaded(true)
@@ -377,7 +377,7 @@ export const Square = React.memo(function Square(props: ISquareProps) {
             roots={rootNodes}
             nodeIdsToNodesMap={nodeIdsToNodesMap}
             onSubmit={() => {}}
-            locNode = {currentNode as ILocNode}
+            locNode={currentNode as ILocNode}
           />
           <CompleteLinkModal
             isOpen={completeLinkModalOpen}

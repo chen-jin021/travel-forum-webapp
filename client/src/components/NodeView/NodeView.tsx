@@ -256,7 +256,6 @@ export const NodeView = (props: INodeViewProps) => {
   }
 
   const getHeader = (perm: string) => {
-    console.log(perm)
     switch (perm) {
       case 'owner':
         return (

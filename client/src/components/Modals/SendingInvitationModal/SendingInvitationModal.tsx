@@ -105,7 +105,6 @@ export const SendingInvitationModal = (props: ISendingInvitationModalProps) => {
       setError(acceptResp.message)
       return
     }
-    console.log(acceptResp)
     setRefresh(!refresh)
   }
 
